@@ -1,6 +1,6 @@
 // -*- coding: utf-8 -*-
 //
-// This file is part of the Spazio IT Speech-to-Data project.
+// This file is part of the Spazio IT Speech-to-Knowledge project.
 //
 // Copyright (C) 2025 Spazio IT 
 // Spazio - IT Soluzioni Informatiche s.a.s.
@@ -49,6 +49,9 @@
 #include <csignal>
 #include <cstring>
 #include <cstdint>
+#include <fstream>
+#include <array>
+#include <cstdlib>
 
 // PortAudio includes
 #include "portaudio.h"
@@ -152,6 +155,9 @@ struct Args {
     std::string default_microphone;
     std::string whisper_model_path;
     bool list_microphones = false;
+    std::string audio_file_path;
+    std::chrono::system_clock::time_point encoded_start{};
+    bool has_encoded_start = false;
 };
 
 // =======================
@@ -786,7 +792,7 @@ Args parse_arguments(int argc, char* argv[]) {
         "--model", "--non_english", "--energy_threshold", "--record_timeout",
         "--phrase_timeout", "--language", "--pipe", "--default_microphone",
         "--whisper_model_path", "--help", "-h", "--timestamp", "--list_microphones",
-        "--adaptive_energy"
+        "--adaptive_energy", "--audio_file", "--encoded_start"
     };
 
     for (int i = 1; i < argc; ++i) {
@@ -794,8 +800,8 @@ Args parse_arguments(int argc, char* argv[]) {
 
         if (valid_args.find(arg) == valid_args.end()) {
             std::cerr << "Error: Unknown argument '" << arg << "'" << std::endl;
-            std::exit(1);
-        }
+    std::exit(1);
+}
 
         if (arg == "--model" && i + 1 < argc) {
             args.model = argv[++i];
@@ -844,6 +850,24 @@ Args parse_arguments(int argc, char* argv[]) {
             args.whisper_model_path = argv[++i];
         } else if (arg == "--list_microphones") {
             args.list_microphones = true;
+        } else if (arg == "--audio_file" && i + 1 < argc) {
+            args.audio_file_path = argv[++i];
+        } else if (arg == "--encoded_start" && i + 1 < argc) {
+            std::string ts = argv[++i];
+            std::tm tm{};
+            std::istringstream ss(ts);
+            ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+            if (ss.fail()) {
+                std::cerr << "Error: Invalid --encoded_start format. Expected \"YYYY-mm-dd HH:MM:SS\"." << std::endl;
+                std::exit(1);
+            }
+            std::time_t tt = std::mktime(&tm);
+            if (tt == -1) {
+                std::cerr << "Error: Failed to convert --encoded_start to time." << std::endl;
+                std::exit(1);
+            }
+            args.encoded_start = std::chrono::system_clock::from_time_t(tt);
+            args.has_encoded_start = true;
         } else if (arg == "--help" || arg == "-h") {
             std::cout << "Usage: " << argv[0] << " [options]\n"
                       << "  --model <name>            Model to use (tiny, base, small, medium, large). Default: medium\n"
@@ -857,6 +881,8 @@ Args parse_arguments(int argc, char* argv[]) {
                       << "  --timestamp               Print timestamps before each line in pipe mode.\n"
                       << "  --whisper_model_path <path> REQUIRED: Path to the ggml Whisper model file\n"
                       << "  --list_microphones        List available microphones and exit\n"
+                      << "  --audio_file <path>       Transcribe a media file (audio or video). Audio is extracted via ffmpeg.\n"
+                      << "  --encoded_start \"YYYY-mm-dd HH:MM:SS\"  Override transcript start time for --audio_file mode.\n"
 #ifdef __linux__
                       << "  --default_microphone <name> Default microphone name. Use '--list_microphones' to see options.\n"
 #endif
@@ -871,6 +897,121 @@ Args parse_arguments(int argc, char* argv[]) {
     }
 
     return args;
+}
+
+// =======================
+// File audio loading (mono 16-bit WAV or raw PCM; media via ffmpeg)
+// =======================
+namespace FileAudio {
+    namespace {
+        uint32_t read_u32_le(std::ifstream& f) {
+            uint32_t v = 0;
+            f.read(reinterpret_cast<char*>(&v), sizeof(v));
+            return v;
+        }
+
+        uint16_t read_u16_le(std::ifstream& f) {
+            uint16_t v = 0;
+            f.read(reinterpret_cast<char*>(&v), sizeof(v));
+            return v;
+        }
+    }
+
+    bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector<int16_t>& samples_out) {
+        std::ifstream f(path, std::ios::binary);
+        if (!f) return false;
+
+        std::array<char, 4> tag{};
+        f.read(tag.data(), 4);
+        if (f.gcount() != 4 || std::string(tag.data(), 4) != "RIFF") return false;
+
+        (void)read_u32_le(f); // chunk size
+        f.read(tag.data(), 4);
+        if (f.gcount() != 4 || std::string(tag.data(), 4) != "WAVE") return false;
+
+        bool fmt_found = false;
+        bool data_found = false;
+        uint16_t num_channels = 0;
+        uint16_t bits_per_sample = 0;
+        sample_rate_out = 0;
+        samples_out.clear();
+
+        while (f && !data_found) {
+            f.read(tag.data(), 4);
+            if (f.gcount() != 4) break;
+            uint32_t chunk_size = read_u32_le(f);
+            std::string chunk_id(tag.data(), 4);
+
+            if (chunk_id == "fmt ") {
+                uint16_t audio_format = read_u16_le(f);
+                num_channels = read_u16_le(f);
+                sample_rate_out = static_cast<int>(read_u32_le(f));
+                (void)read_u32_le(f); // byte rate
+                (void)read_u16_le(f); // block align
+                bits_per_sample = read_u16_le(f);
+
+                // skip any extra fmt bytes
+                if (chunk_size > 16) {
+                    f.seekg(chunk_size - 16, std::ios::cur);
+                }
+
+                if (audio_format != 1) return false; // only PCM
+                fmt_found = true;
+            } else if (chunk_id == "data") {
+                if (!fmt_found) return false;
+                if (num_channels != 1 || bits_per_sample != 16) return false;
+                size_t sample_count = chunk_size / sizeof(int16_t);
+                samples_out.resize(sample_count);
+                f.read(reinterpret_cast<char*>(samples_out.data()), static_cast<std::streamsize>(sample_count * sizeof(int16_t)));
+                data_found = true;
+            } else {
+                f.seekg(chunk_size, std::ios::cur);
+            }
+        }
+
+        return data_found && fmt_found && !samples_out.empty();
+    }
+
+    std::vector<int16_t> load_raw_pcm_16(const std::string& path, int sample_rate_expected) {
+        std::ifstream f(path, std::ios::binary);
+        if (!f) return {};
+        f.seekg(0, std::ios::end);
+        std::streamsize sz = f.tellg();
+        f.seekg(0, std::ios::beg);
+        if (sz <= 0 || sz % static_cast<std::streamsize>(sizeof(int16_t)) != 0) {
+            return {};
+        }
+        std::vector<int16_t> data(static_cast<size_t>(sz / sizeof(int16_t)));
+        f.read(reinterpret_cast<char*>(data.data()), sz);
+        (void)sample_rate_expected; // kept for symmetry / future resample
+        return data;
+    }
+
+    std::vector<float> to_float(const std::vector<int16_t>& samples) {
+        std::vector<float> out(samples.size());
+        constexpr float denom = 32768.0f;
+        for (size_t i = 0; i < samples.size(); ++i) {
+            out[i] = static_cast<float>(samples[i]) / denom;
+        }
+        return out;
+    }
+
+    std::string transcode_media_to_wav(const std::string& media_path, int target_sample_rate) {
+        namespace fs = std::filesystem;
+        auto ts = std::chrono::steady_clock::now().time_since_epoch().count();
+        fs::path tmp = fs::temp_directory_path() / ("stkw_media_" + std::to_string(ts) + ".wav");
+
+        std::ostringstream cmd;
+        cmd << "ffmpeg -y -i \"" << media_path << "\" -vn -ac 1 -ar "
+            << target_sample_rate << " -sample_fmt s16 \"" << tmp.string()
+            << "\" > /dev/null 2>&1";
+
+        int ret = std::system(cmd.str().c_str());
+        if (ret != 0 || !fs::exists(tmp)) {
+            throw AudioException("Failed to extract audio from media file (ffmpeg required).");
+        }
+        return tmp.string();
+    }
 }
 
 void clear_console() {
@@ -901,6 +1042,22 @@ std::string get_current_timestamp() {
 
     std::ostringstream oss;
     oss << std::put_time(&now_tm, "[%Y-%m-%d %H:%M:%S]");
+    return oss.str();
+}
+
+template <typename Duration>
+std::string format_datetime(const std::chrono::time_point<std::chrono::system_clock, Duration>& tp) {
+    // Cast to system_clock::duration so to_time_t accepts it even if the incoming duration is fractional
+    auto tp_sys = std::chrono::time_point_cast<std::chrono::system_clock::duration>(tp);
+    std::time_t tt = std::chrono::system_clock::to_time_t(tp_sys);
+    std::tm tm{};
+#if defined(_WIN32)
+    localtime_s(&tm, &tt);
+#else
+    localtime_r(&tt, &tm);
+#endif
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
     return oss.str();
 }
 
@@ -945,6 +1102,38 @@ bool is_silent_chunk(const std::vector<int16_t>& samples, int energy_threshold) 
     return rms < min_rms;
 }
 
+std::vector<float> load_audio_from_file(const std::string& path) {
+    int sample_rate = 0;
+    std::vector<int16_t> pcm;
+
+    if (FileAudio::load_wav_mono_16(path, sample_rate, pcm)) {
+        if (sample_rate != Constants::SAMPLE_RATE) {
+            throw AudioException("Unsupported WAV sample rate. Expected 16000 Hz mono 16-bit PCM.");
+        }
+    } else { // not a WAV we recognize
+        // Try raw PCM first
+        pcm = FileAudio::load_raw_pcm_16(path, Constants::SAMPLE_RATE);
+        sample_rate = Constants::SAMPLE_RATE;
+
+        if (pcm.empty()) {
+            // Last resort: treat as media (e.g., video) and extract audio with ffmpeg
+            std::string tmp_wav = FileAudio::transcode_media_to_wav(path, Constants::SAMPLE_RATE);
+            bool ok = FileAudio::load_wav_mono_16(tmp_wav, sample_rate, pcm);
+            std::filesystem::remove(tmp_wav);
+
+            if (!ok || sample_rate != Constants::SAMPLE_RATE) {
+                throw AudioException("Failed to decode media file. Ensure ffmpeg is installed and input is valid.");
+            }
+        }
+    }
+
+    if (pcm.size() < Constants::MIN_AUDIO_SAMPLES) {
+        pcm.resize(Constants::MIN_AUDIO_SAMPLES, 0);
+    }
+
+    return FileAudio::to_float(pcm);
+}
+
 // =======================
 // Graceful shutdown handling
 // =======================
@@ -962,6 +1151,62 @@ int main(int argc, char* argv[]) {
 
         if (args.list_microphones) {
             list_and_exit();
+        }
+
+        if (!args.audio_file_path.empty()) {
+            WhisperModel audio_model(args.whisper_model_path);
+            auto audio_np_full = load_audio_from_file(args.audio_file_path);
+            std::cout << "Transcribing media file: " << args.audio_file_path << std::endl;
+
+            size_t chunk_samples = static_cast<size_t>(Constants::SAMPLE_RATE * args.record_timeout);
+            if (chunk_samples < Constants::MIN_AUDIO_SAMPLES) {
+                chunk_samples = Constants::MIN_AUDIO_SAMPLES;
+            }
+
+            auto transcript_start = args.has_encoded_start
+                                        ? args.encoded_start
+                                        : std::chrono::system_clock::now();
+
+            size_t offset = 0;
+            while (offset < audio_np_full.size()) {
+                if (g_quit.load(std::memory_order_acquire)) {
+                    break;
+                }
+
+                auto loop_start = std::chrono::steady_clock::now();
+
+                size_t end = std::min(offset + chunk_samples, audio_np_full.size());
+                std::vector<float> chunk(audio_np_full.begin() + static_cast<std::ptrdiff_t>(offset),
+                                         audio_np_full.begin() + static_cast<std::ptrdiff_t>(end));
+                if (chunk.size() < Constants::MIN_AUDIO_SAMPLES) {
+                    chunk.resize(Constants::MIN_AUDIO_SAMPLES, 0.0f);
+                }
+
+                double end_sec   = static_cast<double>(end) / Constants::SAMPLE_RATE;
+                auto end_time = transcript_start + std::chrono::duration<double>(end_sec);
+
+                std::string text = audio_model.transcribe(chunk, args.language);
+                text = trim(text);
+                if (!text.empty()) {
+                    std::cout << format_datetime(end_time) << " " << text << std::endl;
+                    std::cout.flush();
+                }
+
+                offset = end;
+
+                if (g_quit.load(std::memory_order_acquire)) {
+                    break;
+                }
+
+                // Pace processing so each loop spans approximately record_timeout seconds
+                auto loop_elapsed = std::chrono::steady_clock::now() - loop_start;
+                auto target = std::chrono::duration<double>(args.record_timeout);
+                if (loop_elapsed < target) {
+                    std::this_thread::sleep_for(target - loop_elapsed);
+                }
+            }
+
+            return 0;
         }
 
         std::chrono::time_point<std::chrono::system_clock> last_phrase_end_time{};
