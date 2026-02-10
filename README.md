@@ -14,7 +14,7 @@ The text stream is segmented using triggers like “Start/Stop Recording” to i
 Each segmented block is analyzed by a generative AI system to understand context and content.
 
 🏥 **Medical Data Extraction in FHIR**
-An AI model (currently GPT-OSS, DeepSeek or MedGemma) extracts structured medical data in FHIR format — enabling interoperability and downstream use.
+An AI model (currently MedGemma-1.5:4b) extracts structured medical data in FHIR format — enabling interoperability and downstream use.
 
 📚 **Treatment Protocols as Knowledge Bases**
 Reference protocols are indexed into an OpenWebUI vector database, allowing them to be queried alongside live speech-derived data.
