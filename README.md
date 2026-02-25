@@ -113,4 +113,27 @@ See the [LICENSE](LICENSE) file for the full text.
 ## Contacts
 - Mail: Maurizio.Martignano@spazioit.com
 - Website: https://spazioit.com/pages_en/sol_inf_en/si-listener  
-- GitHub: https://github.com/mmartign/Speech-to-Knowledge 
+- GitHub: https://github.com/mmartign/Speech-to-Knowledge
+
+- ------------------------------------------------------------------------
+
+## 🏢 About Spazio IT
+
+Spazio - IT Soluzioni Informatiche s.a.s.\
+via Manzoni 40\
+46051 San Giorgio Bigarello\
+Italy
+
+https://spazioit.com
+
+Part of the **OR-Edge Project** --- AI-powered solutions for medical
+edge environments.
+
+------------------------------------------------------------------------
+
+## ⚠ Disclaimer
+
+This software is provided **without warranty**.\
+It is intended for research, validation, and controlled medical IT
+environments.\
+It does not replace certified medical decision systems.
