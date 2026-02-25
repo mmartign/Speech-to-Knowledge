@@ -106,13 +106,11 @@ This C++ rewrite significantly enhances real-time transcription performance over
 + 15ms median latency (vs 210ms in Python
 
 📄 **License**
-This project is released under the GNU General Public License, version 2 (GPL-2.0).
-You are free to use, modify, and redistribute this software under the terms of the GPL-2.0. Any derivative work must also be distributed under the same license.
-A copy of the license should be included with this repository. If not, see the full license text at:
-https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+This project is released under the MIT License.
+You are free to use, modify, and redistribute this software under the terms of the MIT License.
+See the [LICENSE](LICENSE) file for the full text.
 
 ## Contacts
 - Mail: Maurizio.Martignano@spazioit.com
 - Website: https://spazioit.com/pages_en/sol_inf_en/si-listener  
 - GitHub: https://github.com/mmartign/Speech-to-Knowledge 
-
