@@ -11,10 +11,10 @@
 // This file is based on https://github.com/davabase/whisper_real_time, with modifications
 // for real-time performance, concurrency improvements, and debug tracing.
 //
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: CC-BY-4.0
 //
-// Licensed under the MIT License. See the LICENSE file in the project root
-// for license terms and conditions.
+// Licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0)
+// License. See the LICENSE file in the project root for license terms and conditions.
 //
 
 #include <iostream>

@@ -106,8 +106,8 @@ This C++ rewrite significantly enhances real-time transcription performance over
 + 15ms median latency (vs 210ms in Python
 
 📄 **License**
-This project is released under the MIT License.
-You are free to use, modify, and redistribute this software under the terms of the MIT License.
+This project is released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+You are free to share and adapt this work under the terms of CC BY 4.0, with appropriate attribution.
 See the [LICENSE](LICENSE) file for the full text.
 
 ## Contacts

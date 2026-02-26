@@ -8,10 +8,10 @@
 // 46051 San Giorgio Bigarello
 // https://spazioit.com
 //
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: CC-BY-4.0
 //
-// Licensed under the MIT License. See the LICENSE file in the project root
-// for license terms and conditions.
+// Licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0)
+// License. See the LICENSE file in the project root for license terms and conditions.
 //
 #include <fstream>
 #include <cstdlib>
