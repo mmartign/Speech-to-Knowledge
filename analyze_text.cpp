@@ -1,6 +1,6 @@
 // -*- coding: utf-8 -*-
 //
-// This file is part of the Spazio IT Speech-to-Data project.
+// This file is part of the Spazio IT Speech-to-Knowledge project.
 //
 // Copyright (C) 2025 Spazio IT
 // Spazio - IT Soluzioni Informatiche s.a.s.
@@ -8,10 +8,18 @@
 // 46051 San Giorgio Bigarello
 // https://spazioit.com
 //
-// SPDX-License-Identifier: CC-BY-4.0
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
 //
-// Licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0)
-// License. See the LICENSE file in the project root for license terms and conditions.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see https://www.gnu.org/licenses/.
 //
 #include <fstream>
 #include <cstdlib>
@@ -25,6 +33,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <cctype>
 #include <openai.hpp>
 
 using json = nlohmann::json;
@@ -71,14 +80,80 @@ std::string strip_trailing_newlines(std::string text) {
     return text;
 }
 
-std::string escape_for_quotes(const std::string& text) {
-    std::string escaped;
-    escaped.reserve(text.size());
-    for (char c : text) {
-        if (c == '\\' || c == '\"') {
-            escaped.push_back('\\');
+std::string trim_whitespace(std::string text) {
+    const auto begin = text.find_first_not_of(" \t\r\n");
+    if (begin == std::string::npos) {
+        return {};
+    }
+    const auto end = text.find_last_not_of(" \t\r\n");
+    return text.substr(begin, end - begin + 1);
+}
+
+bool starts_with_unused_tag_at(const std::string& text, size_t pos) {
+    constexpr const char* prefix = "<unused";
+    constexpr size_t prefix_len = 7;
+    if (pos + prefix_len >= text.size() || text.compare(pos, prefix_len, prefix) != 0) {
+        return false;
+    }
+    size_t i = pos + prefix_len;
+    while (i < text.size() && std::isdigit(static_cast<unsigned char>(text[i]))) {
+        ++i;
+    }
+    return i < text.size() && text[i] == '>';
+}
+
+std::string strip_internal_reasoning_tags(std::string text) {
+    size_t cursor = 0;
+    while (cursor < text.size()) {
+        size_t tag_pos = text.find("<unused", cursor);
+        if (tag_pos == std::string::npos) {
+            break;
         }
-        escaped.push_back(c);
+        if (!starts_with_unused_tag_at(text, tag_pos)) {
+            cursor = tag_pos + 1;
+            continue;
+        }
+
+        size_t thought_pos = text.find("thought", tag_pos);
+        if (thought_pos == std::string::npos || thought_pos > tag_pos + 48) {
+            cursor = tag_pos + 1;
+            continue;
+        }
+
+        const size_t next_tag = text.find("<unused", thought_pos);
+        if (next_tag == std::string::npos || !starts_with_unused_tag_at(text, next_tag)) {
+            text.erase(tag_pos);
+            break;
+        }
+
+        text.erase(tag_pos, next_tag - tag_pos);
+        cursor = tag_pos;
+    }
+
+    while (true) {
+        size_t tag_pos = text.find("<unused");
+        if (tag_pos == std::string::npos || !starts_with_unused_tag_at(text, tag_pos)) {
+            break;
+        }
+        size_t end = text.find('>', tag_pos);
+        if (end == std::string::npos) {
+            break;
+        }
+        text.erase(tag_pos, (end - tag_pos) + 1);
+    }
+
+    return trim_whitespace(text);
+}
+
+std::string escape_for_single_quotes(const std::string& text) {
+    std::string escaped;
+    escaped.reserve(text.size() * 2);
+    for (char c : text) {
+        if (c == '\'') {
+            escaped += "'\\''";
+        } else {
+            escaped.push_back(c);
+        }
     }
     return escaped;
 }
@@ -91,8 +166,8 @@ void speak_text(const std::string& text) {
 
     trimmed = "Announciator: " + trimmed;
 
-    const std::string escaped = escape_for_quotes(trimmed);
-    const std::string cmd = TTS_COMMAND + " \"" + escaped + "\" >/dev/null 2>&1 &";
+    const std::string escaped = escape_for_single_quotes(trimmed);
+    const std::string cmd = TTS_COMMAND + " '" + escaped + "' >/dev/null 2>&1 &";
 
     std::lock_guard<std::mutex> lock(tts_mutex);
     std::system(cmd.c_str());
@@ -228,18 +303,35 @@ std::string extract_message_content(const json& response) {
     }
 
     if (content_it->is_string()) {
-        return content_it->get<std::string>();
+        return trim_whitespace(content_it->get<std::string>());
     }
 
     if (content_it->is_array()) {
         std::string combined;
         for (const auto& part : *content_it) {
+            std::string part_text;
+            if (part.is_string()) {
+                part_text = part.get<std::string>();
+            } else if (part.is_object()) {
+                const auto text_it = part.find("text");
+                if (text_it != part.end() && text_it->is_string()) {
+                    part_text = text_it->get<std::string>();
+                } else {
+                    const auto content_it2 = part.find("content");
+                    if (content_it2 != part.end() && content_it2->is_string()) {
+                        part_text = content_it2->get<std::string>();
+                    }
+                }
+            }
+            if (part_text.empty()) {
+                continue;
+            }
             if (!combined.empty()) {
                 combined.push_back('\n');
             }
-            combined += part.is_string() ? part.get<std::string>() : part.dump();
+            combined += part_text;
         }
-        return combined;
+        return trim_whitespace(combined);
     }
 
     return {};
@@ -290,7 +382,7 @@ void analyze_text(const std::string& text) {
         }
 
         auto chat = openai::chat().create(body);
-        response_string = extract_message_content(chat);
+        response_string = strip_internal_reasoning_tags(extract_message_content(chat));
         if (response_string.empty()) {
             file << "\n[WARN] No textual content found in primary response. Full payload:\n"
                  << chat.dump(2) << "\n";
@@ -310,14 +402,14 @@ void analyze_text(const std::string& text) {
                 {"model", MODEL_NAME},
                 {"messages", {
                     {{"role", "system"}, {"content", "You are a helpful assistant."}},
-                    {{"role", "user"}, {"content", "Provide a concise summary of the following text, Keep it short and informative.\n" + response_string + "\n\n"}}
+                    {{"role", "user"}, {"content", "Provide only a concise summary (max 3 short sentences) of the following text. Do not include internal reasoning, tags, or analysis steps.\n" + response_string + "\n\n"}}
                 }},
                 {"stream", false},
                 {"enable_websearch", false}
             };
 
             auto summary_chat = openai::chat().create(summary_body);
-            const std::string summary_string = extract_message_content(summary_chat);
+            const std::string summary_string = strip_internal_reasoning_tags(extract_message_content(summary_chat));
             if (summary_string.empty()) {
                 file << "\n[WARN] No textual summary returned. Full payload:\n"
                      << summary_chat.dump(2) << "\n";
