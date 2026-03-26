@@ -1,4 +1,5 @@
 // -*- coding: utf-8 -*-
+// SPDX-License-Identifier: AGPL-3.0-or-later
 //
 // This file is part of the Spazio IT Speech-to-Data project.
 //

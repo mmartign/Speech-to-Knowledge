@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+
 🚀 **Real-Time Medical Speech-to-Knowledge Pipeline**
 
 <img width="736" height="351" alt="Speech-to-Knowledge-Architecture drawio" src="https://github.com/user-attachments/assets/3f658388-d68f-479d-ba20-e76149c4391c" />
@@ -106,8 +108,8 @@ This C++ rewrite significantly enhances real-time transcription performance over
 + 15ms median latency (vs 210ms in Python
 
 📄 **License**
-This project is released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
-You are free to share and adapt this work under the terms of CC BY 4.0, with appropriate attribution.
+This project is released under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later).
+You are free to use, modify, and redistribute this software under the terms of the AGPL.
 See the [LICENSE](LICENSE) file for the full text.
 
 ## Contacts
