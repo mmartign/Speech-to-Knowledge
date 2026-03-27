@@ -71,7 +71,9 @@ namespace Constants {
     constexpr double ENERGY_THRESHOLD_MULTIPLIER = 2.5;
     constexpr double ADAPTIVE_NOISE_ALPHA = 0.05;        // smoothing factor for silence RMS
     constexpr double ADAPTIVE_THRESHOLD_STEP_FRACTION = 0.05; // max fraction change per tick
+    constexpr double ADAPTIVE_UPDATE_MAX_RMS_FRACTION = 0.35; // ignore likely speech while updating noise floor
     constexpr int ADAPTIVE_THRESHOLD_MIN = 200;          // don't drop below this amplitude
+    constexpr double VAD_PRE_ROLL_SECONDS = 0.30;        // preserve leading audio before speech is detected
     constexpr int WHISPER_MAX_THREADS = 4;
     constexpr int MAIN_LOOP_TIMEOUT_MS = 250;
     constexpr double PHRASE_TIMEOUT_MULTIPLIER = 1.5;
@@ -157,6 +159,8 @@ struct Args {
     std::string whisper_model_path;
     bool list_microphones = false;
     std::string audio_file_path;
+    double vad_pre_roll = Constants::VAD_PRE_ROLL_SECONDS;
+    double adaptive_silence_fraction = 0.2;
     std::chrono::system_clock::time_point encoded_start{};
     bool has_encoded_start = false;
 };
@@ -176,6 +180,7 @@ public:
     virtual void setEnergyThreshold(int threshold) = 0;
     virtual int getEnergyThreshold() const = 0;
     virtual void setAdaptiveEnergyEnabled(bool enabled) = 0;
+    virtual void setVadPreRollSeconds(double seconds) = 0;
     virtual void setPreferredDeviceName(const std::string& name) = 0;
 
     static std::vector<std::string> listMicrophoneNames();
@@ -205,14 +210,17 @@ private:
 
     size_t max_buffer_samples_ = 0;
     size_t max_silence_chunks_ = 0;
+    size_t max_pre_roll_chunks_ = 0;
 
     std::atomic<bool> bypass_vad_{false};
     std::atomic<bool> adaptive_energy_enabled_{false};
+    std::atomic<double> vad_pre_roll_seconds_{Constants::VAD_PRE_ROLL_SECONDS};
     std::atomic<double> silence_rms_ema_{0.0};
     std::atomic<bool> silence_floor_initialized_{false};
 
     // VAD state
     std::vector<int16_t> vad_buffer;
+    std::deque<std::vector<int16_t>> pre_roll_chunks_;
     std::mutex vad_buffer_mutex;
     size_t consecutive_silence_chunks_ = 0;
 
@@ -329,6 +337,14 @@ private:
             return;
         }
 
+        int current = getEnergyThreshold();
+        double max_rms_for_noise_update =
+            static_cast<double>(current) * Constants::ADAPTIVE_UPDATE_MAX_RMS_FRACTION;
+        if (rms > max_rms_for_noise_update) {
+            // Likely speech or transient foreground audio: do not teach adaptive floor.
+            return;
+        }
+
         if (!silence_floor_initialized_.load(std::memory_order_acquire)) {
             silence_rms_ema_.store(rms, std::memory_order_release);
             silence_floor_initialized_.store(true, std::memory_order_release);
@@ -346,7 +362,6 @@ private:
             desired = static_cast<double>(Constants::ADAPTIVE_THRESHOLD_MIN);
         }
 
-        int current = getEnergyThreshold();
         int base    = base_energy_threshold_.load(std::memory_order_relaxed);
 
         // Never allow adaptive threshold to exceed the initial calibrated/user value
@@ -393,11 +408,22 @@ private:
         {
             std::lock_guard<std::mutex> lock(vad_buffer_mutex);
             if (is_speech) {
+                if (vad_buffer.empty() && !pre_roll_chunks_.empty()) {
+                    for (const auto& chunk : pre_roll_chunks_) {
+                        vad_buffer.insert(vad_buffer.end(), chunk.begin(), chunk.end());
+                    }
+                    pre_roll_chunks_.clear();
+                }
                 consecutive_silence_chunks_ = 0;
                 vad_buffer.insert(vad_buffer.end(), current_chunk.begin(), current_chunk.end());
             } else if (!vad_buffer.empty()) {
                 consecutive_silence_chunks_++;
                 vad_buffer.insert(vad_buffer.end(), current_chunk.begin(), current_chunk.end());
+            } else {
+                pre_roll_chunks_.push_back(current_chunk);
+                while (pre_roll_chunks_.size() > max_pre_roll_chunks_) {
+                    pre_roll_chunks_.pop_front();
+                }
             }
 
             if (!vad_buffer.empty() &&
@@ -451,7 +477,13 @@ public:
         max_buffer_samples_ = static_cast<size_t>(sampleRate_ * recordTimeout_);
         max_silence_chunks_ = static_cast<size_t>(
             std::ceil(phraseTimeout_ * sampleRate_ / Constants::FRAMES_PER_BUFFER));
+        max_pre_roll_chunks_ = std::max<size_t>(
+            1,
+            static_cast<size_t>(std::ceil(
+                vad_pre_roll_seconds_.load(std::memory_order_relaxed) *
+                sampleRate_ / Constants::FRAMES_PER_BUFFER)));
         consecutive_silence_chunks_ = 0;
+        pre_roll_chunks_.clear();
 
         // Prepare scratch
         scratch_.resize(Constants::FRAMES_PER_BUFFER);
@@ -492,6 +524,7 @@ public:
             stream.close();
             std::lock_guard<std::mutex> lock(vad_buffer_mutex);
             vad_buffer.clear();
+            pre_roll_chunks_.clear();
             consecutive_silence_chunks_ = 0;
         }
     }
@@ -611,6 +644,13 @@ public:
                        Constants::ENERGY_THRESHOLD_MULTIPLIER;
         }
         prime_noise_floor_estimate(estimate);
+    }
+
+    void setVadPreRollSeconds(double seconds) override {
+        if (seconds < 0.0) {
+            seconds = 0.0;
+        }
+        vad_pre_roll_seconds_.store(seconds, std::memory_order_relaxed);
     }
 
     // For tests / status
@@ -793,7 +833,8 @@ Args parse_arguments(int argc, char* argv[]) {
         "--model", "--non_english", "--energy_threshold", "--record_timeout",
         "--phrase_timeout", "--language", "--pipe", "--default_microphone",
         "--whisper_model_path", "--help", "-h", "--timestamp", "--list_microphones",
-        "--adaptive_energy", "--audio_file", "--encoded_start"
+        "--adaptive_energy", "--audio_file", "--encoded_start",
+        "--vad_pre_roll", "--adaptive_silence_fraction"
     };
 
     for (int i = 1; i < argc; ++i) {
@@ -845,6 +886,28 @@ Args parse_arguments(int argc, char* argv[]) {
             args.timestamp = true;
         } else if (arg == "--adaptive_energy") {
             args.adaptive_energy = true;
+        } else if (arg == "--vad_pre_roll" && i + 1 < argc) {
+            try {
+                args.vad_pre_roll = std::stod(argv[++i]);
+                if (args.vad_pre_roll < 0.0 || args.vad_pre_roll > 2.0) {
+                    std::cerr << "Error: vad_pre_roll must be in [0.0, 2.0] seconds" << std::endl;
+                    std::exit(1);
+                }
+            } catch (const std::exception&) {
+                std::cerr << "Error: Invalid vad_pre_roll value" << std::endl;
+                std::exit(1);
+            }
+        } else if (arg == "--adaptive_silence_fraction" && i + 1 < argc) {
+            try {
+                args.adaptive_silence_fraction = std::stod(argv[++i]);
+                if (args.adaptive_silence_fraction <= 0.0 || args.adaptive_silence_fraction >= 1.0) {
+                    std::cerr << "Error: adaptive_silence_fraction must be in (0.0, 1.0)" << std::endl;
+                    std::exit(1);
+                }
+            } catch (const std::exception&) {
+                std::cerr << "Error: Invalid adaptive_silence_fraction value" << std::endl;
+                std::exit(1);
+            }
         } else if (arg == "--default_microphone" && i + 1 < argc) {
             args.default_microphone = argv[++i];
         } else if (arg == "--whisper_model_path" && i + 1 < argc) {
@@ -875,6 +938,8 @@ Args parse_arguments(int argc, char* argv[]) {
                       << "  --non_english             Don't use the English-specific model variant.\n"
                       << "  --energy_threshold <int>  Energy level for mic to detect. Default: auto-adjust\n"
                       << "  --adaptive_energy         Continuously adapt the energy threshold based on silence.\n"
+                      << "  --vad_pre_roll <float>    Seconds of pre-speech audio kept before VAD trigger. Default: 0.30\n"
+                      << "  --adaptive_silence_fraction <float>  Silence RMS fraction for adaptive mode skip filter. Default: 0.20\n"
                       << "  --record_timeout <float>  Max duration for audio chunks (seconds). Default: 2.0\n"
                       << "  --phrase_timeout <float>  Silence duration to end a phrase (seconds). Default: 3.0\n"
                       << "  --language <lang>         Language (de, en, es, fr, he, it, sv). Default: en\n"
@@ -1082,7 +1147,9 @@ void list_and_exit() {
 
 // Simple RMS-based silence detector on int16 chunks.
 // We compare the RMS against a fraction of the current energy threshold.
-bool is_silent_chunk(const std::vector<int16_t>& samples, int energy_threshold) {
+bool is_silent_chunk(const std::vector<int16_t>& samples,
+                     int energy_threshold,
+                     long double threshold_fraction) {
     if (samples.empty()) {
         return true;
     }
@@ -1097,8 +1164,7 @@ bool is_silent_chunk(const std::vector<int16_t>& samples, int energy_threshold) 
 
     // Energy threshold is an amplitude; here we treat as "no speech"
     // anything well below it. The factor (e.g. 0.5L) is tunable.
-    const long double kFraction = 0.5L;
-    long double min_rms = static_cast<long double>(energy_threshold) * kFraction;
+    long double min_rms = static_cast<long double>(energy_threshold) * threshold_fraction;
 
     return rms < min_rms;
 }
@@ -1245,9 +1311,12 @@ int main(int argc, char* argv[]) {
         }
 
         recorder->setAdaptiveEnergyEnabled(args.adaptive_energy);
+        recorder->setVadPreRollSeconds(args.vad_pre_roll);
         if (args.adaptive_energy) {
             std::cout << "Adaptive energy threshold enabled (EMA over silence)." << std::endl;
+            std::cout << "Adaptive silence fraction: " << args.adaptive_silence_fraction << std::endl;
         }
+        std::cout << "VAD pre-roll seconds: " << args.vad_pre_roll << std::endl;
 
         // Start continuous recording
         auto record_callback = [&](const std::vector<int16_t>& audio_data) {
@@ -1335,7 +1404,9 @@ int main(int argc, char* argv[]) {
             if (!audio_data.empty()) {
                 // Skip near-silent chunks to avoid Whisper hallucinating "Thank you" etc. ---
                 int current_energy_threshold = recorder->getEnergyThreshold();
-                if (is_silent_chunk(audio_data, current_energy_threshold)) {
+                long double silent_fraction =
+                    args.adaptive_energy ? static_cast<long double>(args.adaptive_silence_fraction) : 0.5L;
+                if (is_silent_chunk(audio_data, current_energy_threshold, silent_fraction)) {
                     // Treat as no speech: do not update phrase timing and do not send to Whisper.
                     // This prevents low-energy/no-speech buffers from producing fake text.
                     // (phrase_complete logic above still works off the last real speech.)
