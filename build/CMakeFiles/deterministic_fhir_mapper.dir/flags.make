@@ -4,7 +4,7 @@
 # compile CXX with /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/Users/mmartign/Speech-to-Knowledge/../openai-cpp/include/openai -isystem /opt/local/include
+CXX_INCLUDES = -I/usr/local/include
 
 CXX_FLAGS = -std=c++20 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk
 

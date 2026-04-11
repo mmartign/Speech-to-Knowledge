@@ -142,6 +142,19 @@ transcribe_audio/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/transcribe_audio.dir/build.make CMakeFiles/transcribe_audio.dir/build
 .PHONY : transcribe_audio/fast
 
+#=============================================================================
+# Target rules for targets named deterministic_fhir_mapper
+
+# Build rule for target.
+deterministic_fhir_mapper: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 deterministic_fhir_mapper
+.PHONY : deterministic_fhir_mapper
+
+# fast build rule for target.
+deterministic_fhir_mapper/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/build
+.PHONY : deterministic_fhir_mapper/fast
+
 analyze_text.o: analyze_text.cpp.o
 .PHONY : analyze_text.o
 
@@ -165,6 +178,30 @@ analyze_text.s: analyze_text.cpp.s
 analyze_text.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/analyze_text.dir/build.make CMakeFiles/analyze_text.dir/analyze_text.cpp.s
 .PHONY : analyze_text.cpp.s
+
+deterministic_fhir_mapper.o: deterministic_fhir_mapper.cpp.o
+.PHONY : deterministic_fhir_mapper.o
+
+# target to build an object file
+deterministic_fhir_mapper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/deterministic_fhir_mapper.cpp.o
+.PHONY : deterministic_fhir_mapper.cpp.o
+
+deterministic_fhir_mapper.i: deterministic_fhir_mapper.cpp.i
+.PHONY : deterministic_fhir_mapper.i
+
+# target to preprocess a source file
+deterministic_fhir_mapper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/deterministic_fhir_mapper.cpp.i
+.PHONY : deterministic_fhir_mapper.cpp.i
+
+deterministic_fhir_mapper.s: deterministic_fhir_mapper.cpp.s
+.PHONY : deterministic_fhir_mapper.s
+
+# target to generate assembly for a file
+deterministic_fhir_mapper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/deterministic_fhir_mapper.cpp.s
+.PHONY : deterministic_fhir_mapper.cpp.s
 
 transcribe_audio.o: transcribe_audio.cpp.o
 .PHONY : transcribe_audio.o
@@ -199,10 +236,14 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... analyze_text"
+	@echo "... deterministic_fhir_mapper"
 	@echo "... transcribe_audio"
 	@echo "... analyze_text.o"
 	@echo "... analyze_text.i"
 	@echo "... analyze_text.s"
+	@echo "... deterministic_fhir_mapper.o"
+	@echo "... deterministic_fhir_mapper.i"
+	@echo "... deterministic_fhir_mapper.s"
 	@echo "... transcribe_audio.o"
 	@echo "... transcribe_audio.i"
 	@echo "... transcribe_audio.s"

@@ -6,7 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/opt/local/include -I/Users/mmartign/Speech-to-Knowledge/../whisper.cpp/include -I/Users/mmartign/Speech-to-Knowledge/../whisper.cpp/ggml/include
 
-CXX_FLAGSarm64 = -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk
-
-CXX_FLAGS = -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk
+CXX_FLAGS = -std=c++20 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk
 

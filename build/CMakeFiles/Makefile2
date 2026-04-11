@@ -65,11 +65,13 @@ CMAKE_BINARY_DIR = /Users/mmartign/Speech-to-Knowledge/build
 # The main recursive "all" target.
 all: CMakeFiles/analyze_text.dir/all
 all: CMakeFiles/transcribe_audio.dir/all
+all: CMakeFiles/deterministic_fhir_mapper.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
 codegen: CMakeFiles/analyze_text.dir/codegen
 codegen: CMakeFiles/transcribe_audio.dir/codegen
+codegen: CMakeFiles/deterministic_fhir_mapper.dir/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
@@ -79,6 +81,7 @@ preinstall:
 # The main recursive "clean" target.
 clean: CMakeFiles/analyze_text.dir/clean
 clean: CMakeFiles/transcribe_audio.dir/clean
+clean: CMakeFiles/deterministic_fhir_mapper.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -120,7 +123,7 @@ CMakeFiles/analyze_text.dir/clean:
 CMakeFiles/transcribe_audio.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/transcribe_audio.dir/build.make CMakeFiles/transcribe_audio.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/transcribe_audio.dir/build.make CMakeFiles/transcribe_audio.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mmartign/Speech-to-Knowledge/build/CMakeFiles --progress-num=3,4 "Built target transcribe_audio"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mmartign/Speech-to-Knowledge/build/CMakeFiles --progress-num=5,6 "Built target transcribe_audio"
 .PHONY : CMakeFiles/transcribe_audio.dir/all
 
 # Build rule for subdir invocation for target.
@@ -137,13 +140,45 @@ transcribe_audio: CMakeFiles/transcribe_audio.dir/rule
 # codegen rule for target.
 CMakeFiles/transcribe_audio.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/transcribe_audio.dir/build.make CMakeFiles/transcribe_audio.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mmartign/Speech-to-Knowledge/build/CMakeFiles --progress-num=3,4 "Finished codegen for target transcribe_audio"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mmartign/Speech-to-Knowledge/build/CMakeFiles --progress-num=5,6 "Finished codegen for target transcribe_audio"
 .PHONY : CMakeFiles/transcribe_audio.dir/codegen
 
 # clean rule for target.
 CMakeFiles/transcribe_audio.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/transcribe_audio.dir/build.make CMakeFiles/transcribe_audio.dir/clean
 .PHONY : CMakeFiles/transcribe_audio.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/deterministic_fhir_mapper.dir
+
+# All Build rule for target.
+CMakeFiles/deterministic_fhir_mapper.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mmartign/Speech-to-Knowledge/build/CMakeFiles --progress-num=3,4 "Built target deterministic_fhir_mapper"
+.PHONY : CMakeFiles/deterministic_fhir_mapper.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/deterministic_fhir_mapper.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mmartign/Speech-to-Knowledge/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/deterministic_fhir_mapper.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mmartign/Speech-to-Knowledge/build/CMakeFiles 0
+.PHONY : CMakeFiles/deterministic_fhir_mapper.dir/rule
+
+# Convenience name for target.
+deterministic_fhir_mapper: CMakeFiles/deterministic_fhir_mapper.dir/rule
+.PHONY : deterministic_fhir_mapper
+
+# codegen rule for target.
+CMakeFiles/deterministic_fhir_mapper.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mmartign/Speech-to-Knowledge/build/CMakeFiles --progress-num=3,4 "Finished codegen for target deterministic_fhir_mapper"
+.PHONY : CMakeFiles/deterministic_fhir_mapper.dir/codegen
+
+# clean rule for target.
+CMakeFiles/deterministic_fhir_mapper.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deterministic_fhir_mapper.dir/build.make CMakeFiles/deterministic_fhir_mapper.dir/clean
+.PHONY : CMakeFiles/deterministic_fhir_mapper.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

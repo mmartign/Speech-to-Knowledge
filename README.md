@@ -107,6 +107,32 @@ This C++ rewrite significantly enhances real-time transcription performance over
 + 40% lower memory usage
 + 15ms median latency (vs 210ms in Python
 
+## Build Chain (CMake)
+
+The CMake build now includes the deterministic FHIR post-processor:
+
+1. `transcribe_audio.exe` for real-time speech-to-text.
+2. `analyze_text.exe` for AI contextual analysis and extraction.
+3. `deterministic_fhir_mapper.exe` for deterministic normalization/repair of extracted FHIR resources.
+
+Build:
+
+```bash
+cmake -S . -B build
+cmake --build build -j
+```
+
+Run deterministic mapper:
+
+```bash
+./build/deterministic_fhir_mapper.exe input_bundle.json output_bundle.json
+```
+
+The mapper emits:
+- `acceptedBundle` (transaction-ready normalized resources)
+- `rejectedBundle` (resources requiring manual review)
+- `issues` and `outcome` (traceable QA diagnostics)
+
 📄 **License**
 This project is released under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later).
 You are free to use, modify, and redistribute this software under the terms of the AGPL.

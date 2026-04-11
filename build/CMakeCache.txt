@@ -210,6 +210,9 @@ CURL_LIBRARY_DEBUG:FILEPATH=CURL_LIBRARY_DEBUG-NOTFOUND
 //Path to a library.
 CURL_LIBRARY_RELEASE:FILEPATH=/opt/local/lib/libcurl.dylib
 
+//Path to a file.
+NLOHMANN_JSON_INCLUDE_DIR:PATH=/usr/local/include
+
 //Path to openai-cpp repository
 OPENAI_CPP_ROOT:PATH=/Users/mmartign/Speech-to-Knowledge/../openai-cpp
 

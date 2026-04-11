@@ -17,6 +17,13 @@ set(WHISPER_LIBRARY "${WHISPER_CPP_ROOT}/build/src/libwhisper.dylib" CACHE FILEP
 option(BUILD_TRANSCRIBE_AUDIO_ADAPTIVE "Build transcribe_audio_adaptive_energy executable" OFF)
 
 find_package(CURL REQUIRED)
+find_path(NLOHMANN_JSON_INCLUDE_DIR
+    NAMES nlohmann/json.hpp
+    HINTS
+        "/usr/local/include"
+        "/opt/homebrew/include"
+        "${PORTAUDIO_ROOT}/include"
+)
 
 find_library(PORTAUDIO_LIBRARY
     NAMES portaudio
@@ -25,6 +32,10 @@ find_library(PORTAUDIO_LIBRARY
 
 if(NOT PORTAUDIO_LIBRARY)
     message(FATAL_ERROR "PortAudio library not found. Set PORTAUDIO_ROOT or PORTAUDIO_LIBRARY.")
+endif()
+
+if(NOT NLOHMANN_JSON_INCLUDE_DIR)
+    message(FATAL_ERROR "nlohmann/json.hpp not found. Install nlohmann-json and/or set NLOHMANN_JSON_INCLUDE_DIR.")
 endif()
 
 if(NOT EXISTS "${WHISPER_LIBRARY}")
@@ -62,6 +73,13 @@ target_link_libraries(transcribe_audio PRIVATE
 set_target_properties(transcribe_audio PROPERTIES
     BUILD_RPATH "/usr/local/lib"
     INSTALL_RPATH "/usr/local/lib"
+)
+
+add_executable(deterministic_fhir_mapper deterministic_fhir_mapper.cpp)
+set_target_properties(deterministic_fhir_mapper PROPERTIES OUTPUT_NAME "deterministic_fhir_mapper.exe")
+
+target_include_directories(deterministic_fhir_mapper PRIVATE
+    "${NLOHMANN_JSON_INCLUDE_DIR}"
 )
 
 if(BUILD_TRANSCRIBE_AUDIO_ADAPTIVE)
