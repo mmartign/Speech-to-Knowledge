@@ -92,15 +92,38 @@ std::string ltrim_copy(std::string s) {
     return s.substr(first);
 }
 
-std::string strip_inline_double_slash_comment(const std::string& line) {
+std::string strip_json_like_comments(const std::string& input) {
     std::string out;
-    out.reserve(line.size());
+    out.reserve(input.size());
 
     bool in_string = false;
     bool escaped = false;
+    bool in_line_comment = false;
+    bool in_block_comment = false;
 
-    for (size_t i = 0; i < line.size(); ++i) {
-        const char c = line[i];
+    for (size_t i = 0; i < input.size(); ++i) {
+        const char c = input[i];
+        const char next = (i + 1 < input.size()) ? input[i + 1] : '\0';
+
+        if (in_line_comment) {
+            if (c == '\n') {
+                in_line_comment = false;
+                out.push_back(c);
+            }
+            continue;
+        }
+
+        if (in_block_comment) {
+            if (c == '*' && next == '/') {
+                in_block_comment = false;
+                ++i;
+                continue;
+            }
+            if (c == '\n') {
+                out.push_back(c);
+            }
+            continue;
+        }
 
         if (in_string) {
             out.push_back(c);
@@ -120,8 +143,16 @@ std::string strip_inline_double_slash_comment(const std::string& line) {
             continue;
         }
 
-        if (c == '/' && (i + 1) < line.size() && line[i + 1] == '/') {
-            break;
+        if (c == '/' && next == '/') {
+            in_line_comment = true;
+            ++i;
+            continue;
+        }
+
+        if (c == '/' && next == '*') {
+            in_block_comment = true;
+            ++i;
+            continue;
         }
 
         out.push_back(c);
@@ -762,15 +793,19 @@ int main(int argc, char** argv) {
             return 1;
         }
 
+        std::ostringstream raw_json;
+        raw_json << in.rdbuf();
+        const std::string no_comments = strip_json_like_comments(raw_json.str());
+
         std::ostringstream cleaned_json;
+        std::istringstream no_comments_stream(no_comments);
         std::string line;
-        while (std::getline(in, line)) {
-            const std::string no_comment = strip_inline_double_slash_comment(line);
-            const std::string trimmed = ltrim_copy(no_comment);
+        while (std::getline(no_comments_stream, line)) {
+            const std::string trimmed = ltrim_copy(line);
             if (trimmed.empty()) {
                 continue;
             }
-            cleaned_json << no_comment << '\n';
+            cleaned_json << line << '\n';
         }
 
         json input;

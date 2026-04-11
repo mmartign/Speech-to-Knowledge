@@ -93,6 +93,75 @@ std::string trim_whitespace(std::string text) {
     return text.substr(begin, end - begin + 1);
 }
 
+std::string strip_json_like_comments(const std::string& input) {
+    std::string out;
+    out.reserve(input.size());
+
+    bool in_string = false;
+    bool escaped = false;
+    bool in_line_comment = false;
+    bool in_block_comment = false;
+
+    for (size_t i = 0; i < input.size(); ++i) {
+        const char c = input[i];
+        const char next = (i + 1 < input.size()) ? input[i + 1] : '\0';
+
+        if (in_line_comment) {
+            if (c == '\n') {
+                in_line_comment = false;
+                out.push_back(c);
+            }
+            continue;
+        }
+
+        if (in_block_comment) {
+            if (c == '*' && next == '/') {
+                in_block_comment = false;
+                ++i;
+                continue;
+            }
+            if (c == '\n') {
+                out.push_back(c);
+            }
+            continue;
+        }
+
+        if (in_string) {
+            out.push_back(c);
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '"') {
+                in_string = false;
+            }
+            continue;
+        }
+
+        if (c == '"') {
+            in_string = true;
+            out.push_back(c);
+            continue;
+        }
+
+        if (c == '/' && next == '/') {
+            in_line_comment = true;
+            ++i;
+            continue;
+        }
+
+        if (c == '/' && next == '*') {
+            in_block_comment = true;
+            ++i;
+            continue;
+        }
+
+        out.push_back(c);
+    }
+
+    return out;
+}
+
 bool starts_with_unused_tag_at(const std::string& text, size_t pos) {
     constexpr const char* prefix = "<unused";
     constexpr size_t prefix_len = 7;
@@ -219,7 +288,12 @@ bool extract_fhir_bundle_from_text(const std::string& text, json& bundle, size_t
                 if (depth == 0) {
                     const std::string candidate = text.substr(i, j - i + 1);
                     try {
-                        json parsed = json::parse(candidate);
+                        json parsed;
+                        try {
+                            parsed = json::parse(candidate);
+                        } catch (...) {
+                            parsed = json::parse(strip_json_like_comments(candidate));
+                        }
                         if (is_fhir_bundle_object(parsed)) {
                             bundle = std::move(parsed);
                             start_pos = i;
