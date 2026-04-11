@@ -84,6 +84,52 @@ std::string lower(std::string s) {
     return s;
 }
 
+std::string ltrim_copy(std::string s) {
+    const auto first = s.find_first_not_of(" \t\r\n");
+    if (first == std::string::npos) {
+        return "";
+    }
+    return s.substr(first);
+}
+
+std::string strip_inline_double_slash_comment(const std::string& line) {
+    std::string out;
+    out.reserve(line.size());
+
+    bool in_string = false;
+    bool escaped = false;
+
+    for (size_t i = 0; i < line.size(); ++i) {
+        const char c = line[i];
+
+        if (in_string) {
+            out.push_back(c);
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '"') {
+                in_string = false;
+            }
+            continue;
+        }
+
+        if (c == '"') {
+            in_string = true;
+            out.push_back(c);
+            continue;
+        }
+
+        if (c == '/' && (i + 1) < line.size() && line[i + 1] == '/') {
+            break;
+        }
+
+        out.push_back(c);
+    }
+
+    return out;
+}
+
 bool nearlyEqual(double a, double b, double eps = 1e-9) {
     return std::fabs(a - b) < eps;
 }
@@ -560,10 +606,11 @@ json buildOperationOutcome(const std::vector<MapperIssue>& issues) {
     return outcome;
 }
 
-json mapBundle(const json& input) {
+json mapBundle(const json& input, const std::string& modelName) {
     MapperContext ctx;
     ctx.terminologyOverrides["8480-6"] = Coding{"http://loinc.org", "8480-6", "Systolic blood pressure"};
     ctx.terminologyOverrides["8462-4"] = Coding{"http://loinc.org", "8462-4", "Diastolic blood pressure"};
+    ctx.modelName = modelName;
 
     json accepted = {
         {"resourceType", "Bundle"},
@@ -670,26 +717,72 @@ json mapBundle(const json& input) {
 
 int main(int argc, char** argv) {
     try {
-        if (argc < 2 || argc > 3) {
-            std::cerr << "Usage: " << argv[0] << " <input.json> [output.json]\n";
+        if (argc < 4 || argc > 5) {
+            std::cerr << "Usage: " << argv[0] << " <input.json> [output.json] --model-name <name>\n";
             return 1;
         }
 
-        std::ifstream in(argv[1]);
-        if (!in) {
-            std::cerr << "Failed to open input file: " << argv[1] << "\n";
+        std::string inputPath;
+        std::string outputPath;
+        std::string modelName;
+
+        for (int i = 1; i < argc; ++i) {
+            const std::string arg = argv[i];
+            if (arg == "--model-name") {
+                if (i + 1 >= argc) {
+                    std::cerr << "Error: --model-name requires a value.\n";
+                    return 1;
+                }
+                modelName = argv[++i];
+                continue;
+            }
+
+            if (inputPath.empty()) {
+                inputPath = arg;
+            } else if (outputPath.empty()) {
+                outputPath = arg;
+            } else {
+                std::cerr << "Error: unexpected argument: " << arg << "\n";
+                return 1;
+            }
+        }
+
+        if (inputPath.empty()) {
+            std::cerr << "Error: missing input file path.\n";
             return 1;
+        }
+        if (modelName.empty()) {
+            std::cerr << "Error: missing required --model-name argument.\n";
+            return 1;
+        }
+
+        std::ifstream in(inputPath);
+        if (!in) {
+            std::cerr << "Failed to open input file: " << inputPath << "\n";
+            return 1;
+        }
+
+        std::ostringstream cleaned_json;
+        std::string line;
+        while (std::getline(in, line)) {
+            const std::string no_comment = strip_inline_double_slash_comment(line);
+            const std::string trimmed = ltrim_copy(no_comment);
+            if (trimmed.empty()) {
+                continue;
+            }
+            cleaned_json << no_comment << '\n';
         }
 
         json input;
-        in >> input;
+        std::istringstream cleaned_input_stream(cleaned_json.str());
+        cleaned_input_stream >> input;
 
-        json output = mapBundle(input);
+        json output = mapBundle(input, modelName);
 
-        if (argc == 3) {
-            std::ofstream out(argv[2]);
+        if (!outputPath.empty()) {
+            std::ofstream out(outputPath);
             if (!out) {
-                std::cerr << "Failed to open output file: " << argv[2] << "\n";
+                std::cerr << "Failed to open output file: " << outputPath << "\n";
                 return 1;
             }
             out << std::setw(2) << output << "\n";

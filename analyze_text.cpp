@@ -285,7 +285,9 @@ std::string revise_fhir_bundle_in_response(std::string response_text,
     }
 
     const std::string cmd = "./deterministic_fhir_mapper.exe '" + escape_for_single_quotes(input_path) +
-                            "' '" + escape_for_single_quotes(output_path) + "' >/dev/null 2>&1";
+                            "' '" + escape_for_single_quotes(output_path) +
+                            "' --model-name '" + escape_for_single_quotes(MODEL_NAME) +
+                            "' >/dev/null 2>&1";
     const int mapper_rc = std::system(cmd.c_str());
     if (mapper_rc != 0) {
         file << "\n[WARN] deterministic_fhir_mapper returned non-zero status (" << mapper_rc
