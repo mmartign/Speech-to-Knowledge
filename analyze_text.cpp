@@ -32,6 +32,7 @@
 #include <mutex>
 #include <atomic>
 #include <vector>
+#include <cstdio>
 #include <algorithm>
 #include <utility>
 #include <cctype>
@@ -57,6 +58,8 @@ std::atomic<int> temp_counter_value{0};
 std::atomic<int> active_analyses{0};
 std::mutex tts_mutex;
 std::once_flag openai_init_flag;
+
+std::string escape_for_single_quotes(const std::string& text);
 
 class AnalysisSession {
 public:
@@ -144,6 +147,186 @@ std::string strip_internal_reasoning_tags(std::string text) {
     }
 
     return trim_whitespace(text);
+}
+
+bool is_fhir_bundle_object(const json& candidate) {
+    if (!candidate.is_object()) {
+        return false;
+    }
+    const auto type_it = candidate.find("resourceType");
+    if (type_it == candidate.end() || !type_it->is_string()) {
+        return false;
+    }
+    return type_it->get<std::string>() == "Bundle";
+}
+
+bool extract_fhir_bundle_from_text(const std::string& text, json& bundle, size_t& start_pos, size_t& end_pos) {
+    bool in_string = false;
+    bool escaped = false;
+
+    for (size_t i = 0; i < text.size(); ++i) {
+        const char c = text[i];
+
+        if (in_string) {
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '"') {
+                in_string = false;
+            }
+            continue;
+        }
+
+        if (c == '"') {
+            in_string = true;
+            continue;
+        }
+
+        if (c != '{') {
+            continue;
+        }
+
+        size_t depth = 0;
+        bool local_in_string = false;
+        bool local_escaped = false;
+        bool completed = false;
+
+        for (size_t j = i; j < text.size(); ++j) {
+            const char cj = text[j];
+            if (local_in_string) {
+                if (local_escaped) {
+                    local_escaped = false;
+                } else if (cj == '\\') {
+                    local_escaped = true;
+                } else if (cj == '"') {
+                    local_in_string = false;
+                }
+                continue;
+            }
+
+            if (cj == '"') {
+                local_in_string = true;
+                continue;
+            }
+            if (cj == '{') {
+                ++depth;
+            } else if (cj == '}') {
+                if (depth == 0) {
+                    break;
+                }
+                --depth;
+                if (depth == 0) {
+                    const std::string candidate = text.substr(i, j - i + 1);
+                    try {
+                        json parsed = json::parse(candidate);
+                        if (is_fhir_bundle_object(parsed)) {
+                            bundle = std::move(parsed);
+                            start_pos = i;
+                            end_pos = j + 1;
+                            return true;
+                        }
+                    } catch (...) {
+                        // Keep searching for the next candidate JSON object.
+                    }
+                    completed = true;
+                    break;
+                }
+            }
+        }
+
+        if (!completed) {
+            break;
+        }
+    }
+
+    return false;
+}
+
+bool extract_revised_bundle(const json& mapper_output, json& revised_bundle) {
+    if (is_fhir_bundle_object(mapper_output)) {
+        revised_bundle = mapper_output;
+        return true;
+    }
+
+    const auto accepted_it = mapper_output.find("acceptedBundle");
+    if (accepted_it != mapper_output.end() && is_fhir_bundle_object(*accepted_it)) {
+        revised_bundle = *accepted_it;
+        return true;
+    }
+
+    return false;
+}
+
+std::string revise_fhir_bundle_in_response(std::string response_text,
+                                           const std::string& analysis_label,
+                                           std::ofstream& file) {
+    json detected_bundle;
+    size_t start_pos = 0;
+    size_t end_pos = 0;
+    if (!extract_fhir_bundle_from_text(response_text, detected_bundle, start_pos, end_pos)) {
+        return response_text;
+    }
+
+    const std::string input_path = "tmp_mapper_input_" + analysis_label + ".json";
+    const std::string output_path = "tmp_mapper_output_" + analysis_label + ".json";
+
+    try {
+        std::ofstream input_file(input_path);
+        if (!input_file.is_open()) {
+            file << "\n[WARN] Detected FHIR Bundle but failed to open mapper input file: "
+                 << input_path << "\n";
+            return response_text;
+        }
+        input_file << detected_bundle.dump(2) << "\n";
+    } catch (const std::exception& e) {
+        file << "\n[WARN] Failed to write mapper input bundle: " << e.what() << "\n";
+        return response_text;
+    }
+
+    const std::string cmd = "./deterministic_fhir_mapper.exe '" + escape_for_single_quotes(input_path) +
+                            "' '" + escape_for_single_quotes(output_path) + "' >/dev/null 2>&1";
+    const int mapper_rc = std::system(cmd.c_str());
+    if (mapper_rc != 0) {
+        file << "\n[WARN] deterministic_fhir_mapper returned non-zero status (" << mapper_rc
+             << "). Keeping original bundle.\n";
+        std::remove(input_path.c_str());
+        std::remove(output_path.c_str());
+        return response_text;
+    }
+
+    try {
+        std::ifstream output_file(output_path);
+        if (!output_file.is_open()) {
+            file << "\n[WARN] Mapper output file not found: " << output_path
+                 << ". Keeping original bundle.\n";
+            std::remove(input_path.c_str());
+            std::remove(output_path.c_str());
+            return response_text;
+        }
+
+        json mapper_output;
+        output_file >> mapper_output;
+
+        json revised_bundle;
+        if (!extract_revised_bundle(mapper_output, revised_bundle)) {
+            file << "\n[WARN] Mapper output did not contain a revised Bundle. Keeping original bundle.\n";
+            std::remove(input_path.c_str());
+            std::remove(output_path.c_str());
+            return response_text;
+        }
+
+        const std::string revised_text = revised_bundle.dump(2);
+        response_text.replace(start_pos, end_pos - start_pos, revised_text);
+        file << "\n[INFO] FHIR Bundle detected and revised by deterministic_fhir_mapper.\n";
+    } catch (const std::exception& e) {
+        file << "\n[WARN] Failed to parse mapper output: " << e.what()
+             << ". Keeping original bundle.\n";
+    }
+
+    std::remove(input_path.c_str());
+    std::remove(output_path.c_str());
+    return response_text;
 }
 
 std::string escape_for_single_quotes(const std::string& text) {
@@ -384,6 +567,7 @@ void analyze_text(const std::string& text) {
 
         auto chat = openai::chat().create(body);
         response_string = strip_internal_reasoning_tags(extract_message_content(chat));
+        response_string = revise_fhir_bundle_in_response(response_string, std::to_string(analysis_id), file);
         if (response_string.empty()) {
             file << "\n[WARN] No textual content found in primary response. Full payload:\n"
                  << chat.dump(2) << "\n";
@@ -477,7 +661,8 @@ void temp_analyze_text(const std::string& text) {
         }
 
         auto chat = openai::chat().create(body);
-        response_string = extract_message_content(chat);
+        response_string = strip_internal_reasoning_tags(extract_message_content(chat));
+        response_string = revise_fhir_bundle_in_response(response_string, "tmp_" + analysis_id_str, file);
         if (response_string.empty()) {
             file << "\n[WARN] No textual content found in temporary response. Full payload:\n"
                  << chat.dump(2) << "\n";
