@@ -57,7 +57,7 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-// === HTTP Helper (libcurl) ===============================================
+// HTTP Helper (libcurl)
 
 namespace Http {
 
@@ -114,7 +114,7 @@ Response get(const std::string& url,
 
 } // namespace Http
 
-// === Disk Cache ===========================================================
+// Disk Cache
 
 class DiskCache {
 public:
@@ -179,7 +179,7 @@ private:
     long long ttl_seconds_;
 };
 
-// === Terminology Client ===================================================
+// Terminology Client
 
 struct ResolvedCoding {
     std::string system;
@@ -460,7 +460,7 @@ std::string url_encode(const std::string& s) {
 }
 } // namespace Http
 
-// === Mapper Logic (v1 structure + terminology integration) ===============
+// Mapper Logic (v1 structure + terminology integration)
 
 namespace {
 
@@ -682,7 +682,7 @@ void applyTerminologyOverride(json& cc, const Coding& coding,
     addIssue(issues, "info", "terminology.override", "Applied deterministic terminology override.", resource);
 }
 
-// === Observation Normalization (with live LOINC lookup) ==================
+// Observation Normalization (with live LOINC lookup)
 void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<MapperIssue>& issues) {
     if (!resource.contains("code")) {
         addIssue(issues, "error", "observation.code.missing", "Observation is missing code.", resource);
@@ -787,7 +787,7 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
     normalizeQuantityIfPresent(resource);
 }
 
-// === Medication Normalization (with RxNorm lookup) =======================
+// Medication Normalization (with RxNorm lookup)
 void enrichMedicationCoding(json& medCC, MapperContext& ctx, std::vector<MapperIssue>& issues,
                               const json& resource) {
     if (!ctx.terminology) return;
@@ -1209,7 +1209,7 @@ json mapBundle(const json& input, const std::string& modelName, TerminologyClien
 
 } // namespace
 
-// === Main (argument parsing) ==============================================
+// Main (argument parsing)
 
 int main(int argc, char** argv) {
     try {
