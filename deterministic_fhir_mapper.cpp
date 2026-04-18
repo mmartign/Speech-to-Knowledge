@@ -1,7 +1,7 @@
-// -*- coding: utf-8 -*-
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// This file is part of the Spazio IT Speech-to-Knowledge project.
+// Project: Spazio IT Speech-to-Knowledge
+// File: deterministic_fhir_mapper.cpp
 //
 // Copyright (C) 2026 Spazio IT
 // Spazio - IT Soluzioni Informatiche s.a.s.
@@ -9,27 +9,27 @@
 // 46051 San Giorgio Bigarello
 // https://spazioit.com
 //
-// Enhanced deterministic_fhir_mapper with live terminology lookup.
+// Summary:
+// Enhanced deterministic FHIR mapper with live terminology lookup.
 //
-// This program extends the original deterministic FHIR mapper with
-//   - TerminologyClient: queries LOINC FHIR R4 API and NLM RxNorm REST API
-//   - Disk-based JSON cache with configurable TTL (default 7 days)
-//   - Graceful offline fallback: original deterministic rules apply when
-//     the network is unreachable or returns an error
-//   - --no-network flag to force offline-only mode (useful in air-gapped
-//     clinical environments)
-//   - --cache-dir <path> to control cache location (default: ./terminology_cache)
-//   - --cache-ttl-days <n> to control cache expiry
+// Features:
+// - TerminologyClient for LOINC FHIR R4 and NLM RxNorm lookups
+// - Disk-based JSON cache with configurable TTL (default: 7 days)
+// - Graceful offline fallback when network calls fail
+// - `--no-network` flag for offline-only operation
+// - `--cache-dir <path>` to configure cache location (default: ./terminology_cache)
+// - `--cache-ttl-days <n>` to configure cache expiration
 //
-// Build dependencies (in addition to v1):
-//   - libcurl (curl/curl.h)
-//   - nlohmann/json (same as v1)
+// Build dependencies:
+// - libcurl (curl/curl.h)
+// - nlohmann/json
 //
 // Example build:
-//   g++ -std=c++17 -O2 -o deterministic_fhir_mapper_v2 \
-//       deterministic_fhir_mapper_v2.cpp \
-//       -lcurl -I/path/to/nlohmann
+// g++ -std=c++17 -O2 -o deterministic_fhir_mapper.exe \
+//     deterministic_fhir_mapper.cpp \
+//     -lcurl -I/path/to/nlohmann
 //
+// License:
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -57,9 +57,7 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-// ============================================================
-// HTTP helper (libcurl)
-// ============================================================
+// === HTTP Helper (libcurl) ===============================================
 
 namespace Http {
 
@@ -116,9 +114,7 @@ Response get(const std::string& url,
 
 } // namespace Http
 
-// ============================================================
-// Disk cache
-// ============================================================
+// === Disk Cache ===========================================================
 
 class DiskCache {
 public:
@@ -183,9 +179,7 @@ private:
     long long ttl_seconds_;
 };
 
-// ============================================================
-// Terminology client
-// ============================================================
+// === Terminology Client ===================================================
 
 struct ResolvedCoding {
     std::string system;
@@ -211,65 +205,27 @@ public:
 
     // Look up a LOINC code. Returns display name if found.
     std::optional<ResolvedCoding> lookupLoinc(const std::string& code) {
-        if (code.empty()) {
-            return std::nullopt;
-        }
+        if (code.empty()) return std::nullopt;
+
         const std::string cache_key = "loinc_" + code;
-
-        // 1. Check disk cache
-        if (auto cached = cache_.get(cache_key); cached.has_value()) {
-            return ResolvedCoding{
-                "http://loinc.org",
-                cached->value("code", code),
-                cached->value("display", ""),
-                false
-            };
+        if (auto cached = readCachedCoding(cache_key, kLoincSystem, code, ""); cached.has_value()) {
+            return cached;
         }
+        if (!cfg_.network_enabled) return std::nullopt;
 
-        if (!cfg_.network_enabled) {
-            return std::nullopt;
-        }
-
-        // 2. Query LOINC FHIR R4 endpoint
-        // Public endpoint: https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=<CODE>
         const std::string url =
             "https://fhir.loinc.org/CodeSystem/$lookup"
             "?system=http%3A%2F%2Floinc.org"
             "&code=" + Http::url_encode(code);
 
-        std::string auth_header;
-        if (!cfg_.loinc_user.empty()) {
-            // Basic auth — base64 encoding omitted here for brevity;
-            // libcurl can handle it natively via CURLOPT_USERPWD
-            auth_header = "Authorization: Basic " + base64(cfg_.loinc_user + ":" + cfg_.loinc_pass);
-        }
+        const auto body = fetchJson(url, "application/fhir+json", loincAuthHeader());
+        if (!body.has_value()) return std::nullopt;
 
-        const auto resp = Http::get(url, "application/fhir+json", auth_header, cfg_.timeout_seconds);
-        if (!resp.ok() || resp.body.empty()) {
-            return std::nullopt;
-        }
+        const std::string display = parseFhirLookupDisplay(*body);
+        if (display.empty()) return std::nullopt;
 
-        try {
-            const json body = json::parse(resp.body);
-            // FHIR Parameters response: parameter[name=="display"].valueString
-            std::string display;
-            if (body.contains("parameter") && body["parameter"].is_array()) {
-                for (const auto& p : body["parameter"]) {
-                    if (p.value("name", "") == "display" && p.contains("valueString")) {
-                        display = p["valueString"].get<std::string>();
-                        break;
-                    }
-                }
-            }
-            if (display.empty()) {
-                return std::nullopt;
-            }
-            // Store to cache
-            cache_.put(cache_key, json{{"code", code}, {"display", display}});
-            return ResolvedCoding{"http://loinc.org", code, display, true};
-        } catch (...) {
-            return std::nullopt;
-        }
+        writeCachedCoding(cache_key, code, display);
+        return ResolvedCoding{kLoincSystem, code, display, true};
     }
 
     // Search LOINC by display text — useful when the LLM produced a label
@@ -277,24 +233,14 @@ public:
     // Uses LOINC FHIR CodeSystem search: /CodeSystem?system=http://loinc.org&_text=<TERM>
     std::optional<ResolvedCoding> searchLoincByDisplay(const std::string& display_text,
                                                         const std::string& unit_hint = "") {
-        if (display_text.empty()) {
-            return std::nullopt;
-        }
+        if (display_text.empty()) return std::nullopt;
 
         // Build a stable cache key from the search term
         const std::string cache_key = "loinc_search_" + lower(display_text) + "_" + lower(unit_hint);
-        if (auto cached = cache_.get(cache_key); cached.has_value()) {
-            return ResolvedCoding{
-                "http://loinc.org",
-                cached->value("code", ""),
-                cached->value("display", display_text),
-                false
-            };
+        if (auto cached = readCachedCoding(cache_key, kLoincSystem, "", display_text); cached.has_value()) {
+            return cached;
         }
-
-        if (!cfg_.network_enabled) {
-            return std::nullopt;
-        }
+        if (!cfg_.network_enabled) return std::nullopt;
 
         // LOINC FHIR search: GET /CodeSystem?system=http://loinc.org&_text=<TERM>&_count=5
         const std::string search_term = display_text + (unit_hint.empty() ? "" : " " + unit_hint);
@@ -304,174 +250,172 @@ public:
             "&_text=" + Http::url_encode(search_term) +
             "&_count=5";
 
-        std::string auth_header;
-        if (!cfg_.loinc_user.empty()) {
-            auth_header = "Authorization: Basic " + base64(cfg_.loinc_user + ":" + cfg_.loinc_pass);
-        }
+        const auto bundle = fetchJson(url, "application/fhir+json", loincAuthHeader());
+        if (!bundle.has_value()) return std::nullopt;
 
-        const auto resp = Http::get(url, "application/fhir+json", auth_header, cfg_.timeout_seconds);
-        if (!resp.ok() || resp.body.empty()) {
-            return std::nullopt;
-        }
+        const auto resolved = parseLoincSearchResult(*bundle, display_text);
+        if (!resolved.has_value()) return std::nullopt;
 
-        try {
-            const json bundle = json::parse(resp.body);
-            if (!bundle.contains("entry") || !bundle["entry"].is_array() || bundle["entry"].empty()) {
-                return std::nullopt;
-            }
-            // Take the first match
-            const auto& first_entry = bundle["entry"][0];
-            if (!first_entry.contains("resource")) {
-                return std::nullopt;
-            }
-            const auto& cs = first_entry["resource"];
-            std::string found_code;
-            std::string found_display;
-            // CodeSystem concept list
-            if (cs.contains("concept") && cs["concept"].is_array() && !cs["concept"].empty()) {
-                found_code = cs["concept"][0].value("code", "");
-                found_display = cs["concept"][0].value("display", display_text);
-            }
-            if (found_code.empty()) {
-                return std::nullopt;
-            }
-            cache_.put(cache_key, json{{"code", found_code}, {"display", found_display}});
-            return ResolvedCoding{"http://loinc.org", found_code, found_display, true};
-        } catch (...) {
-            return std::nullopt;
-        }
+        writeCachedCoding(cache_key, resolved->code, resolved->display);
+        return ResolvedCoding{kLoincSystem, resolved->code, resolved->display, true};
     }
 
     // RxNorm lookup: map a free-text drug name to an RxNorm CUI.
     // Uses the NLM RxNorm REST API (no auth required).
     // https://rxnav.nlm.nih.gov/REST/rxcui.json?name=<NAME>&search=2
     std::optional<ResolvedCoding> lookupRxNorm(const std::string& drug_name) {
-        if (drug_name.empty()) {
-            return std::nullopt;
-        }
-        const std::string cache_key = "rxnorm_" + lower(drug_name);
-        if (auto cached = cache_.get(cache_key); cached.has_value()) {
-            return ResolvedCoding{
-                "http://www.nlm.nih.gov/research/umls/rxnorm",
-                cached->value("code", ""),
-                cached->value("display", drug_name),
-                false
-            };
-        }
+        if (drug_name.empty()) return std::nullopt;
 
-        if (!cfg_.network_enabled) {
-            return std::nullopt;
+        const std::string cache_key = "rxnorm_" + lower(drug_name);
+        if (auto cached = readCachedCoding(cache_key, kRxNormSystem, "", drug_name); cached.has_value()) {
+            return cached;
         }
+        if (!cfg_.network_enabled) return std::nullopt;
 
         const std::string url =
             "https://rxnav.nlm.nih.gov/REST/rxcui.json"
             "?name=" + Http::url_encode(drug_name) +
             "&search=2";
 
-        const auto resp = Http::get(url, "application/json", "", cfg_.timeout_seconds);
-        if (!resp.ok() || resp.body.empty()) {
+        const auto body = fetchJson(url, "application/json");
+        if (!body.has_value() || !body->contains("idGroup") || !(*body)["idGroup"].contains("rxnormId")) {
             return std::nullopt;
         }
 
-        try {
-            const json body = json::parse(resp.body);
-            // Response: {"idGroup": {"rxnormId": ["12345"]}}
-            if (!body.contains("idGroup") || !body["idGroup"].contains("rxnormId")) {
-                return std::nullopt;
-            }
-            const auto& ids = body["idGroup"]["rxnormId"];
-            if (!ids.is_array() || ids.empty()) {
-                return std::nullopt;
-            }
-            const std::string rxcui = ids[0].get<std::string>();
+        const auto& ids = (*body)["idGroup"]["rxnormId"];
+        if (!ids.is_array() || ids.empty()) return std::nullopt;
+        const std::string rxcui = ids[0].get<std::string>();
 
-            // Now fetch the display name for this CUI
-            const std::string name_url =
-                "https://rxnav.nlm.nih.gov/REST/rxcui/" + rxcui + "/property.json?propName=RxNorm%20Name";
-            const auto name_resp = Http::get(name_url, "application/json", "", cfg_.timeout_seconds);
-            std::string display = drug_name;
-            if (name_resp.ok() && !name_resp.body.empty()) {
-                try {
-                    const json name_body = json::parse(name_resp.body);
-                    if (name_body.contains("propConceptGroup") &&
-                        name_body["propConceptGroup"].contains("propConcept") &&
-                        name_body["propConceptGroup"]["propConcept"].is_array() &&
-                        !name_body["propConceptGroup"]["propConcept"].empty()) {
-                        display = name_body["propConceptGroup"]["propConcept"][0].value("propValue", drug_name);
-                    }
-                } catch (...) {}
+        // Now fetch the display name for this CUI.
+        std::string display = drug_name;
+        const std::string name_url =
+            "https://rxnav.nlm.nih.gov/REST/rxcui/" + rxcui + "/property.json?propName=RxNorm%20Name";
+        if (const auto name_body = fetchJson(name_url, "application/json"); name_body.has_value()) {
+            if (name_body->contains("propConceptGroup") &&
+                (*name_body)["propConceptGroup"].contains("propConcept") &&
+                (*name_body)["propConceptGroup"]["propConcept"].is_array() &&
+                !(*name_body)["propConceptGroup"]["propConcept"].empty()) {
+                display = (*name_body)["propConceptGroup"]["propConcept"][0].value("propValue", drug_name);
             }
-
-            cache_.put(cache_key, json{{"code", rxcui}, {"display", display}});
-            return ResolvedCoding{
-                "http://www.nlm.nih.gov/research/umls/rxnorm",
-                rxcui,
-                display,
-                true
-            };
-        } catch (...) {
-            return std::nullopt;
         }
+
+        writeCachedCoding(cache_key, rxcui, display);
+        return ResolvedCoding{kRxNormSystem, rxcui, display, true};
     }
 
     // SNOMED CT lookup via NLM FHIR terminology server (no auth required for read).
     // https://cts.nlm.nih.gov/fhir/CodeSystem/$lookup?system=http://snomed.info/sct&code=<CODE>
     std::optional<ResolvedCoding> lookupSnomed(const std::string& code) {
-        if (code.empty()) {
-            return std::nullopt;
-        }
-        const std::string cache_key = "snomed_" + code;
-        if (auto cached = cache_.get(cache_key); cached.has_value()) {
-            return ResolvedCoding{
-                "http://snomed.info/sct",
-                cached->value("code", code),
-                cached->value("display", ""),
-                false
-            };
-        }
+        if (code.empty()) return std::nullopt;
 
-        if (!cfg_.network_enabled) {
-            return std::nullopt;
+        const std::string cache_key = "snomed_" + code;
+        if (auto cached = readCachedCoding(cache_key, kSnomedSystem, code, ""); cached.has_value()) {
+            return cached;
         }
+        if (!cfg_.network_enabled) return std::nullopt;
 
         const std::string url =
             "https://cts.nlm.nih.gov/fhir/CodeSystem/$lookup"
             "?system=http%3A%2F%2Fsnomed.info%2Fsct"
             "&code=" + Http::url_encode(code);
 
-        const auto resp = Http::get(url, "application/fhir+json", "", cfg_.timeout_seconds);
-        if (!resp.ok() || resp.body.empty()) {
-            return std::nullopt;
-        }
+        const auto body = fetchJson(url, "application/fhir+json");
+        if (!body.has_value()) return std::nullopt;
 
-        try {
-            const json body = json::parse(resp.body);
-            std::string display;
-            if (body.contains("parameter") && body["parameter"].is_array()) {
-                for (const auto& p : body["parameter"]) {
-                    if (p.value("name", "") == "display" && p.contains("valueString")) {
-                        display = p["valueString"].get<std::string>();
-                        break;
-                    }
-                }
-            }
-            if (display.empty()) {
-                return std::nullopt;
-            }
-            cache_.put(cache_key, json{{"code", code}, {"display", display}});
-            return ResolvedCoding{"http://snomed.info/sct", code, display, true};
-        } catch (...) {
-            return std::nullopt;
-        }
+        const std::string display = parseFhirLookupDisplay(*body);
+        if (display.empty()) return std::nullopt;
+
+        writeCachedCoding(cache_key, code, display);
+        return ResolvedCoding{kSnomedSystem, code, display, true};
     }
 
     bool networkEnabled() const { return cfg_.network_enabled; }
 
 private:
+    struct ParsedLoincConcept {
+        std::string code;
+        std::string display;
+    };
+
+    static constexpr const char* kLoincSystem = "http://loinc.org";
+    static constexpr const char* kRxNormSystem = "http://www.nlm.nih.gov/research/umls/rxnorm";
+    static constexpr const char* kSnomedSystem = "http://snomed.info/sct";
+
     static std::string lower(std::string s) {
         std::transform(s.begin(), s.end(), s.begin(),
                        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         return s;
+    }
+
+    std::optional<ResolvedCoding> readCachedCoding(const std::string& cache_key,
+                                                   const std::string& system,
+                                                   const std::string& default_code,
+                                                   const std::string& default_display) const {
+        if (auto cached = cache_.get(cache_key); cached.has_value()) {
+            return ResolvedCoding{
+                system,
+                cached->value("code", default_code),
+                cached->value("display", default_display),
+                false
+            };
+        }
+        return std::nullopt;
+    }
+
+    void writeCachedCoding(const std::string& cache_key,
+                           const std::string& code,
+                           const std::string& display) const {
+        cache_.put(cache_key, json{{"code", code}, {"display", display}});
+    }
+
+    std::string loincAuthHeader() const {
+        if (cfg_.loinc_user.empty()) return "";
+        return "Authorization: Basic " + base64(cfg_.loinc_user + ":" + cfg_.loinc_pass);
+    }
+
+    std::optional<json> fetchJson(const std::string& url,
+                                  const std::string& accept,
+                                  const std::string& auth_header = "") const {
+        const auto resp = Http::get(url, accept, auth_header, cfg_.timeout_seconds);
+        if (!resp.ok() || resp.body.empty()) return std::nullopt;
+        try {
+            return json::parse(resp.body);
+        } catch (...) {
+            return std::nullopt;
+        }
+    }
+
+    static std::string parseFhirLookupDisplay(const json& body) {
+        if (!body.contains("parameter") || !body["parameter"].is_array()) return "";
+        for (const auto& p : body["parameter"]) {
+            if (p.value("name", "") == "display" && p.contains("valueString")) {
+                return p["valueString"].get<std::string>();
+            }
+        }
+        return "";
+    }
+
+    static std::optional<ParsedLoincConcept> parseLoincSearchResult(
+        const json& bundle,
+        const std::string& default_display) {
+        if (!bundle.contains("entry") || !bundle["entry"].is_array() || bundle["entry"].empty()) {
+            return std::nullopt;
+        }
+
+        const auto& first_entry = bundle["entry"][0];
+        if (!first_entry.contains("resource")) return std::nullopt;
+        const auto& code_system = first_entry["resource"];
+        if (!code_system.contains("concept") || !code_system["concept"].is_array() ||
+            code_system["concept"].empty()) {
+            return std::nullopt;
+        }
+
+        const std::string code = code_system["concept"][0].value("code", "");
+        if (code.empty()) return std::nullopt;
+        return ParsedLoincConcept{
+            code,
+            code_system["concept"][0].value("display", default_display)
+        };
     }
 
     // Minimal base64 encoder for Basic Auth header
@@ -516,10 +460,7 @@ std::string url_encode(const std::string& s) {
 }
 } // namespace Http
 
-// ============================================================
-// Everything below is identical in structure to v1, extended
-// to use TerminologyClient where appropriate.
-// ============================================================
+// === Mapper Logic (v1 structure + terminology integration) ===============
 
 namespace {
 
@@ -648,6 +589,10 @@ void addIssue(std::vector<MapperIssue>& issues,
     issues.push_back(std::move(i));
 }
 
+std::string terminologySourceSuffix(const ResolvedCoding& coding) {
+    return coding.from_network ? " (network)" : " (cache)";
+}
+
 void addTransactionRequest(json& entry, const std::string& rt, const std::optional<std::string>& id) {
     if (!entry.contains("request")) {
         if (id && !id->empty())
@@ -719,6 +664,10 @@ void normalizeQuantity(json& q) {
     }
 }
 
+void normalizeQuantityIfPresent(json& resource) {
+    if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+}
+
 void normalizePatient(json& resource, std::vector<MapperIssue>& issues) {
     if (isNonEmptyString(resource, "birthDate") && looksUnknown(resource["birthDate"].get<std::string>())) {
         resource.erase("birthDate");
@@ -733,9 +682,7 @@ void applyTerminologyOverride(json& cc, const Coding& coding,
     addIssue(issues, "info", "terminology.override", "Applied deterministic terminology override.", resource);
 }
 
-// ============================================================
-// ENHANCED: normalizeObservationCode with live LOINC lookup
-// ============================================================
+// === Observation Normalization (with live LOINC lookup) ==================
 void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<MapperIssue>& issues) {
     if (!resource.contains("code")) {
         addIssue(issues, "error", "observation.code.missing", "Observation is missing code.", resource);
@@ -759,7 +706,7 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
         auto it = ctx.terminologyOverrides.find(code);
         if (it != ctx.terminologyOverrides.end()) {
             applyTerminologyOverride(resource["code"], it->second, issues, resource);
-            if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+            normalizeQuantityIfPresent(resource);
             return;
         }
     }
@@ -777,9 +724,9 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
                 }
                 addIssue(issues, "info", "loinc.display.resolved",
                          "LOINC display name verified/updated via live terminology service"
-                         + std::string(resolved->from_network ? " (network)" : " (cache)") + ".",
+                         + terminologySourceSuffix(*resolved) + ".",
                          resource);
-                if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+                normalizeQuantityIfPresent(resource);
                 return;
             }
         }
@@ -794,9 +741,9 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
             resource["code"] = makeCodeableConcept(resolved->system, resolved->code, resolved->display);
             addIssue(issues, "warning", "loinc.code.inferred",
                      "LOINC code inferred from display text via terminology search"
-                     + std::string(resolved->from_network ? " (network)" : " (cache)") + ".",
+                     + terminologySourceSuffix(*resolved) + ".",
                      resource);
-            if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+            normalizeQuantityIfPresent(resource);
             return;
         }
     }
@@ -806,11 +753,11 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
         resource["code"] = makeCodeableConcept("http://loinc.org", "8867-4", "Heart rate");
         addIssue(issues, "warning", "observation.code.repaired",
                  "Repaired observation to Heart rate (LOINC 8867-4) based on unit heuristic.", resource);
-        if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+        normalizeQuantityIfPresent(resource);
         return;
     }
     if (unit.find("mm") != std::string::npos && display.find("blood pressure") != std::string::npos) {
-        if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+        normalizeQuantityIfPresent(resource);
         addIssue(issues, "info", "observation.bp.candidate",
                  "Observation flagged as blood-pressure candidate for panel grouping.", resource);
         return;
@@ -837,12 +784,10 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
         addIssue(issues, "warning", "observation.code.repaired",
                  "Inferred SpO2 code from display and unit.", resource);
     }
-    if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+    normalizeQuantityIfPresent(resource);
 }
 
-// ============================================================
-// ENHANCED: medication normalization with RxNorm lookup
-// ============================================================
+// === Medication Normalization (with RxNorm lookup) =======================
 void enrichMedicationCoding(json& medCC, MapperContext& ctx, std::vector<MapperIssue>& issues,
                               const json& resource) {
     if (!ctx.terminology) return;
@@ -882,7 +827,7 @@ void enrichMedicationCoding(json& medCC, MapperContext& ctx, std::vector<MapperI
         medCC["text"] = resolved->display;
         addIssue(issues, "info", "rxnorm.code.added",
                  "Added RxNorm CUI " + resolved->code + " for '" + drug_name + "'"
-                 + std::string(resolved->from_network ? " (network)" : " (cache)") + ".",
+                 + terminologySourceSuffix(*resolved) + ".",
                  resource);
     } else {
         addIssue(issues, "warning", "rxnorm.lookup.failed",
@@ -987,49 +932,60 @@ void normalizeProcedure(json& resource, MapperContext& ctx, std::vector<MapperIs
         resource["code"]["text"] = getString(resource["code"]["coding"][0], "display");
     }
 
-    if (auto coding = firstCoding(resource["code"]); coding.has_value()) {
-        // If procedure uses LOINC, try to find a SNOMED equivalent via SNOMED lookup
-        if (coding->system == "http://loinc.org") {
-            addIssue(issues, "warning", "procedure.code.suspicious-system",
-                     "Procedure uses LOINC; consider SNOMED CT or a procedure coding system.", resource);
-        }
-        // If SNOMED code, validate via NLM
-        if (coding->system == "http://snomed.info/sct" && ctx.terminology) {
-            if (auto resolved = ctx.terminology->lookupSnomed(coding->code); resolved.has_value()) {
-                resource["code"]["coding"][0]["display"] = resolved->display;
-                addIssue(issues, "info", "snomed.display.resolved",
-                         "SNOMED CT display verified"
-                         + std::string(resolved->from_network ? " (network)" : " (cache)") + ".",
-                         resource);
-            } else {
-                addIssue(issues, "warning", "snomed.code.unverified",
-                         "SNOMED CT code '" + coding->code + "' could not be verified.", resource);
-            }
-        }
+    const auto coding = firstCoding(resource["code"]);
+    if (!coding.has_value()) return;
+
+    // If procedure uses LOINC, flag it.
+    if (coding->system == "http://loinc.org") {
+        addIssue(issues, "warning", "procedure.code.suspicious-system",
+                 "Procedure uses LOINC; consider SNOMED CT or a procedure coding system.", resource);
+    }
+
+    // If SNOMED code, validate via NLM.
+    if (coding->system != "http://snomed.info/sct" || !ctx.terminology) return;
+    if (auto resolved = ctx.terminology->lookupSnomed(coding->code); resolved.has_value()) {
+        resource["code"]["coding"][0]["display"] = resolved->display;
+        addIssue(issues, "info", "snomed.display.resolved",
+                 "SNOMED CT display verified" + terminologySourceSuffix(*resolved) + ".",
+                 resource);
+    } else {
+        addIssue(issues, "warning", "snomed.code.unverified",
+                 "SNOMED CT code '" + coding->code + "' could not be verified.", resource);
     }
 }
 
 bool hasRequiredProfileFields(const json& resource, std::vector<MapperIssue>& issues) {
     const std::string type = getString(resource, "resourceType");
-    if (type == "Patient") {
-        if (!resource.contains("name")) {
-            addIssue(issues, "error", "profile.patient.name.missing",
-                     "Patient must include a name in this profile.", resource);
+
+    const auto require_field = [&](const char* field,
+                                   const std::string& issue_code,
+                                   const std::string& message) {
+        if (!resource.contains(field)) {
+            addIssue(issues, "error", issue_code, message, resource);
             return false;
         }
         return true;
+    };
+
+    if (type == "Patient") {
+        return require_field("name", "profile.patient.name.missing",
+                             "Patient must include a name in this profile.");
     }
     if (type == "Observation") {
         bool ok = true;
-        if (!resource.contains("status")) { addIssue(issues, "error", "profile.observation.status.missing", "Observation missing status.", resource); ok = false; }
-        if (!resource.contains("code"))   { addIssue(issues, "error", "profile.observation.code.missing",   "Observation missing code.",   resource); ok = false; }
-        if (!resource.contains("subject")){ addIssue(issues, "error", "profile.observation.subject.missing","Observation missing subject.", resource); ok = false; }
+        ok = require_field("status", "profile.observation.status.missing", "Observation missing status.") && ok;
+        ok = require_field("code", "profile.observation.code.missing", "Observation missing code.") && ok;
+        ok = require_field("subject", "profile.observation.subject.missing", "Observation missing subject.") && ok;
         return ok;
     }
     if (type == "MedicationAdministration") {
         bool ok = true;
-        if (!resource.contains("medicationCodeableConcept")) { addIssue(issues, "error", "profile.medadmin.medication.missing", "MedicationAdministration missing medicationCodeableConcept.", resource); ok = false; }
-        if (!resource.contains("subject"))                   { addIssue(issues, "error", "profile.medadmin.subject.missing",    "MedicationAdministration missing subject.",                    resource); ok = false; }
+        ok = require_field("medicationCodeableConcept",
+                           "profile.medadmin.medication.missing",
+                           "MedicationAdministration missing medicationCodeableConcept.") && ok;
+        ok = require_field("subject",
+                           "profile.medadmin.subject.missing",
+                           "MedicationAdministration missing subject.") && ok;
         return ok;
     }
     return true;
@@ -1253,9 +1209,7 @@ json mapBundle(const json& input, const std::string& modelName, TerminologyClien
 
 } // namespace
 
-// ============================================================
-// main — argument parsing
-// ============================================================
+// === Main (argument parsing) ==============================================
 
 int main(int argc, char** argv) {
     try {
