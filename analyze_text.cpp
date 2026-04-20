@@ -3,7 +3,7 @@
 //
 // This file is part of the Spazio IT Speech-to-Knowledge project.
 //
-// Copyright (C) 2025 Spazio IT
+// Copyright (C) 2025-2026 Spazio IT
 // Spazio - IT Soluzioni Informatiche s.a.s.
 // via Manzoni 40
 // 46051 San Giorgio Bigarello
@@ -32,6 +32,7 @@
 #include <mutex>
 #include <atomic>
 #include <vector>
+#include <cstdio>
 #include <algorithm>
 #include <utility>
 #include <cctype>
@@ -50,6 +51,12 @@ std::string TRIGGER_START;
 std::string TRIGGER_STOP;
 std::string TRIGGER_TEMP_CHECK;
 std::string TTS_COMMAND;
+bool MAPPER_NETWORK_ENABLED = true;
+std::string MAPPER_CACHE_DIR = "./terminology_cache";
+std::string MAPPER_CACHE_TTL_DAYS = "7";
+std::string MAPPER_LOINC_USER;
+std::string MAPPER_LOINC_PASS;
+std::string MAPPER_TIMEOUT_SECONDS = "10";
 
 std::mutex analysis_mutex;
 std::atomic<int> counter_value{0};
@@ -57,6 +64,8 @@ std::atomic<int> temp_counter_value{0};
 std::atomic<int> active_analyses{0};
 std::mutex tts_mutex;
 std::once_flag openai_init_flag;
+
+std::string escape_for_single_quotes(const std::string& text);
 
 class AnalysisSession {
 public:
@@ -88,6 +97,75 @@ std::string trim_whitespace(std::string text) {
     }
     const auto end = text.find_last_not_of(" \t\r\n");
     return text.substr(begin, end - begin + 1);
+}
+
+std::string strip_json_like_comments(const std::string& input) {
+    std::string out;
+    out.reserve(input.size());
+
+    bool in_string = false;
+    bool escaped = false;
+    bool in_line_comment = false;
+    bool in_block_comment = false;
+
+    for (size_t i = 0; i < input.size(); ++i) {
+        const char c = input[i];
+        const char next = (i + 1 < input.size()) ? input[i + 1] : '\0';
+
+        if (in_line_comment) {
+            if (c == '\n') {
+                in_line_comment = false;
+                out.push_back(c);
+            }
+            continue;
+        }
+
+        if (in_block_comment) {
+            if (c == '*' && next == '/') {
+                in_block_comment = false;
+                ++i;
+                continue;
+            }
+            if (c == '\n') {
+                out.push_back(c);
+            }
+            continue;
+        }
+
+        if (in_string) {
+            out.push_back(c);
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '"') {
+                in_string = false;
+            }
+            continue;
+        }
+
+        if (c == '"') {
+            in_string = true;
+            out.push_back(c);
+            continue;
+        }
+
+        if (c == '/' && next == '/') {
+            in_line_comment = true;
+            ++i;
+            continue;
+        }
+
+        if (c == '/' && next == '*') {
+            in_block_comment = true;
+            ++i;
+            continue;
+        }
+
+        out.push_back(c);
+    }
+
+    return out;
 }
 
 bool starts_with_unused_tag_at(const std::string& text, size_t pos) {
@@ -144,6 +222,213 @@ std::string strip_internal_reasoning_tags(std::string text) {
     }
 
     return trim_whitespace(text);
+}
+
+bool is_fhir_bundle_object(const json& candidate) {
+    if (!candidate.is_object()) {
+        return false;
+    }
+    const auto type_it = candidate.find("resourceType");
+    if (type_it == candidate.end() || !type_it->is_string()) {
+        return false;
+    }
+    return type_it->get<std::string>() == "Bundle";
+}
+
+bool extract_fhir_bundle_from_text(const std::string& text, json& bundle, size_t& start_pos, size_t& end_pos) {
+    bool in_string = false;
+    bool escaped = false;
+
+    for (size_t i = 0; i < text.size(); ++i) {
+        const char c = text[i];
+
+        if (in_string) {
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '"') {
+                in_string = false;
+            }
+            continue;
+        }
+
+        if (c == '"') {
+            in_string = true;
+            continue;
+        }
+
+        if (c != '{') {
+            continue;
+        }
+
+        size_t depth = 0;
+        bool local_in_string = false;
+        bool local_escaped = false;
+        bool completed = false;
+
+        for (size_t j = i; j < text.size(); ++j) {
+            const char cj = text[j];
+            if (local_in_string) {
+                if (local_escaped) {
+                    local_escaped = false;
+                } else if (cj == '\\') {
+                    local_escaped = true;
+                } else if (cj == '"') {
+                    local_in_string = false;
+                }
+                continue;
+            }
+
+            if (cj == '"') {
+                local_in_string = true;
+                continue;
+            }
+            if (cj == '{') {
+                ++depth;
+            } else if (cj == '}') {
+                if (depth == 0) {
+                    break;
+                }
+                --depth;
+                if (depth == 0) {
+                    const std::string candidate = text.substr(i, j - i + 1);
+                    try {
+                        json parsed;
+                        try {
+                            parsed = json::parse(candidate);
+                        } catch (...) {
+                            parsed = json::parse(strip_json_like_comments(candidate));
+                        }
+                        if (is_fhir_bundle_object(parsed)) {
+                            bundle = std::move(parsed);
+                            start_pos = i;
+                            end_pos = j + 1;
+                            return true;
+                        }
+                    } catch (...) {
+                        // Keep searching for the next candidate JSON object.
+                    }
+                    completed = true;
+                    break;
+                }
+            }
+        }
+
+        if (!completed) {
+            break;
+        }
+    }
+
+    return false;
+}
+
+bool extract_revised_bundle(const json& mapper_output, json& revised_bundle) {
+    if (is_fhir_bundle_object(mapper_output)) {
+        revised_bundle = mapper_output;
+        return true;
+    }
+
+    const auto accepted_it = mapper_output.find("acceptedBundle");
+    if (accepted_it != mapper_output.end() && is_fhir_bundle_object(*accepted_it)) {
+        revised_bundle = *accepted_it;
+        return true;
+    }
+
+    return false;
+}
+
+std::string revise_fhir_bundle_in_response(std::string response_text,
+                                           const std::string& analysis_label,
+                                           std::ofstream& file) {
+    json detected_bundle;
+    size_t start_pos = 0;
+    size_t end_pos = 0;
+    if (!extract_fhir_bundle_from_text(response_text, detected_bundle, start_pos, end_pos)) {
+        return response_text;
+    }
+
+    const std::string input_path = "tmp_mapper_input_" + analysis_label + ".json";
+    const std::string output_path = "tmp_mapper_output_" + analysis_label + ".json";
+
+    try {
+        std::ofstream input_file(input_path);
+        if (!input_file.is_open()) {
+            file << "\n[WARN] Detected FHIR Bundle but failed to open mapper input file: "
+                 << input_path << "\n";
+            return response_text;
+        }
+        input_file << detected_bundle.dump(2) << "\n";
+    } catch (const std::exception& e) {
+        file << "\n[WARN] Failed to write mapper input bundle: " << e.what() << "\n";
+        return response_text;
+    }
+
+    std::ostringstream cmd_builder;
+    cmd_builder << "./deterministic_fhir_mapper.exe '" << escape_for_single_quotes(input_path)
+                << "' '" << escape_for_single_quotes(output_path)
+                << "' --model-name '" << escape_for_single_quotes(MODEL_NAME) << "'";
+    if (!MAPPER_NETWORK_ENABLED) {
+        cmd_builder << " --no-network";
+    }
+    if (!MAPPER_CACHE_DIR.empty()) {
+        cmd_builder << " --cache-dir '" << escape_for_single_quotes(MAPPER_CACHE_DIR) << "'";
+    }
+    if (!MAPPER_CACHE_TTL_DAYS.empty()) {
+        cmd_builder << " --cache-ttl-days '" << escape_for_single_quotes(MAPPER_CACHE_TTL_DAYS) << "'";
+    }
+    if (!MAPPER_LOINC_USER.empty()) {
+        cmd_builder << " --loinc-user '" << escape_for_single_quotes(MAPPER_LOINC_USER) << "'";
+    }
+    if (!MAPPER_LOINC_PASS.empty()) {
+        cmd_builder << " --loinc-pass '" << escape_for_single_quotes(MAPPER_LOINC_PASS) << "'";
+    }
+    if (!MAPPER_TIMEOUT_SECONDS.empty()) {
+        cmd_builder << " --timeout '" << escape_for_single_quotes(MAPPER_TIMEOUT_SECONDS) << "'";
+    }
+    cmd_builder << " >/dev/null 2>&1";
+    const std::string cmd = cmd_builder.str();
+    const int mapper_rc = std::system(cmd.c_str());
+    if (mapper_rc != 0) {
+        file << "\n[WARN] deterministic_fhir_mapper returned non-zero status (" << mapper_rc
+             << "). Keeping original bundle.\n";
+        std::remove(input_path.c_str());
+        std::remove(output_path.c_str());
+        return response_text;
+    }
+
+    try {
+        std::ifstream output_file(output_path);
+        if (!output_file.is_open()) {
+            file << "\n[WARN] Mapper output file not found: " << output_path
+                 << ". Keeping original bundle.\n";
+            std::remove(input_path.c_str());
+            std::remove(output_path.c_str());
+            return response_text;
+        }
+
+        json mapper_output;
+        output_file >> mapper_output;
+
+        json revised_bundle;
+        if (!extract_revised_bundle(mapper_output, revised_bundle)) {
+            file << "\n[WARN] Mapper output did not contain a revised Bundle. Keeping original bundle.\n";
+            std::remove(input_path.c_str());
+            std::remove(output_path.c_str());
+            return response_text;
+        }
+
+        const std::string revised_text = revised_bundle.dump(2);
+        response_text.replace(start_pos, end_pos - start_pos, revised_text);
+        file << "\n[INFO] FHIR Bundle detected and revised by deterministic_fhir_mapper.\n";
+    } catch (const std::exception& e) {
+        file << "\n[WARN] Failed to parse mapper output: " << e.what()
+             << ". Keeping original bundle.\n";
+    }
+
+    std::remove(input_path.c_str());
+    std::remove(output_path.c_str());
+    return response_text;
 }
 
 std::string escape_for_single_quotes(const std::string& text) {
@@ -253,6 +538,38 @@ bool load_config(const std::string& path) {
 
     auto kb_it = config.find("analysis.knowledge_base_ids");
     KNOWLEDGE_BASE_IDS = (kb_it != config.end()) ? kb_it->second : std::string{};
+
+    auto mapper_network_it = config.find("deterministic_mapper.network_enabled");
+    if (mapper_network_it != config.end()) {
+        std::string value = mapper_network_it->second;
+        std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+        MAPPER_NETWORK_ENABLED = !(value == "false" || value == "0" || value == "no" || value == "off");
+    }
+
+    auto mapper_cache_dir_it = config.find("deterministic_mapper.cache_dir");
+    if (mapper_cache_dir_it != config.end() && !mapper_cache_dir_it->second.empty()) {
+        MAPPER_CACHE_DIR = mapper_cache_dir_it->second;
+    }
+
+    auto mapper_cache_ttl_it = config.find("deterministic_mapper.cache_ttl_days");
+    if (mapper_cache_ttl_it != config.end() && !mapper_cache_ttl_it->second.empty()) {
+        MAPPER_CACHE_TTL_DAYS = mapper_cache_ttl_it->second;
+    }
+
+    auto mapper_loinc_user_it = config.find("deterministic_mapper.loinc_user");
+    if (mapper_loinc_user_it != config.end()) {
+        MAPPER_LOINC_USER = mapper_loinc_user_it->second;
+    }
+
+    auto mapper_loinc_pass_it = config.find("deterministic_mapper.loinc_pass");
+    if (mapper_loinc_pass_it != config.end()) {
+        MAPPER_LOINC_PASS = mapper_loinc_pass_it->second;
+    }
+
+    auto mapper_timeout_it = config.find("deterministic_mapper.timeout_seconds");
+    if (mapper_timeout_it != config.end() && !mapper_timeout_it->second.empty()) {
+        MAPPER_TIMEOUT_SECONDS = mapper_timeout_it->second;
+    }
 
     if (!missing_keys.empty()) {
         std::ostringstream oss;
@@ -384,6 +701,7 @@ void analyze_text(const std::string& text) {
 
         auto chat = openai::chat().create(body);
         response_string = strip_internal_reasoning_tags(extract_message_content(chat));
+        response_string = revise_fhir_bundle_in_response(response_string, std::to_string(analysis_id), file);
         if (response_string.empty()) {
             file << "\n[WARN] No textual content found in primary response. Full payload:\n"
                  << chat.dump(2) << "\n";
@@ -477,7 +795,8 @@ void temp_analyze_text(const std::string& text) {
         }
 
         auto chat = openai::chat().create(body);
-        response_string = extract_message_content(chat);
+        response_string = strip_internal_reasoning_tags(extract_message_content(chat));
+        response_string = revise_fhir_bundle_in_response(response_string, "tmp_" + analysis_id_str, file);
         if (response_string.empty()) {
             file << "\n[WARN] No textual content found in temporary response. Full payload:\n"
                  << chat.dump(2) << "\n";
