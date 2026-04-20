@@ -67,6 +67,7 @@
 #include "portaudio.h"
 #include "whisper.h"
 namespace Constants {
+    // Audio capture and model processing are both standardized to 16 kHz mono.
     constexpr int SAMPLE_RATE = 16000;
     constexpr unsigned long FRAMES_PER_BUFFER = 1024;
     constexpr int CHANNELS = 1;
@@ -79,7 +80,7 @@ namespace Constants {
     constexpr double ADAPTIVE_UPDATE_MAX_RMS_FRACTION = 0.20;   // LOWERED from 0.35 to reduce drift
     constexpr double ADAPTIVE_THRESHOLD_STEP_FRACTION = 0.05;
     constexpr int ADAPTIVE_THRESHOLD_MIN = 200;
-    constexpr int ADAPTIVE_HANGOVER_CHUNKS = 5;                 // NEW: prevent updates on short intra-speech pauses
+    constexpr int ADAPTIVE_HANGOVER_CHUNKS = 1;                 // NEW: prevent updates on short intra-speech pauses
     constexpr double ADAPTIVE_ONSET_TRIGGER_RATIO = 0.85;       // More permissive speech onset in adaptive mode
     constexpr double VAD_PRE_ROLL_SECONDS = 0.30;
     constexpr int WHISPER_MAX_THREADS = 4;
@@ -96,6 +97,7 @@ public:
 class PortAudioRuntime {
 public:
     static void ensure_initialized() {
+        // PortAudio uses process-global state; guard init/term with a single mutex.
         std::lock_guard<std::mutex> lock(mutex_);
         if (initialized_) {
             return;
@@ -131,6 +133,7 @@ public:
               unsigned long frames_per_buffer,
               PaStreamCallback* callback,
               void* user_data) {
+        // Re-open defensively to avoid leaking an already-open stream on restart.
         close();
         last_err_ = Pa_OpenStream(&stream_,
                                   input_parameters,
@@ -174,6 +177,7 @@ private:
     PaError last_err_ = paNoError;
 };
 struct Args {
+    // `-1` means "auto-calibrate from ambient noise".
     int energy_threshold = -1;
     bool adaptive_energy = false;
     double record_timeout = 2.0;
@@ -252,6 +256,7 @@ public:
             static_cast<size_t>(std::ceil(
                 vad_pre_roll_seconds_.load(std::memory_order_relaxed) * sample_rate_ /
                 static_cast<double>(Constants::FRAMES_PER_BUFFER))));
+        // Reset transient state so a restart never carries old VAD/ring buffers.
         clear_processing_state();
         reset_ring();
         dropped_callback_chunks_.store(0, std::memory_order_relaxed);
@@ -300,6 +305,7 @@ public:
         return true;
     }
     void stopRecording() override {
+        // `exchange` prevents duplicate shutdown work when stop is called multiple times.
         const bool was_active = recording_active_.exchange(false, std::memory_order_acq_rel);
         stream_.stop();
         stream_.close();
@@ -327,6 +333,7 @@ public:
         std::mutex collected_mutex;
         std::condition_variable collected_cv;
         bool done = false;
+        // Collect raw chunks for a fixed calibration window and derive RMS threshold.
         auto collector = [&](const std::vector<int16_t>& chunk) {
             std::lock_guard<std::mutex> lock(collected_mutex);
             collected.insert(collected.end(), chunk.begin(), chunk.end());
@@ -362,6 +369,7 @@ public:
         }
         const long double rms = std::sqrt(sum_squares / static_cast<long double>(collected.size()));
         const int threshold = static_cast<int>(std::llround(rms * Constants::ENERGY_THRESHOLD_MULTIPLIER));
+        // Keep a sane minimum threshold so pure-noise rooms don't make VAD too sensitive.
         setEnergyThreshold(std::max(threshold, Constants::ADAPTIVE_THRESHOLD_MIN));
         if (adaptive_energy_enabled_.load(std::memory_order_relaxed)) {
             prime_noise_floor_estimate(static_cast<double>(rms));
@@ -420,6 +428,7 @@ private:
                            PaStreamCallbackFlags,
                            void* user_data) {
         (void)output_buffer;
+        // Keep callback realtime-safe: no blocking I/O, no heavy processing.
         auto* recorder = static_cast<PortAudioRecorder*>(user_data);
         if (input_buffer == nullptr ||
             !recorder->recording_active_.load(std::memory_order_acquire)) {
@@ -435,10 +444,12 @@ private:
         }
         std::unique_lock<std::mutex> lock(ring_mutex_, std::try_to_lock);
         if (!lock.owns_lock()) {
+            // Callback path must not block; if contended, drop and continue.
             dropped_callback_chunks_.fetch_add(1, std::memory_order_relaxed);
             return;
         }
         if (ring_size_ == raw_ring_.size()) {
+            // Keep freshest audio by dropping the oldest chunk when ring is full.
             ring_tail_ = (ring_tail_ + 1) % raw_ring_.size();
             --ring_size_;
             dropped_callback_chunks_.fetch_add(1, std::memory_order_relaxed);
@@ -475,6 +486,7 @@ private:
     void processing_worker() {
         try {
             RawChunk chunk;
+            // Drain pending audio even during shutdown to avoid truncating final phrase.
             while (worker_running_.load(std::memory_order_acquire) || ring_size_snapshot() > 0) {
                 if (!pop_raw_chunk(chunk)) {
                     continue;
@@ -522,6 +534,7 @@ private:
             is_speech = sum_squares > (speech_trigger * current_chunk.size());
             if (is_speech) {
                 if (vad_buffer_.empty() && !pre_roll_chunks_.empty()) {
+                    // Pre-roll keeps leading phonemes that happen before trigger crossing.
                     for (const auto& pre : pre_roll_chunks_) {
                         vad_buffer_.insert(vad_buffer_.end(), pre.begin(), pre.end());
                     }
@@ -535,6 +548,7 @@ private:
                 ++consecutive_silence_for_adaptation_;     // NEW
                 vad_buffer_.insert(vad_buffer_.end(), current_chunk.begin(), current_chunk.end());
             } else {
+                // Track recent silence chunks in case next chunk starts speech.
                 pre_roll_chunks_.push_back(current_chunk);
                 while (pre_roll_chunks_.size() > max_pre_roll_chunks_) {
                     pre_roll_chunks_.pop_front();
@@ -551,6 +565,7 @@ private:
                                (vad_buffer_.size() >= max_buffer_samples_ ||
                                 consecutive_silence_chunks_ >= max_silence_chunks_);
             if (flush) {
+                // Emit completed phrase/chunk to the transcription queue.
                 completed = std::move(vad_buffer_);
                 vad_buffer_.clear();
                 consecutive_silence_chunks_ = 0;
@@ -585,6 +600,7 @@ private:
         const double max_rms_for_noise_update =
             static_cast<double>(current) * Constants::ADAPTIVE_UPDATE_MAX_RMS_FRACTION;
         if (rms > max_rms_for_noise_update) {
+            // Ignore loud chunks so speech does not pollute the noise-floor estimate.
             return;
         }
         if (!silence_floor_initialized_.load(std::memory_order_acquire)) {
@@ -599,6 +615,7 @@ private:
         double desired = updated * Constants::ENERGY_THRESHOLD_MULTIPLIER;
         desired = std::max(desired, static_cast<double>(Constants::ADAPTIVE_THRESHOLD_MIN));
         const int base = base_energy_threshold_.load(std::memory_order_relaxed);
+        // Never auto-adapt above the user-calibrated baseline.
         desired = std::min(desired, static_cast<double>(base));
         int target = static_cast<int>(std::lround(desired));
         int max_step = std::max(5,
@@ -663,6 +680,7 @@ private:
                 continue;
             }
             const std::string device_name = info->name != nullptr ? info->name : "";
+            // Partial/case-insensitive match to reduce device-name fragility.
             if (lower(device_name).find(needle) != std::string::npos) {
                 return i;
             }
@@ -737,7 +755,8 @@ public:
             throw AudioException("Model file does not exist: " + model_path_);
         }
         std::cout << "Loading Whisper model from: " << model_path_ << std::endl;
-        ctx_ = whisper_init_from_file(model_path_.c_str());
+        const whisper_context_params cparams = whisper_context_default_params();
+        ctx_ = whisper_init_from_file_with_params(model_path_.c_str(), cparams);
         if (ctx_ == nullptr) {
             throw AudioException("Failed to load Whisper model from " + model_path_);
         }
@@ -754,6 +773,7 @@ public:
             return {};
         }
         whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
+        // Keep CLI output clean: no per-token progress/timestamps from whisper.cpp.
         params.language = language.c_str();
         params.print_realtime = false;
         params.print_progress = false;
@@ -805,6 +825,7 @@ public:
         auto future = promise.get_future();
         {
             std::lock_guard<std::mutex> lock(queue_mutex_);
+            // Move ownership of audio into worker queue to avoid copying.
             transcription_queue_.push(Task{std::move(audio), std::move(promise)});
         }
         queue_cv_.notify_one();
@@ -837,6 +858,7 @@ private:
                     task.promise.set_value(model_.transcribe(task.audio, language_));
                 }
             } catch (...) {
+                // Propagate worker failures back to caller through the future.
                 task.promise.set_exception(std::current_exception());
             }
         }
@@ -956,6 +978,7 @@ Args parse_arguments(int argc, char* argv[]) {
             args.encoded_start = std::chrono::system_clock::from_time_t(tt);
             args.has_encoded_start = true;
         } else if (arg == "--help" || arg == "-h") {
+            // Help intentionally exits early before validating required arguments.
             std::cout
                 << "Usage: " << argv[0] << " [options]\n"
                 << " --energy_threshold <int>          Energy threshold for speech detection. Default: auto-adjust\n"
@@ -986,21 +1009,188 @@ Args parse_arguments(int argc, char* argv[]) {
     }
     return args;
 }
-// ... (FileAudio namespace, load_wav_mono_16, transcode_media_to_wav, etc. unchanged - omitted for brevity in this diff but present in full file)
 namespace FileAudio {
 namespace {
-    // (identical to original - unchanged)
-    uint32_t read_u32_le(std::ifstream& f) { /* ... */ }
-    uint16_t read_u16_le(std::ifstream& f) { /* ... */ }
+    uint32_t read_u32_le(std::ifstream& f) {
+        // WAV headers are little-endian; decode explicitly for portability.
+        std::array<unsigned char, 4> b{};
+        f.read(reinterpret_cast<char*>(b.data()), static_cast<std::streamsize>(b.size()));
+        if (!f) {
+            throw AudioException("Unexpected end of file while reading 32-bit value.");
+        }
+        return static_cast<uint32_t>(b[0]) |
+               (static_cast<uint32_t>(b[1]) << 8u) |
+               (static_cast<uint32_t>(b[2]) << 16u) |
+               (static_cast<uint32_t>(b[3]) << 24u);
+    }
+    uint16_t read_u16_le(std::ifstream& f) {
+        std::array<unsigned char, 2> b{};
+        f.read(reinterpret_cast<char*>(b.data()), static_cast<std::streamsize>(b.size()));
+        if (!f) {
+            throw AudioException("Unexpected end of file while reading 16-bit value.");
+        }
+        return static_cast<uint16_t>(b[0]) |
+               static_cast<uint16_t>(static_cast<uint16_t>(b[1]) << 8u);
+    }
 #ifdef _WIN32
-    std::string quote_windows_arg(const std::string& arg) { /* ... */ }
+    std::string quote_windows_arg(const std::string& arg) {
+        std::string out = "\"";
+        for (char c : arg) {
+            if (c == '"') {
+                out += "\\\"";
+            } else {
+                out += c;
+            }
+        }
+        out += "\"";
+        return out;
+    }
 #endif
-    void run_ffmpeg_extract(const std::string& input, const std::string& output, int target_sample_rate) { /* ... */ }
+    void run_ffmpeg_extract(const std::string& input, const std::string& output, int target_sample_rate) {
+#ifdef _WIN32
+        const std::string cmd =
+            "ffmpeg -y -hide_banner -loglevel error -i " + quote_windows_arg(input) +
+            " -ac 1 -ar " + std::to_string(target_sample_rate) +
+            " -f wav " + quote_windows_arg(output);
+#else
+        const std::string cmd =
+            "ffmpeg -y -hide_banner -loglevel error -i \"" + input +
+            "\" -ac 1 -ar " + std::to_string(target_sample_rate) +
+            " -f wav \"" + output + "\"";
+#endif
+        const int rc = std::system(cmd.c_str());
+        if (rc != 0) {
+            throw AudioException("ffmpeg failed while transcoding media to WAV.");
+        }
+    }
 }
-bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector<int16_t>& samples_out) { /* ... */ }
-std::vector<int16_t> load_raw_pcm_16(const std::string& path) { /* ... */ }
-std::vector<float> to_float(const std::vector<int16_t>& samples) { /* ... */ }
-std::string transcode_media_to_wav(const std::string& media_path, int target_sample_rate) { /* ... */ }
+bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector<int16_t>& samples_out) {
+    sample_rate_out = 0;
+    samples_out.clear();
+
+    std::ifstream f(path, std::ios::binary);
+    if (!f) {
+        return false;
+    }
+
+    std::array<char, 4> riff{};
+    std::array<char, 4> wave{};
+    f.read(riff.data(), static_cast<std::streamsize>(riff.size()));
+    const uint32_t riff_size = read_u32_le(f);
+    (void)riff_size;
+    f.read(wave.data(), static_cast<std::streamsize>(wave.size()));
+    if (!f || std::strncmp(riff.data(), "RIFF", 4) != 0 || std::strncmp(wave.data(), "WAVE", 4) != 0) {
+        return false;
+    }
+
+    bool fmt_found = false;
+    bool data_found = false;
+    uint16_t audio_format = 0;
+    uint16_t channels = 0;
+    uint16_t bits_per_sample = 0;
+    uint32_t sample_rate = 0;
+    std::vector<int16_t> parsed_samples;
+
+    // Parse chunks until both format and sample payload are discovered.
+    while (f && !(fmt_found && data_found)) {
+        std::array<char, 4> chunk_id{};
+        f.read(chunk_id.data(), static_cast<std::streamsize>(chunk_id.size()));
+        if (!f) {
+            break;
+        }
+
+        const uint32_t chunk_size = read_u32_le(f);
+        if (std::strncmp(chunk_id.data(), "fmt ", 4) == 0) {
+            audio_format = read_u16_le(f);
+            channels = read_u16_le(f);
+            sample_rate = read_u32_le(f);
+            (void)read_u32_le(f); // byte rate
+            (void)read_u16_le(f); // block align
+            bits_per_sample = read_u16_le(f);
+
+            // Skip any extra fmt payload.
+            if (chunk_size > 16u) {
+                f.seekg(static_cast<std::streamoff>(chunk_size - 16u), std::ios::cur);
+            }
+            fmt_found = f.good();
+        } else if (std::strncmp(chunk_id.data(), "data", 4) == 0) {
+            const size_t byte_count = static_cast<size_t>(chunk_size);
+            if ((byte_count % sizeof(int16_t)) != 0u) {
+                return false;
+            }
+            parsed_samples.resize(byte_count / sizeof(int16_t));
+            if (!parsed_samples.empty()) {
+                f.read(reinterpret_cast<char*>(parsed_samples.data()),
+                       static_cast<std::streamsize>(byte_count));
+                if (!f) {
+                    return false;
+                }
+            }
+            data_found = true;
+        } else {
+            // Unknown chunk: skip it to support WAV files with extra metadata.
+            f.seekg(static_cast<std::streamoff>(chunk_size), std::ios::cur);
+        }
+
+        if ((chunk_size % 2u) != 0u) {
+            f.seekg(1, std::ios::cur);
+        }
+    }
+
+    if (!fmt_found || !data_found) {
+        return false;
+    }
+    if (audio_format != 1u || channels != 1u || bits_per_sample != 16u) {
+        return false;
+    }
+
+    sample_rate_out = static_cast<int>(sample_rate);
+    samples_out = std::move(parsed_samples);
+    return true;
+}
+std::vector<int16_t> load_raw_pcm_16(const std::string& path) {
+    std::ifstream f(path, std::ios::binary | std::ios::ate);
+    if (!f) {
+        return {};
+    }
+    const std::streamsize size = f.tellg();
+    if (size <= 0 || (size % static_cast<std::streamsize>(sizeof(int16_t))) != 0) {
+        return {};
+    }
+    f.seekg(0, std::ios::beg);
+    std::vector<int16_t> out(static_cast<size_t>(size) / sizeof(int16_t));
+    f.read(reinterpret_cast<char*>(out.data()), size);
+    if (!f) {
+        return {};
+    }
+    return out;
+}
+std::vector<float> to_float(const std::vector<int16_t>& samples) {
+    std::vector<float> out;
+    out.reserve(samples.size());
+    // 16-bit signed PCM normalization range is roughly [-1.0, 1.0).
+    constexpr float kScale = 1.0f / 32768.0f;
+    for (int16_t s : samples) {
+        out.push_back(static_cast<float>(s) * kScale);
+    }
+    return out;
+}
+std::string transcode_media_to_wav(const std::string& media_path, int target_sample_rate) {
+    const auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::system_clock::now().time_since_epoch())
+                            .count();
+#ifdef _WIN32
+    const auto pid = static_cast<long long>(GetCurrentProcessId());
+#else
+    const auto pid = static_cast<long long>(getpid());
+#endif
+    const auto tmp_path =
+        std::filesystem::temp_directory_path() /
+        ("stt_" + std::to_string(pid) + "_" + std::to_string(now_ms) + ".wav");
+    // Generate deterministic WAV output format expected by load_wav_mono_16().
+    run_ffmpeg_extract(media_path, tmp_path.string(), target_sample_rate);
+    return tmp_path.string();
+}
 } // namespace FileAudio
 void clear_console() {
 #ifdef _WIN32
@@ -1071,6 +1261,7 @@ bool is_silent_chunk(const std::vector<int16_t>& samples,
         sum_squares += v * v;
     }
     const long double rms = std::sqrt(sum_squares / static_cast<long double>(samples.size()));
+    // Fraction lets adaptive mode lower "skip silence" aggressiveness safely.
     const long double min_rms = static_cast<long double>(energy_threshold) * threshold_fraction;
     return rms < min_rms;
 }
@@ -1082,12 +1273,14 @@ std::vector<float> load_audio_from_file(const std::string& path) {
             throw AudioException("Unsupported WAV sample rate. Expected 16000 Hz mono 16-bit PCM.");
         }
     } else {
+        // Fallback chain: raw PCM first, then ffmpeg transcode for arbitrary media.
         pcm = FileAudio::load_raw_pcm_16(path);
         sample_rate = Constants::SAMPLE_RATE;
         if (pcm.empty()) {
             const std::string tmp_wav = FileAudio::transcode_media_to_wav(path, Constants::SAMPLE_RATE);
             const bool ok = FileAudio::load_wav_mono_16(tmp_wav, sample_rate, pcm);
             std::error_code ec;
+            // Best-effort cleanup; parse errors below still propagate.
             std::filesystem::remove(tmp_wav, ec);
             if (!ok || sample_rate != Constants::SAMPLE_RATE) {
                 throw AudioException("Failed to decode media file. Ensure ffmpeg is installed and input is valid.");
@@ -1111,6 +1304,7 @@ int main(int argc, char* argv[]) {
             list_and_exit();
         }
         if (!args.audio_file_path.empty()) {
+            // Offline file mode: process deterministic chunks and print timestamped text.
             WhisperModel audio_model(args.whisper_model_path);
             auto audio_data = load_audio_from_file(args.audio_file_path);
             std::cout << "Transcribing media file: " << args.audio_file_path << std::endl;
@@ -1130,8 +1324,11 @@ int main(int argc, char* argv[]) {
                 if (chunk.size() < Constants::MIN_AUDIO_SAMPLES) {
                     chunk.resize(Constants::MIN_AUDIO_SAMPLES, 0.0f);
                 }
+                // Timestamp each chunk by its end position in the source media.
                 const double end_sec = static_cast<double>(end) / Constants::SAMPLE_RATE;
-                const auto end_time = transcript_start + std::chrono::duration<double>(end_sec);
+                const auto end_offset = std::chrono::duration_cast<std::chrono::system_clock::duration>(
+                    std::chrono::duration<double>(end_sec));
+                const auto end_time = transcript_start + end_offset;
                 std::string text = trim(audio_model.transcribe(chunk, args.language));
                 if (!text.empty()) {
                     std::cout << format_datetime(end_time) << " " << text << std::endl;
@@ -1141,6 +1338,7 @@ int main(int argc, char* argv[]) {
                 const auto elapsed = std::chrono::steady_clock::now() - loop_start;
                 const auto target = std::chrono::duration<double>(args.record_timeout);
                 if (elapsed < target) {
+                    // Pace loop to emulate live chunk cadence and reduce CPU spinning.
                     std::this_thread::sleep_for(target - elapsed);
                 }
             }
@@ -1177,6 +1375,7 @@ int main(int argc, char* argv[]) {
         auto record_callback = [&](const std::vector<int16_t>& audio_chunk) {
             std::lock_guard<std::mutex> lock(queue_mutex);
             if (data_queue.size() >= Constants::MAX_QUEUED_AUDIO_CHUNKS) {
+                // Apply bounded queue policy under overload to cap memory growth.
                 data_queue.pop();
             }
             data_queue.push(audio_chunk);
@@ -1237,6 +1436,7 @@ int main(int argc, char* argv[]) {
                             if (it->starts_new_phrase) {
                                 transcription.push_back(text);
                             } else {
+                                // Replace in-progress phrase with latest refined hypothesis.
                                 transcription.back() = text;
                             }
                             clear_console();
@@ -1259,6 +1459,7 @@ int main(int argc, char* argv[]) {
                                                        ? static_cast<long double>(args.adaptive_silence_fraction)
                                                        : 0.5L;
                 if (is_silent_chunk(audio_chunk, current_energy_threshold, silent_fraction)) {
+                    // Drop low-energy chunks before sending to Whisper worker.
                     continue;
                 }
                 last_phrase_end_time = now;

@@ -81,6 +81,7 @@ Response get(const std::string& url,
              const std::string& accept = "application/fhir+json",
              const std::string& auth_header = "",
              long timeout_seconds = 10) {
+    // Keep HTTP helper fail-soft: caller decides whether missing network is fatal.
     Response result;
     CURL* curl = curl_easy_init();
     if (!curl) {
@@ -126,6 +127,7 @@ public:
 
     // Returns cached JSON if present and not expired; nullopt otherwise.
     std::optional<json> get(const std::string& key) const {
+        // Cache lookups are opportunistic; any parse/fs error is treated as cache miss.
         const fs::path p = entry_path(key);
         std::error_code ec;
         if (!fs::exists(p, ec)) {
@@ -151,6 +153,7 @@ public:
     }
 
     void put(const std::string& key, const json& value) const {
+        // Never fail the mapping pipeline due to cache write problems.
         const fs::path p = entry_path(key);
         try {
             std::ofstream f(p);
@@ -208,6 +211,7 @@ public:
         if (code.empty()) return std::nullopt;
 
         const std::string cache_key = "loinc_" + code;
+        // Prefer local cache first to reduce latency and avoid unnecessary remote calls.
         if (auto cached = readCachedCoding(cache_key, kLoincSystem, code, ""); cached.has_value()) {
             return cached;
         }
@@ -284,6 +288,7 @@ public:
 
         const auto& ids = (*body)["idGroup"]["rxnormId"];
         if (!ids.is_array() || ids.empty()) return std::nullopt;
+        // Keep first candidate deterministic; downstream can still review via issues.
         const std::string rxcui = ids[0].get<std::string>();
 
         // Now fetch the display name for this CUI.
@@ -351,6 +356,7 @@ private:
                                                    const std::string& system,
                                                    const std::string& default_code,
                                                    const std::string& default_display) const {
+        // Persist only code/display in cache; system comes from lookup context.
         if (auto cached = cache_.get(cache_key); cached.has_value()) {
             return ResolvedCoding{
                 system,
@@ -377,6 +383,7 @@ private:
                                   const std::string& accept,
                                   const std::string& auth_header = "") const {
         const auto resp = Http::get(url, accept, auth_header, cfg_.timeout_seconds);
+        // Invalid JSON or non-2xx responses are normalized to nullopt.
         if (!resp.ok() || resp.body.empty()) return std::nullopt;
         try {
             return json::parse(resp.body);
@@ -515,6 +522,7 @@ std::string ltrim_copy(std::string s) {
 }
 
 std::string strip_json_like_comments(const std::string& input) {
+    // Allow hand-edited JSON files with // and /* */ comments.
     std::string out;
     out.reserve(input.size());
     bool in_string = false, escaped = false, in_line = false, in_block = false;
@@ -557,6 +565,7 @@ bool looksUnknown(const std::string& s) {
 }
 
 json ensureCodeableConcept(json value) {
+    // Tolerate non-canonical model output (array/object) and normalize to object.
     if (value.is_array() && !value.empty() && value[0].is_object()) return value[0];
     if (value.is_object()) return value;
     return json::object();
@@ -594,6 +603,7 @@ std::string terminologySourceSuffix(const ResolvedCoding& coding) {
 }
 
 void addTransactionRequest(json& entry, const std::string& rt, const std::optional<std::string>& id) {
+    // Produce transaction-safe request stubs for PUT (known id) or POST (new id).
     if (!entry.contains("request")) {
         if (id && !id->empty())
             entry["request"] = json{{"method", "PUT"}, {"url", rt + "/" + *id}};
@@ -633,6 +643,7 @@ std::string getQuantityUnit(const json& resource) {
 
 void normalizeQuantity(json& q) {
     if (!q.is_object()) return;
+    // Normalize common colloquial units into UCUM-coded representation.
     std::string unit = getString(q, "unit");
     std::string code = getString(q, "code");
     if (unit == "/min" || unit == "per minute" || unit == "beats/min" || unit == "bpm") {
@@ -701,7 +712,7 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
 
     const std::string unit = lower(getQuantityUnit(resource));
 
-    // 1. Check hardcoded overrides first (fastest, offline-safe)
+    // 1) Hardcoded overrides are the deterministic, always-available fallback.
     if (!code.empty()) {
         auto it = ctx.terminologyOverrides.find(code);
         if (it != ctx.terminologyOverrides.end()) {
@@ -711,7 +722,7 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
         }
     }
 
-    // 2. If code exists and system is LOINC, validate display via live lookup
+    // 2) If a LOINC code exists, refresh display to canonical terminology text.
     if (!code.empty() && (system == "http://loinc.org" || system.empty()) && ctx.terminology) {
         if (auto resolved = ctx.terminology->lookupLoinc(code); resolved.has_value()) {
             if (!resolved->display.empty()) {
@@ -735,7 +746,7 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
                  "LOINC code '" + code + "' could not be verified against terminology service.", resource);
     }
 
-    // 3. No code but we have a display — try LOINC text search
+    // 3) If code is missing, attempt terminology search from display + unit hint.
     if (code.empty() && !display.empty() && ctx.terminology) {
         if (auto resolved = ctx.terminology->searchLoincByDisplay(display, unit); resolved.has_value()) {
             resource["code"] = makeCodeableConcept(resolved->system, resolved->code, resolved->display);
@@ -748,7 +759,7 @@ void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<Ma
         }
     }
 
-    // 4. Heuristic fallbacks (same as v1, offline-safe)
+    // 4) Last-resort local heuristics keep mapping available without network.
     if (unit.find("min") != std::string::npos || unit == "/min" || unit == "beats/minute" || unit == "bpm") {
         resource["code"] = makeCodeableConcept("http://loinc.org", "8867-4", "Heart rate");
         addIssue(issues, "warning", "observation.code.repaired",
@@ -792,7 +803,7 @@ void enrichMedicationCoding(json& medCC, MapperContext& ctx, std::vector<MapperI
                               const json& resource) {
     if (!ctx.terminology) return;
 
-    // Check if we already have an RxNorm coding
+    // Preserve existing RxNorm coding if already present.
     if (medCC.contains("coding") && medCC["coding"].is_array()) {
         for (const auto& c : medCC["coding"]) {
             const std::string sys = getString(c, "system");
@@ -808,7 +819,7 @@ void enrichMedicationCoding(json& medCC, MapperContext& ctx, std::vector<MapperI
         }
     }
 
-    // Try to find a drug name in text or existing display to look up
+    // Fall back to textual labels when structured coding is incomplete.
     std::string drug_name = getString(medCC, "text");
     if (drug_name.empty()) {
         if (auto coding = firstCoding(medCC); coding.has_value()) {
@@ -855,6 +866,7 @@ std::string bpGroupKey(const json& resource) {
 }
 
 json makeBpPanel(const CandidateBp& a, const CandidateBp& b, int seq) {
+    // Pair two generic BP observations into a panel with systolic/diastolic components.
     const CandidateBp* systolic = (a.value >= b.value) ? &a : &b;
     const CandidateBp* diastolic = (a.value >= b.value) ? &b : &a;
     return json{
@@ -880,6 +892,7 @@ json makeBpPanel(const CandidateBp& a, const CandidateBp& b, int seq) {
 
 json convertMedicationRequestToAdministration(json resource, MapperContext& ctx,
                                                std::vector<MapperIssue>& issues) {
+    // Project-specific normalization: convert intent-style requests into completed administrations.
     json out;
     out["resourceType"] = "MedicationAdministration";
     if (isNonEmptyString(resource, "id"))
@@ -941,7 +954,7 @@ void normalizeProcedure(json& resource, MapperContext& ctx, std::vector<MapperIs
                  "Procedure uses LOINC; consider SNOMED CT or a procedure coding system.", resource);
     }
 
-    // If SNOMED code, validate via NLM.
+    // Validate SNOMED display text when a SNOMED code is present.
     if (coding->system != "http://snomed.info/sct" || !ctx.terminology) return;
     if (auto resolved = ctx.terminology->lookupSnomed(coding->code); resolved.has_value()) {
         resource["code"]["coding"][0]["display"] = resolved->display;
@@ -960,6 +973,7 @@ bool hasRequiredProfileFields(const json& resource, std::vector<MapperIssue>& is
     const auto require_field = [&](const char* field,
                                    const std::string& issue_code,
                                    const std::string& message) {
+        // Collect profile violations without throwing to keep full issue visibility.
         if (!resource.contains(field)) {
             addIssue(issues, "error", issue_code, message, resource);
             return false;
@@ -992,6 +1006,7 @@ bool hasRequiredProfileFields(const json& resource, std::vector<MapperIssue>& is
 }
 
 bool isUncertainExtraction(const json& resource, std::vector<MapperIssue>& issues) {
+    // Mark suspicious clinical values/text as review-required rather than silently accepting.
     if (getString(resource, "resourceType") == "Observation" &&
         resource.contains("valueString") && resource["valueString"].is_string()) {
         const std::string v = lower(resource["valueString"].get<std::string>());
@@ -1018,6 +1033,7 @@ bool isUncertainExtraction(const json& resource, std::vector<MapperIssue>& issue
 }
 
 void attachMetaProfile(json& resource, const MapperContext& ctx) {
+    // Tag every output resource with mapper profile lineage.
     if (!resource.contains("meta") || !resource["meta"].is_object())
         resource["meta"] = json::object();
     if (!resource["meta"].contains("profile") || !resource["meta"]["profile"].is_array())
@@ -1027,6 +1043,7 @@ void attachMetaProfile(json& resource, const MapperContext& ctx) {
 
 json buildProvenanceResource(const json& target, int seq, const MapperContext& ctx,
                               const std::vector<MapperIssue>& issues) {
+    // Emit per-resource provenance and embed decision rationale from mapper issues.
     json reasonExt = json::array();
     for (const auto& issue : issues)
         reasonExt.push_back(json{{"url", "issue"}, {"valueString", issue.code + ": " + issue.details}});
@@ -1081,6 +1098,7 @@ MapperResult normalizeResource(json resource, MapperContext& ctx) {
 
     attachMetaProfile(result.resource, ctx);
 
+    // A resource is rejected only when profile compliance fails or uncertainty is detected.
     if (!hasRequiredProfileFields(result.resource, result.issues)) result.accepted = false;
     if (isUncertainExtraction(result.resource, result.issues))     result.accepted = false;
 
@@ -1135,7 +1153,7 @@ json mapBundle(const json& input, const std::string& modelName, TerminologyClien
     int bpSeq = 1, provSeq = 1;
     std::vector<MapperIssue> allIssues;
 
-    // BP grouping pass (unchanged from v1)
+    // Pass 1: collect candidate BP observations for potential panel synthesis.
     for (const auto& entry : input["entry"]) {
         if (!entry.contains("resource") || !entry["resource"].is_object()) continue;
         const auto& r = entry["resource"];
@@ -1152,7 +1170,7 @@ json mapBundle(const json& input, const std::string& modelName, TerminologyClien
         bpGroups[bpGroupKey(r)].push_back(c);
     }
 
-    // Main processing pass
+    // Pass 2: normalize/route each resource into accepted or rejected output bundles.
     for (const auto& entry : input["entry"]) {
         if (!entry.contains("resource") || !entry["resource"].is_object()) continue;
 
@@ -1253,7 +1271,7 @@ int main(int argc, char** argv) {
         if (inputPath.empty()) { std::cerr << "Error: missing input file path.\n"; return 1; }
         if (modelName.empty()) { std::cerr << "Error: --model-name is required.\n"; return 1; }
 
-        // Initialise curl globally
+        // Curl global init/cleanup are process-wide and must bracket HTTP usage.
         curl_global_init(CURL_GLOBAL_DEFAULT);
 
         TerminologyClient terminology(termCfg);
@@ -1278,6 +1296,7 @@ int main(int argc, char** argv) {
         std::string line;
         while (std::getline(stream, line)) {
             const std::string t = ltrim_copy(line);
+            // Ignore empty/comment-only lines after comment stripping.
             if (!t.empty()) cleaned << line << '\n';
         }
 

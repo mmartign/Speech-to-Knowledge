@@ -40,7 +40,7 @@
 
 using json = nlohmann::json;
 
-// Global config
+// Global runtime configuration loaded from config.ini.
 std::string OPENWEBUI_URL;
 std::string API_KEY;
 std::string MODEL_NAME;
@@ -71,6 +71,7 @@ class AnalysisSession {
 public:
     AnalysisSession(std::mutex& mutex, std::atomic<int>& active_count)
         : lock_(mutex), active_count_(active_count) {
+        // Serialize analysis sections that share output/logging resources.
         ++active_count_;
     }
 
@@ -100,6 +101,7 @@ std::string trim_whitespace(std::string text) {
 }
 
 std::string strip_json_like_comments(const std::string& input) {
+    // Supports model responses that include JSON with JS-style comments.
     std::string out;
     out.reserve(input.size());
 
@@ -182,6 +184,7 @@ bool starts_with_unused_tag_at(const std::string& text, size_t pos) {
 }
 
 std::string strip_internal_reasoning_tags(std::string text) {
+    // Remove leaked internal <unused...> segments before user-facing output.
     size_t cursor = 0;
     while (cursor < text.size()) {
         size_t tag_pos = text.find("<unused", cursor);
@@ -301,6 +304,7 @@ bool extract_fhir_bundle_from_text(const std::string& text, json& bundle, size_t
                             parsed = json::parse(strip_json_like_comments(candidate));
                         }
                         if (is_fhir_bundle_object(parsed)) {
+                            // Return the first valid Bundle object found in the response text.
                             bundle = std::move(parsed);
                             start_pos = i;
                             end_pos = j + 1;
@@ -324,6 +328,7 @@ bool extract_fhir_bundle_from_text(const std::string& text, json& bundle, size_t
 }
 
 bool extract_revised_bundle(const json& mapper_output, json& revised_bundle) {
+    // Accept either raw Bundle output or wrapped mapper payload.
     if (is_fhir_bundle_object(mapper_output)) {
         revised_bundle = mapper_output;
         return true;
@@ -345,6 +350,7 @@ std::string revise_fhir_bundle_in_response(std::string response_text,
     size_t start_pos = 0;
     size_t end_pos = 0;
     if (!extract_fhir_bundle_from_text(response_text, detected_bundle, start_pos, end_pos)) {
+        // Fast path: no Bundle detected, return original model output.
         return response_text;
     }
 
@@ -365,6 +371,7 @@ std::string revise_fhir_bundle_in_response(std::string response_text,
     }
 
     std::ostringstream cmd_builder;
+    // Shell out to deterministic mapper to post-process model-generated FHIR.
     cmd_builder << "./deterministic_fhir_mapper.exe '" << escape_for_single_quotes(input_path)
                 << "' '" << escape_for_single_quotes(output_path)
                 << "' --model-name '" << escape_for_single_quotes(MODEL_NAME) << "'";
@@ -419,6 +426,7 @@ std::string revise_fhir_bundle_in_response(std::string response_text,
         }
 
         const std::string revised_text = revised_bundle.dump(2);
+        // Replace only the detected Bundle span, leaving surrounding narrative intact.
         response_text.replace(start_pos, end_pos - start_pos, revised_text);
         file << "\n[INFO] FHIR Bundle detected and revised by deterministic_fhir_mapper.\n";
     } catch (const std::exception& e) {
@@ -432,6 +440,7 @@ std::string revise_fhir_bundle_in_response(std::string response_text,
 }
 
 std::string escape_for_single_quotes(const std::string& text) {
+    // POSIX-shell escaping for single-quoted command arguments.
     std::string escaped;
     escaped.reserve(text.size() * 2);
     for (char c : text) {
@@ -455,6 +464,7 @@ void speak_text(const std::string& text) {
     const std::string escaped = escape_for_single_quotes(trimmed);
     const std::string cmd = TTS_COMMAND + " '" + escaped + "' >/dev/null 2>&1 &";
 
+    // TTS backend is shared; avoid overlapping command writes.
     std::lock_guard<std::mutex> lock(tts_mutex);
     std::system(cmd.c_str());
 }
@@ -537,6 +547,7 @@ bool load_config(const std::string& path) {
     require_value("tts.command", TTS_COMMAND);
 
     auto kb_it = config.find("analysis.knowledge_base_ids");
+    // Optional: empty means no KB augmentation, not a hard failure.
     KNOWLEDGE_BASE_IDS = (kb_it != config.end()) ? kb_it->second : std::string{};
 
     auto mapper_network_it = config.find("deterministic_mapper.network_enabled");
@@ -600,6 +611,7 @@ bool contains_substring(const std::string& str, const std::string& sub) {
 
 // Safely extract a textual message content from an OpenAI-style response
 std::string extract_message_content(const json& response) {
+    // Normalize multiple OpenAI response shapes into plain text.
     const auto choices_it = response.find("choices");
     if (choices_it == response.end() || !choices_it->is_array() || choices_it->empty()) {
         return {};
@@ -681,6 +693,7 @@ void analyze_text(const std::string& text) {
     std::string response_string;
 
     try {
+        // Initialize SDK per process invocation; repeated calls are idempotent for this wrapper.
         openai::start({
             API_KEY
         });
@@ -700,6 +713,7 @@ void analyze_text(const std::string& text) {
         }
 
         auto chat = openai::chat().create(body);
+        // Strip model-internal tags, then run deterministic FHIR post-processing.
         response_string = strip_internal_reasoning_tags(extract_message_content(chat));
         response_string = revise_fhir_bundle_in_response(response_string, std::to_string(analysis_id), file);
         if (response_string.empty()) {
@@ -717,6 +731,7 @@ void analyze_text(const std::string& text) {
 
     if (!response_string.empty()) {
         try {
+            // Follow-up summary call keeps spoken output concise.
             json summary_body = {
                 {"model", MODEL_NAME},
                 {"messages", {
@@ -754,6 +769,7 @@ void analyze_text(const std::string& text) {
 void temp_analyze_text(const std::string& text) {
     AnalysisSession session(analysis_mutex, active_analyses);
     const int analysis_id = ++temp_counter_value;
+    // Use compound id (<main>.<temp>) so temp files sort with their parent analysis.
     const std::string analysis_id_str = std::to_string(counter_value + 1) + "." + std::to_string(analysis_id); 
     say_info("Temporary_Analysis of Recording[" + analysis_id_str + "] Started ------------------->>>\n");
 
@@ -875,6 +891,7 @@ int main() {
                     say_info("Another analysis is running; this one will start once it finishes ------------------->>>\n");
                 }
                 std::string snapshot = collected_text;
+                // Temp analysis runs on a snapshot while recording continues.
                 std::thread(temp_analyze_text, std::move(snapshot)).detach();
             }
         }
