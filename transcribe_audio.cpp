@@ -97,6 +97,7 @@ public:
 };
 class PortAudioRuntime {
 public:
+    // Initialize PortAudio once per process.
     static void ensure_initialized() {
         // PortAudio uses process-global state; guard init/term with a single mutex.
         std::lock_guard<std::mutex> lock(mutex_);
@@ -109,6 +110,7 @@ public:
         }
         initialized_ = true;
     }
+    // Terminate PortAudio only when it has been initialized before.
     static void terminate_if_initialized() noexcept {
         std::lock_guard<std::mutex> lock(mutex_);
         if (!initialized_) {
@@ -129,6 +131,7 @@ public:
     ~PortAudioStream() { close(); }
     PortAudioStream(const PortAudioStream&) = delete;
     PortAudioStream& operator=(const PortAudioStream&) = delete;
+    // Open input stream with the provided callback and device parameters.
     bool open(PaStreamParameters* input_parameters,
               double sample_rate,
               unsigned long frames_per_buffer,
@@ -146,6 +149,7 @@ public:
                                   user_data);
         return last_err_ == paNoError;
     }
+    // Start an already-open PortAudio stream.
     bool start() {
         if (stream_ == nullptr) {
             last_err_ = paBadStreamPtr;
@@ -154,6 +158,7 @@ public:
         last_err_ = Pa_StartStream(stream_);
         return last_err_ == paNoError;
     }
+    // Stop streaming if active.
     void stop() noexcept {
         if (stream_ != nullptr) {
             PaError err = Pa_StopStream(stream_);
@@ -162,6 +167,7 @@ public:
             }
         }
     }
+    // Close stream handle and release PortAudio resources.
     void close() noexcept {
         if (stream_ != nullptr) {
             stop();
@@ -172,6 +178,7 @@ public:
             stream_ = nullptr;
         }
     }
+    // Return last PortAudio error produced by this wrapper.
     PaError last_error() const noexcept { return last_err_; }
 private:
     PaStream* stream_ = nullptr;
@@ -217,23 +224,29 @@ public:
 };
 class PortAudioRecorder final : public AudioRecorder {
 public:
+    // Build recorder state and preallocate callback ring storage.
     PortAudioRecorder() {
         PortAudioRuntime::ensure_initialized();
         raw_ring_.resize(Constants::RAW_RING_CHUNK_CAPACITY);
     }
+    // Ensure stream/worker shutdown on object destruction.
     ~PortAudioRecorder() override {
         stopRecording();
     }
+    // Set preferred input device substring used during next stream start.
     void setPreferredDeviceName(const std::string& name) override {
         std::lock_guard<std::mutex> lock(callback_mutex_);
         preferred_device_name_ = name;
     }
+    // Configure silence hangover chunks used before adaptive-threshold updates.
     void setAdaptiveHangoverChunks(int chunks) override {
         adaptive_hangover_chunks_.store(std::max(1, chunks), std::memory_order_relaxed);
     }
+    // Enable verbose adaptive-threshold diagnostics.
     void setVerbose(bool v) override {
         verbose_ = v;
     }
+    // Start PortAudio capture and background VAD processing worker.
     bool startRecording(std::function<void(const std::vector<int16_t>&)> callback,
                         int sample_rate,
                         double record_timeout,
@@ -305,6 +318,7 @@ public:
         std::cout << "Started recording on: " << device_info->name << std::endl;
         return true;
     }
+    // Stop stream and worker and clear transient state for clean restart.
     void stopRecording() override {
         // `exchange` prevents duplicate shutdown work when stop is called multiple times.
         const bool was_active = recording_active_.exchange(false, std::memory_order_acq_rel);
@@ -320,6 +334,7 @@ public:
             reset_ring();
         }
     }
+    // Calibrate energy threshold from ambient silence if no explicit threshold.
     void adjustForAmbientNoise(int user_energy_threshold) override {
         if (user_energy_threshold != -1) {
             setEnergyThreshold(user_energy_threshold);
@@ -377,6 +392,7 @@ public:
         }
         std::cout << "Adjusted energy threshold to: " << getEnergyThreshold() << std::endl;
     }
+    // Set current speech energy threshold and cached squared value.
     void setEnergyThreshold(int threshold) override {
         threshold = std::max(threshold, 1);
         bool expected = false;
@@ -390,9 +406,11 @@ public:
         energy_threshold_squared_.store(static_cast<int64_t>(threshold) * static_cast<int64_t>(threshold),
                                         std::memory_order_relaxed);
     }
+    // Read current speech energy threshold.
     int getEnergyThreshold() const override {
         return energy_threshold_.load(std::memory_order_relaxed);
     }
+    // Toggle adaptive thresholding and initialize baseline estimate when enabled.
     void setAdaptiveEnergyEnabled(bool enabled) override {
         adaptive_energy_enabled_.store(enabled, std::memory_order_release);
         if (!enabled) {
@@ -407,6 +425,7 @@ public:
         }
         prime_noise_floor_estimate(estimate);
     }
+    // Configure pre-roll window that preserves leading phonemes before trigger.
     void setVadPreRollSeconds(double seconds) override {
         if (seconds < 0.0) {
             seconds = 0.0;
@@ -422,6 +441,7 @@ private:
         std::vector<int16_t> samples;
         size_t frames = 0;
     };
+    // PortAudio realtime callback: enqueue raw input and return immediately.
     static int pa_callback(const void* input_buffer,
                            void* output_buffer,
                            unsigned long frames_per_buffer,
@@ -439,6 +459,7 @@ private:
         recorder->push_raw_chunk_from_callback(in, static_cast<size_t>(frames_per_buffer));
         return paContinue;
     }
+    // Push one callback chunk into the bounded lock-protected ring buffer.
     void push_raw_chunk_from_callback(const int16_t* data, size_t frames) noexcept {
         if (frames == 0) {
             return;
@@ -471,6 +492,7 @@ private:
         lock.unlock();
         ring_cv_.notify_one();
     }
+    // Pop one raw chunk from the callback ring; blocks until data or shutdown.
     bool pop_raw_chunk(RawChunk& out) {
         std::unique_lock<std::mutex> lock(ring_mutex_);
         ring_cv_.wait(lock, [&] {
@@ -484,6 +506,7 @@ private:
         --ring_size_;
         return true;
     }
+    // Worker loop that drains callback chunks and runs VAD/phrase assembly.
     void processing_worker() {
         try {
             RawChunk chunk;
@@ -502,10 +525,12 @@ private:
             std::cerr << "Recorder worker error: unknown exception" << std::endl;
         }
     }
+    // Read ring occupancy under lock for shutdown-drain checks.
     size_t ring_size_snapshot() const {
         std::lock_guard<std::mutex> lock(ring_mutex_);
         return ring_size_;
     }
+    // Run VAD state transitions for one callback chunk and emit completed phrases.
     void process_chunk(const std::vector<int16_t>& current_chunk) {
         auto callback = get_callback_copy();
         if (!callback) {
@@ -581,6 +606,7 @@ private:
             callback(completed);
         }
     }
+    // Return sum of squares for a PCM buffer.
     static double calculate_audio_energy(const int16_t* data, size_t count) {
         double sum_squares = 0.0;
         for (size_t i = 0; i < count; ++i) {
@@ -589,6 +615,7 @@ private:
         }
         return sum_squares;
     }
+    // Adapt energy threshold from sustained-silence chunks only.
     void update_adaptive_threshold(double sum_squares, size_t sample_count) {
         if (!adaptive_energy_enabled_.load(std::memory_order_relaxed) || sample_count == 0) {
             return;
@@ -637,6 +664,7 @@ private:
             }
         }
     }
+    // Seed adaptive RMS baseline from a known initial estimate.
     void prime_noise_floor_estimate(double rms) {
         if (rms <= 0.0) {
             return;
@@ -644,6 +672,7 @@ private:
         silence_rms_ema_.store(rms, std::memory_order_release);
         silence_floor_initialized_.store(true, std::memory_order_release);
     }
+    // Clear VAD phrase assembly state between runs.
     void clear_processing_state() {
         std::lock_guard<std::mutex> lock(vad_mutex_);
         vad_buffer_.clear();
@@ -651,6 +680,7 @@ private:
         consecutive_silence_chunks_ = 0;
         consecutive_silence_for_adaptation_ = 0;   // NEW
     }
+    // Reset callback ring indices while reusing allocated storage.
     void reset_ring() {
         std::lock_guard<std::mutex> lock(ring_mutex_);
         ring_head_ = 0;
@@ -660,6 +690,7 @@ private:
             chunk.frames = 0;
         }
     }
+    // Resolve preferred input device by partial case-insensitive name match.
     static int pick_input_device(const std::string& preferred_name) {
         const int default_device = Pa_GetDefaultInputDevice();
         if (preferred_name.empty()) {
@@ -688,10 +719,12 @@ private:
         }
         return default_device;
     }
+    // Copy current callback target so caller can invoke outside lock.
     std::function<void(const std::vector<int16_t>&)> get_callback_copy() {
         std::lock_guard<std::mutex> lock(callback_mutex_);
         return audio_callback_;
     }
+    // Replace the active consumer callback under lock.
     void set_callback(std::function<void(const std::vector<int16_t>&)> callback) {
         std::lock_guard<std::mutex> lock(callback_mutex_);
         audio_callback_ = std::move(callback);
@@ -733,6 +766,7 @@ private:
     size_t max_silence_chunks_ = 1;
     size_t max_pre_roll_chunks_ = 1;
 };
+// Enumerate available input-capable microphone device names.
 std::vector<std::string> AudioRecorder::listMicrophoneNames() {
     PortAudioRuntime::ensure_initialized();
     std::vector<std::string> names;
@@ -751,6 +785,7 @@ std::vector<std::string> AudioRecorder::listMicrophoneNames() {
 }
 class WhisperModel {
 public:
+    // Load a Whisper model context from disk.
     explicit WhisperModel(const std::string& model_path) : model_path_(model_path) {
         if (!std::filesystem::exists(model_path_)) {
             throw AudioException("Model file does not exist: " + model_path_);
@@ -769,6 +804,7 @@ public:
     }
     WhisperModel(const WhisperModel&) = delete;
     WhisperModel& operator=(const WhisperModel&) = delete;
+    // Run Whisper full transcription and concatenate all returned segments.
     std::string transcribe(const std::vector<float>& audio, const std::string& language) {
         if (ctx_ == nullptr || audio.empty()) {
             return {};
@@ -804,11 +840,13 @@ private:
 };
 class AudioTranscriber {
 public:
+    // Start a single background worker that serializes Whisper inference jobs.
     AudioTranscriber(WhisperModel& model, std::string language)
         : model_(model), language_(std::move(language)) {
         running_.store(true, std::memory_order_release);
         worker_ = std::thread(&AudioTranscriber::worker_loop, this);
     }
+    // Stop worker and drain pending tasks before destruction.
     ~AudioTranscriber() {
         {
             std::lock_guard<std::mutex> lock(queue_mutex_);
@@ -821,6 +859,7 @@ public:
     }
     AudioTranscriber(const AudioTranscriber&) = delete;
     AudioTranscriber& operator=(const AudioTranscriber&) = delete;
+    // Queue audio for background transcription and return a completion future.
     std::future<std::string> transcribe_async(std::vector<float> audio) {
         std::promise<std::string> promise;
         auto future = promise.get_future();
@@ -837,6 +876,7 @@ private:
         std::vector<float> audio;
         std::promise<std::string> promise;
     };
+    // Background worker that executes queued Whisper jobs and fulfills promises.
     void worker_loop() {
         for (;;) {
             Task task;
@@ -872,6 +912,7 @@ private:
     std::condition_variable queue_cv_;
     std::atomic<bool> running_{false};
 };
+// Parse CLI arguments and enforce value-level validation.
 Args parse_arguments(int argc, char* argv[]) {
     Args args;
     const std::unordered_set<std::string> valid_args = {
@@ -1012,6 +1053,7 @@ Args parse_arguments(int argc, char* argv[]) {
 }
 namespace FileAudio {
 namespace {
+    // Read little-endian unsigned 32-bit integer from a binary stream.
     uint32_t read_u32_le(std::ifstream& f) {
         // WAV headers are little-endian; decode explicitly for portability.
         std::array<unsigned char, 4> b{};
@@ -1024,6 +1066,7 @@ namespace {
                (static_cast<uint32_t>(b[2]) << 16u) |
                (static_cast<uint32_t>(b[3]) << 24u);
     }
+    // Read little-endian unsigned 16-bit integer from a binary stream.
     uint16_t read_u16_le(std::ifstream& f) {
         std::array<unsigned char, 2> b{};
         f.read(reinterpret_cast<char*>(b.data()), static_cast<std::streamsize>(b.size()));
@@ -1034,6 +1077,7 @@ namespace {
                static_cast<uint16_t>(static_cast<uint16_t>(b[1]) << 8u);
     }
 #ifdef _WIN32
+    // Quote Windows shell arguments for ffmpeg/ffprobe command lines.
     std::string quote_windows_arg(const std::string& arg) {
         std::string out = "\"";
         for (char c : arg) {
@@ -1047,6 +1091,7 @@ namespace {
         return out;
     }
 #endif
+    // Transcode arbitrary media into 16-bit mono WAV at the requested sample rate.
     void run_ffmpeg_extract(const std::string& input, const std::string& output, int target_sample_rate) {
 #ifdef _WIN32
         const std::string cmd =
@@ -1065,6 +1110,7 @@ namespace {
         }
     }
 }
+// Load RIFF/WAV PCM16 mono and return sample rate + samples.
 bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector<int16_t>& samples_out) {
     sample_rate_out = 0;
     samples_out.clear();
@@ -1149,6 +1195,7 @@ bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector
     samples_out = std::move(parsed_samples);
     return true;
 }
+// Load raw little-endian PCM16 payload as-is.
 std::vector<int16_t> load_raw_pcm_16(const std::string& path) {
     std::ifstream f(path, std::ios::binary | std::ios::ate);
     if (!f) {
@@ -1166,6 +1213,7 @@ std::vector<int16_t> load_raw_pcm_16(const std::string& path) {
     }
     return out;
 }
+// Convert PCM16 samples to normalized float range expected by Whisper.
 std::vector<float> to_float(const std::vector<int16_t>& samples) {
     std::vector<float> out;
     out.reserve(samples.size());
@@ -1358,6 +1406,7 @@ std::chrono::system_clock::time_point resolve_file_start_time(
     return application_start_time;
 }
 
+// Create a temporary WAV extracted from a media container/file.
 std::string transcode_media_to_wav(const std::string& media_path, int target_sample_rate) {
     const auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch())
@@ -1375,6 +1424,7 @@ std::string transcode_media_to_wav(const std::string& media_path, int target_sam
     return tmp_path.string();
 }
 } // namespace FileAudio
+// Clear terminal output used by non-pipe interactive transcript mode.
 void clear_console() {
 #ifdef _WIN32
     std::system("cls");
@@ -1382,6 +1432,7 @@ void clear_console() {
     std::cout << "\033[2J\033[H";
 #endif
 }
+// Return a trimmed copy of a string.
 std::string trim(const std::string& str) {
     const size_t start = str.find_first_not_of(" \t\n\r\f\v");
     if (start == std::string::npos) {
@@ -1390,13 +1441,7 @@ std::string trim(const std::string& str) {
     const size_t end = str.find_last_not_of(" \t\n\r\f\v");
     return str.substr(start, end - start + 1);
 }
-std::chrono::system_clock::time_point get_elapsed_timepoint(
-    const std::chrono::system_clock::time_point& application_start_time,
-    const std::chrono::steady_clock::time_point& steady_start_time) {
-    const auto elapsed = std::chrono::steady_clock::now() - steady_start_time;
-    const auto elapsed_sys = std::chrono::duration_cast<std::chrono::system_clock::duration>(elapsed);
-    return application_start_time + elapsed_sys;
-}
+// Format as local wall-clock time for human-facing transcript output.
 std::string format_datetime(const std::chrono::time_point<std::chrono::system_clock>& tp) {
     const std::time_t tt = std::chrono::system_clock::to_time_t(tp);
     std::tm tm{};
@@ -1409,6 +1454,7 @@ std::string format_datetime(const std::chrono::time_point<std::chrono::system_cl
     oss << std::put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
     return oss.str();
 }
+// Print discovered microphones and exit with process status.
 void list_and_exit() {
     try {
         const auto microphones = AudioRecorder::listMicrophoneNames();
@@ -1442,6 +1488,7 @@ bool is_silent_chunk(const std::vector<int16_t>& samples,
     const long double min_rms = static_cast<long double>(energy_threshold) * threshold_fraction;
     return rms < min_rms;
 }
+// Decode audio from WAV/raw/transcoded media into Whisper-ready float PCM.
 std::vector<float> load_audio_from_file(const std::string& path) {
     int sample_rate = 0;
     std::vector<int16_t> pcm;
@@ -1470,14 +1517,16 @@ std::vector<float> load_audio_from_file(const std::string& path) {
     return FileAudio::to_float(pcm);
 }
 std::atomic<bool> g_quit{false};
+// Signal handler sets shutdown flag for cooperative loop termination.
 void on_sigint(int) {
     g_quit.store(true, std::memory_order_release);
 }
+// Entry point handling microphone mode and offline media transcription mode.
 int main(int argc, char* argv[]) {
     try {
         std::signal(SIGINT, on_sigint);
+        // Base wall-clock anchor used when no media metadata timestamp is available.
         const auto application_start_time = std::chrono::system_clock::now();
-        const auto application_steady_start = std::chrono::steady_clock::now();
         Args args = parse_arguments(argc, argv);
         if (args.list_microphones) {
             list_and_exit();
@@ -1489,6 +1538,11 @@ int main(int argc, char* argv[]) {
             std::cout << "Transcribing media file: " << args.audio_file_path << std::endl;
             size_t chunk_samples = static_cast<size_t>(Constants::SAMPLE_RATE * args.record_timeout);
             chunk_samples = std::max(chunk_samples, Constants::MIN_AUDIO_SAMPLES);
+            // Match video pipeline precedence for absolute timeline anchoring:
+            // 1) --predefined_start_time
+            // 2) encoded timeline start_time_realtime
+            // 3) encoded metadata creation_time
+            // 4) application start time
             const auto transcript_start = FileAudio::resolve_file_start_time(
                 args, application_start_time);
             size_t offset = 0;
@@ -1543,8 +1597,8 @@ int main(int argc, char* argv[]) {
         }
         recorder->setAdaptiveEnergyEnabled(args.adaptive_energy);
         recorder->setVadPreRollSeconds(args.vad_pre_roll);
-        recorder->setAdaptiveHangoverChunks(args.adaptive_hangover_chunks);   // NEW
-        recorder->setVerbose(args.verbose);                                   // NEW
+        recorder->setAdaptiveHangoverChunks(args.adaptive_hangover_chunks);
+        recorder->setVerbose(args.verbose);
         if (args.adaptive_energy) {
             std::cout << "Adaptive energy threshold enabled (EMA + hangover=" 
                       << args.adaptive_hangover_chunks << " chunks)." << std::endl;
@@ -1571,6 +1625,8 @@ int main(int argc, char* argv[]) {
         if (!args.pipe) {
             std::cout << "Model loaded and recording started.\n" << std::endl;
         }
+        // Keep per-job timing alongside async work so output timestamps refer to
+        // acquisition/submission time instead of future completion time.
         struct Pending {
             std::future<std::string> fut;
             std::chrono::system_clock::time_point submitted;
@@ -1607,8 +1663,9 @@ int main(int argc, char* argv[]) {
                     if (!text.empty()) {
                         if (args.pipe) {
                             if (args.timestamp) {
-                                std::cout << format_datetime(get_elapsed_timepoint(
-                                    application_start_time, application_steady_start))
+                                // Emit the chunk submission timestamp for stable alignment with
+                                // other modalities; do not stamp by "result became ready" time.
+                                std::cout << format_datetime(it->submitted)
                                           << " " << text << std::endl;
                             } else {
                                 std::cout << text << std::endl;
@@ -1654,6 +1711,7 @@ int main(int argc, char* argv[]) {
                 }
                 Pending p;
                 p.fut = transcriber.transcribe_async(std::move(audio_float));
+                // Capture submission time once and carry it through async completion.
                 p.submitted = now;
                 p.starts_new_phrase = phrase_complete;
                 if (p.starts_new_phrase && !args.pipe && !transcription.back().empty()) {
