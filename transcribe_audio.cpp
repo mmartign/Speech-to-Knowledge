@@ -1053,6 +1053,18 @@ Args parse_arguments(int argc, char* argv[]) {
 }
 namespace FileAudio {
 namespace {
+    std::string to_lower_ascii(std::string value) {
+        std::transform(value.begin(), value.end(), value.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return value;
+    }
+
+    // Raw PCM files are usually extension-tagged; use this to avoid mis-parsing MP3 as PCM16.
+    bool is_explicit_raw_pcm_path(const std::string& path) {
+        const std::string ext = to_lower_ascii(std::filesystem::path(path).extension().string());
+        return ext == ".raw" || ext == ".pcm" || ext == ".s16" || ext == ".s16le";
+    }
+
     // Read little-endian unsigned 32-bit integer from a binary stream.
     uint32_t read_u32_le(std::ifstream& f) {
         // WAV headers are little-endian; decode explicitly for portability.
@@ -1497,16 +1509,26 @@ std::vector<float> load_audio_from_file(const std::string& path) {
             throw AudioException("Unsupported WAV sample rate. Expected 16000 Hz mono 16-bit PCM.");
         }
     } else {
-        // Fallback chain: raw PCM first, then ffmpeg transcode for arbitrary media.
-        pcm = FileAudio::load_raw_pcm_16(path);
-        sample_rate = Constants::SAMPLE_RATE;
-        if (pcm.empty()) {
+        // For compressed/container formats (MP3, M4A, MP4, etc.), decode with ffmpeg first.
+        // Only treat input as raw PCM when extension explicitly indicates raw audio.
+        if (FileAudio::is_explicit_raw_pcm_path(path)) {
+            pcm = FileAudio::load_raw_pcm_16(path);
+            sample_rate = Constants::SAMPLE_RATE;
+            if (pcm.empty()) {
+                throw AudioException("Failed to decode raw PCM16 file.");
+            }
+        } else {
             const std::string tmp_wav = FileAudio::transcode_media_to_wav(path, Constants::SAMPLE_RATE);
             const bool ok = FileAudio::load_wav_mono_16(tmp_wav, sample_rate, pcm);
             std::error_code ec;
             // Best-effort cleanup; parse errors below still propagate.
             std::filesystem::remove(tmp_wav, ec);
             if (!ok || sample_rate != Constants::SAMPLE_RATE) {
+                // Legacy compatibility: allow extension-less/raw blobs as a final fallback.
+                pcm = FileAudio::load_raw_pcm_16(path);
+                sample_rate = Constants::SAMPLE_RATE;
+            }
+            if (pcm.empty()) {
                 throw AudioException("Failed to decode media file. Ensure ffmpeg is installed and input is valid.");
             }
         }
