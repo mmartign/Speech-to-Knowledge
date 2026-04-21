@@ -35,6 +35,7 @@
 #include <cmath>
 #include <cctype>
 #include <cstdint>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -191,10 +192,10 @@ struct Args {
     std::string audio_file_path;
     double vad_pre_roll = Constants::VAD_PRE_ROLL_SECONDS;
     double adaptive_silence_fraction = 0.35;          // IMPROVED default (was 0.2) for adaptive mode
-    int adaptive_hangover_chunks = 5;                  // NEW
+    int adaptive_hangover_chunks = 1;                  // NEW
     bool verbose = false;                              // NEW
-    std::chrono::system_clock::time_point encoded_start{};
-    bool has_encoded_start = false;
+    std::chrono::system_clock::time_point predefined_start_time{};
+    bool has_predefined_start_time = false;
 };
 class AudioRecorder {
 public:
@@ -877,7 +878,7 @@ Args parse_arguments(int argc, char* argv[]) {
         "--energy_threshold", "--record_timeout", "--phrase_timeout", "--language",
         "--pipe", "--timestamp", "--default_microphone", "--whisper_model_path",
         "--help", "-h", "--list_microphones", "--adaptive_energy", "--audio_file",
-        "--encoded_start", "--vad_pre_roll", "--adaptive_silence_fraction",
+        "--predefined_start_time", "--vad_pre_roll", "--adaptive_silence_fraction",
         "--adaptive_hangover_chunks", "--verbose"
     };
     for (int i = 1; i < argc; ++i) {
@@ -961,22 +962,22 @@ Args parse_arguments(int argc, char* argv[]) {
             }
         } else if (arg == "--verbose") {                                    // NEW
             args.verbose = true;
-        } else if (arg == "--encoded_start" && i + 1 < argc) {
+        } else if (arg == "--predefined_start_time" && i + 1 < argc) {
             std::tm tm{};
             std::istringstream ss(argv[++i]);
             ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
             if (ss.fail()) {
-                std::cerr << "Error: Invalid --encoded_start format. Expected \"YYYY-mm-dd HH:MM:SS\"."
+                std::cerr << "Error: Invalid --predefined_start_time format. Expected \"YYYY-mm-dd HH:MM:SS\"."
                           << std::endl;
                 std::exit(1);
             }
             const std::time_t tt = std::mktime(&tm);
             if (tt == static_cast<std::time_t>(-1)) {
-                std::cerr << "Error: Failed to convert --encoded_start to time." << std::endl;
+                std::cerr << "Error: Failed to convert --predefined_start_time to time." << std::endl;
                 std::exit(1);
             }
-            args.encoded_start = std::chrono::system_clock::from_time_t(tt);
-            args.has_encoded_start = true;
+            args.predefined_start_time = std::chrono::system_clock::from_time_t(tt);
+            args.has_predefined_start_time = true;
         } else if (arg == "--help" || arg == "-h") {
             // Help intentionally exits early before validating required arguments.
             std::cout
@@ -994,7 +995,7 @@ Args parse_arguments(int argc, char* argv[]) {
                 << " --whisper_model_path <path>       REQUIRED: Path to the ggml Whisper model\n"
                 << " --list_microphones                List available microphones and exit\n"
                 << " --audio_file <path>               Transcribe a media file. Audio is extracted via ffmpeg if needed\n"
-                << " --encoded_start \"YYYY-mm-dd HH:MM:SS\" Override transcript start time for --audio_file mode\n"
+                << " --predefined_start_time \"YYYY-mm-dd HH:MM:SS\" Override transcript start time for --audio_file mode\n"
                 << " --verbose                         Print adaptive threshold changes and diagnostics\n"
 #ifdef __linux__
                 << " --default_microphone <name>       Preferred microphone name. Use --list_microphones to inspect devices\n"
@@ -1175,6 +1176,188 @@ std::vector<float> to_float(const std::vector<int16_t>& samples) {
     }
     return out;
 }
+
+bool parse_metadata_datetime(std::string value,
+                             std::chrono::system_clock::time_point& out) {
+    const auto trim_copy = [](const std::string& input) -> std::string {
+        const size_t start = input.find_first_not_of(" \t\n\r\f\v");
+        if (start == std::string::npos) {
+            return {};
+        }
+        const size_t end = input.find_last_not_of(" \t\n\r\f\v");
+        return input.substr(start, end - start + 1);
+    };
+
+    value = trim_copy(value);
+    if (value.empty()) {
+        return false;
+    }
+
+    std::replace(value.begin(), value.end(), 'T', ' ');
+    if (!value.empty() && (value.back() == 'Z' || value.back() == 'z')) {
+        value.pop_back();
+    }
+
+    const size_t frac_pos = value.find('.');
+    if (frac_pos != std::string::npos) {
+        value.erase(frac_pos);
+    }
+
+    const size_t tz_pos = value.find_first_of("+-", 19);
+    if (tz_pos != std::string::npos) {
+        value.erase(tz_pos);
+    }
+
+    value = trim_copy(value);
+    if (value.size() < 19) {
+        return false;
+    }
+
+    value = value.substr(0, 19);
+    std::tm tm{};
+    std::istringstream ss(value);
+    ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+    if (ss.fail()) {
+        return false;
+    }
+
+    const std::time_t tt = std::mktime(&tm);
+    if (tt == static_cast<std::time_t>(-1)) {
+        return false;
+    }
+
+    out = std::chrono::system_clock::from_time_t(tt);
+    return true;
+}
+
+std::optional<std::chrono::system_clock::time_point>
+probe_file_encoded_timeline_start(const std::string& media_path) {
+    const auto trim_copy = [](const std::string& input) -> std::string {
+        const size_t start = input.find_first_not_of(" \t\n\r\f\v");
+        if (start == std::string::npos) {
+            return {};
+        }
+        const size_t end = input.find_last_not_of(" \t\n\r\f\v");
+        return input.substr(start, end - start + 1);
+    };
+
+#ifdef _WIN32
+    const std::string cmd =
+        "ffprobe -v error -show_entries format=start_time_realtime:stream=start_time_realtime "
+        "-of default=noprint_wrappers=1:nokey=1 " +
+        quote_windows_arg(media_path) + " 2>nul";
+    FILE* pipe = _popen(cmd.c_str(), "r");
+#else
+    const std::string cmd =
+        "ffprobe -v error -show_entries format=start_time_realtime:stream=start_time_realtime "
+        "-of default=noprint_wrappers=1:nokey=1 \"" + media_path + "\" 2>/dev/null";
+    FILE* pipe = popen(cmd.c_str(), "r");
+#endif
+    if (pipe == nullptr) {
+        return std::nullopt;
+    }
+
+    std::string output;
+    char buffer[256];
+    while (std::fgets(buffer, static_cast<int>(sizeof(buffer)), pipe) != nullptr) {
+        output += buffer;
+    }
+
+#ifdef _WIN32
+    const int rc = _pclose(pipe);
+#else
+    const int rc = pclose(pipe);
+#endif
+    if (rc != 0 || output.empty()) {
+        return std::nullopt;
+    }
+
+    std::istringstream lines(output);
+    std::string line;
+    while (std::getline(lines, line)) {
+        line = trim_copy(line);
+        if (line.empty()) {
+            continue;
+        }
+        try {
+            const long long micros = std::stoll(line);
+            if (micros <= 0) {
+                continue;
+            }
+            const auto tp = std::chrono::system_clock::time_point{
+                std::chrono::microseconds(micros)};
+            return tp;
+        } catch (...) {
+        }
+    }
+    return std::nullopt;
+}
+
+std::optional<std::chrono::system_clock::time_point>
+probe_file_encoded_start_time(const std::string& media_path) {
+#ifdef _WIN32
+    const std::string cmd =
+        "ffprobe -v error -show_entries "
+        "format_tags=creation_time:stream_tags=creation_time "
+        "-of default=noprint_wrappers=1:nokey=1 " +
+        quote_windows_arg(media_path) + " 2>nul";
+    FILE* pipe = _popen(cmd.c_str(), "r");
+#else
+    const std::string cmd =
+        "ffprobe -v error -show_entries "
+        "format_tags=creation_time:stream_tags=creation_time "
+        "-of default=noprint_wrappers=1:nokey=1 \"" + media_path + "\" 2>/dev/null";
+    FILE* pipe = popen(cmd.c_str(), "r");
+#endif
+    if (pipe == nullptr) {
+        return std::nullopt;
+    }
+
+    std::string output;
+    char buffer[256];
+    while (std::fgets(buffer, static_cast<int>(sizeof(buffer)), pipe) != nullptr) {
+        output += buffer;
+    }
+
+#ifdef _WIN32
+    const int rc = _pclose(pipe);
+#else
+    const int rc = pclose(pipe);
+#endif
+    if (rc != 0 || output.empty()) {
+        return std::nullopt;
+    }
+
+    std::istringstream lines(output);
+    std::string line;
+    while (std::getline(lines, line)) {
+        std::chrono::system_clock::time_point parsed{};
+        if (parse_metadata_datetime(line, parsed)) {
+            return parsed;
+        }
+    }
+    return std::nullopt;
+}
+
+std::chrono::system_clock::time_point resolve_file_start_time(
+    const Args& args,
+    const std::chrono::system_clock::time_point& application_start_time) {
+    if (args.has_predefined_start_time) {
+        return args.predefined_start_time;
+    }
+    if (!args.audio_file_path.empty()) {
+        const auto timeline = probe_file_encoded_timeline_start(args.audio_file_path);
+        if (timeline.has_value()) {
+            return *timeline;
+        }
+        const auto probed = probe_file_encoded_start_time(args.audio_file_path);
+        if (probed.has_value()) {
+            return *probed;
+        }
+    }
+    return application_start_time;
+}
+
 std::string transcode_media_to_wav(const std::string& media_path, int target_sample_rate) {
     const auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch())
@@ -1207,18 +1390,12 @@ std::string trim(const std::string& str) {
     const size_t end = str.find_last_not_of(" \t\n\r\f\v");
     return str.substr(start, end - start + 1);
 }
-std::string get_current_timestamp() {
-    const auto now = std::chrono::system_clock::now();
-    const std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
-    std::tm now_tm{};
-#if defined(_WIN32)
-    localtime_s(&now_tm, &now_time_t);
-#else
-    localtime_r(&now_time_t, &now_tm);
-#endif
-    std::ostringstream oss;
-    oss << std::put_time(&now_tm, "[%Y-%m-%d %H:%M:%S]");
-    return oss.str();
+std::chrono::system_clock::time_point get_elapsed_timepoint(
+    const std::chrono::system_clock::time_point& application_start_time,
+    const std::chrono::steady_clock::time_point& steady_start_time) {
+    const auto elapsed = std::chrono::steady_clock::now() - steady_start_time;
+    const auto elapsed_sys = std::chrono::duration_cast<std::chrono::system_clock::duration>(elapsed);
+    return application_start_time + elapsed_sys;
 }
 std::string format_datetime(const std::chrono::time_point<std::chrono::system_clock>& tp) {
     const std::time_t tt = std::chrono::system_clock::to_time_t(tp);
@@ -1299,6 +1476,8 @@ void on_sigint(int) {
 int main(int argc, char* argv[]) {
     try {
         std::signal(SIGINT, on_sigint);
+        const auto application_start_time = std::chrono::system_clock::now();
+        const auto application_steady_start = std::chrono::steady_clock::now();
         Args args = parse_arguments(argc, argv);
         if (args.list_microphones) {
             list_and_exit();
@@ -1310,8 +1489,8 @@ int main(int argc, char* argv[]) {
             std::cout << "Transcribing media file: " << args.audio_file_path << std::endl;
             size_t chunk_samples = static_cast<size_t>(Constants::SAMPLE_RATE * args.record_timeout);
             chunk_samples = std::max(chunk_samples, Constants::MIN_AUDIO_SAMPLES);
-            const auto transcript_start =
-                args.has_encoded_start ? args.encoded_start : std::chrono::system_clock::now();
+            const auto transcript_start = FileAudio::resolve_file_start_time(
+                args, application_start_time);
             size_t offset = 0;
             while (offset < audio_data.size()) {
                 if (g_quit.load(std::memory_order_acquire)) {
@@ -1428,7 +1607,9 @@ int main(int argc, char* argv[]) {
                     if (!text.empty()) {
                         if (args.pipe) {
                             if (args.timestamp) {
-                                std::cout << get_current_timestamp() << " " << text << std::endl;
+                                std::cout << format_datetime(get_elapsed_timepoint(
+                                    application_start_time, application_steady_start))
+                                          << " " << text << std::endl;
                             } else {
                                 std::cout << text << std::endl;
                             }
