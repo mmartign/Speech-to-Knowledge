@@ -3,7 +3,7 @@
 //
 // This file is part of the Spazio IT Speech-to-Knowledge project.
 //
-// Copyright (C) 2025 Spazio IT
+// Copyright (C) 2025-2026 Spazio IT
 // Spazio - IT Soluzioni Informatiche s.a.s.
 // via Manzoni 40
 // 46051 San Giorgio Bigarello

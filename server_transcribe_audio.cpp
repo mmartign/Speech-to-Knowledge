@@ -1,6 +1,31 @@
 // -*- coding: utf-8 -*-
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
+// This file is part of the Spazio IT Speech-to-Knowledge project.
+//
+// Copyright (C) 2025-2026 Spazio IT
+// Spazio - IT Soluzioni Informatiche s.a.s.
+// via Manzoni 40
+// 46051 San Giorgio Bigarello
+// https://spazioit.com
+//
+// This file is based on https://github.com/davabase/whisper_real_time, with modifications
+// for real-time performance, concurrency improvements, debug tracing, and improved
+// adaptive energy VAD (hangover + conservative updates to prevent speech clipping).
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+//
 // Single-file version of the Spazio IT Speech-to-Knowledge application
 // with support for:
 //   1. local microphone input (PortAudio)
@@ -31,7 +56,6 @@
 //   "source": "maui-mobile"
 // }
 //
-// Copyright (C) 2025 Spazio IT
 
 #include <algorithm>
 #include <array>
@@ -111,6 +135,8 @@ namespace Constants {
     constexpr size_t RAW_RING_CHUNK_CAPACITY = 256;
     constexpr double CALIBRATION_WAIT_MARGIN_SECONDS = 2.0;
     constexpr size_t MAX_WS_FRAME_BYTES = SAMPLE_RATE * sizeof(int16_t) * 1;
+    constexpr int WS_IDLE_TIMEOUT_SECONDS_DEFAULT = 30;
+    constexpr const char* BUILD_FINGERPRINT = "server_transcribe_audio.cpp|" __DATE__ " " __TIME__;
 }
 
 class AudioException : public std::runtime_error {
@@ -239,6 +265,7 @@ struct Args {
     std::string websocket_bind = "0.0.0.0";
     int websocket_port = 8080;
     bool websocket_send_transcripts = true;
+    int websocket_idle_timeout = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
 };
 
 class AudioRecorder {
@@ -861,6 +888,17 @@ public:
         if (ctx_ == nullptr || audio.empty()) {
             return {};
         }
+        const std::vector<float>* input = &audio;
+        std::vector<float> padded;
+        // Whisper's hard floor is 100 ms; pad to 200 ms so we're safely above it
+        // regardless of integer-rounding differences across whisper.cpp versions.
+        constexpr size_t kWhisperPadSamples =
+            static_cast<size_t>(Constants::SAMPLE_RATE * 200 / 1000);
+        if (audio.size() < kWhisperPadSamples) {
+            padded = audio;
+            padded.resize(kWhisperPadSamples, 0.0f);
+            input = &padded;
+        }
         whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
         params.language = language.c_str();
         params.print_realtime = false;
@@ -872,12 +910,27 @@ public:
             hw = 1;
         }
         params.n_threads = std::min(Constants::WHISPER_MAX_THREADS, hw);
-        if (whisper_full(ctx_, params, audio.data(), static_cast<int>(audio.size())) != 0) {
+        if (whisper_full(ctx_,
+                         params,
+                         input->data(),
+                         static_cast<int>(input->size())) != 0) {
             return {};
         }
         std::string out;
         const int segments = whisper_full_n_segments(ctx_);
         for (int i = 0; i < segments; ++i) {
+            const float no_speech_prob = whisper_full_get_segment_no_speech_prob(ctx_, i);
+            if (verbose_) {
+                const char* raw = whisper_full_get_segment_text(ctx_, i);
+                std::cerr << "[whisper] seg=" << i
+                          << " no_speech_prob=" << std::fixed << std::setprecision(3) << no_speech_prob
+                          << " thold=" << params.no_speech_thold
+                          << " text=\"" << (raw ? raw : "") << "\"" << std::endl;
+            }
+            // Skip segments where Whisper is confident there is no speech.
+            if (no_speech_prob > params.no_speech_thold) {
+                continue;
+            }
             const char* text = whisper_full_get_segment_text(ctx_, i);
             if (text != nullptr) {
                 out += text;
@@ -886,9 +939,12 @@ public:
         return out;
     }
 
+    void set_verbose(bool v) { verbose_ = v; }
+
 private:
     whisper_context* ctx_ = nullptr;
     std::string model_path_;
+    bool verbose_ = false;
 };
 
 class AudioTranscriber {
@@ -993,19 +1049,99 @@ std::string json_escape(const std::string& input) {
     return oss.str();
 }
 
+size_t skip_json_whitespace(const std::string& json, size_t pos) {
+    while (pos < json.size()) {
+        const unsigned char c = static_cast<unsigned char>(json[pos]);
+        if (!std::isspace(c)) {
+            break;
+        }
+        ++pos;
+    }
+    return pos;
+}
+
+std::optional<std::string> parse_json_quoted_string(const std::string& json, size_t& pos) {
+    if (pos >= json.size() || json[pos] != '"') {
+        return std::nullopt;
+    }
+    ++pos;
+    std::string out;
+    out.reserve(16);
+    while (pos < json.size()) {
+        const char c = json[pos++];
+        if (c == '"') {
+            return out;
+        }
+        if (c == '\\') {
+            if (pos >= json.size()) {
+                return std::nullopt;
+            }
+            const char esc = json[pos++];
+            switch (esc) {
+                case '"': out.push_back('"'); break;
+                case '\\': out.push_back('\\'); break;
+                case '/': out.push_back('/'); break;
+                case 'b': out.push_back('\b'); break;
+                case 'f': out.push_back('\f'); break;
+                case 'n': out.push_back('\n'); break;
+                case 'r': out.push_back('\r'); break;
+                case 't': out.push_back('\t'); break;
+                // Keep unicode escapes literal for protocol routing fields.
+                case 'u': out += "\\u"; break;
+                default: out.push_back(esc); break;
+            }
+            continue;
+        }
+        out.push_back(c);
+    }
+    return std::nullopt;
+}
+
 std::string extract_json_string_field(const std::string& json, const std::string& field) {
-    // Intentionally simple parser for controlled protocol messages.
-    const std::string token = std::string("\"") + field + "\":\"";
-    const size_t pos = json.find(token);
+    const std::string key = std::string("\"") + field + "\"";
+    const size_t pos = json.find(key);
     if (pos == std::string::npos) {
         return {};
     }
-    const size_t start = pos + token.size();
-    const size_t end = json.find('"', start);
-    if (end == std::string::npos) {
+    size_t value_pos = skip_json_whitespace(json, pos + key.size());
+    if (value_pos >= json.size() || json[value_pos] != ':') {
         return {};
     }
-    return json.substr(start, end - start);
+    value_pos = skip_json_whitespace(json, value_pos + 1);
+    auto parsed = parse_json_quoted_string(json, value_pos);
+    return parsed.has_value() ? *parsed : std::string{};
+}
+
+int extract_json_int_field(const std::string& json, const std::string& field, int fallback) {
+    const std::string key = std::string("\"") + field + "\"";
+    const size_t pos = json.find(key);
+    if (pos == std::string::npos) {
+        return fallback;
+    }
+    size_t value_pos = skip_json_whitespace(json, pos + key.size());
+    if (value_pos >= json.size() || json[value_pos] != ':') {
+        return fallback;
+    }
+    value_pos = skip_json_whitespace(json, value_pos + 1);
+    size_t end = value_pos;
+    if (end < json.size() && (json[end] == '-' || json[end] == '+')) {
+        ++end;
+    }
+    while (end < json.size() && std::isdigit(static_cast<unsigned char>(json[end]))) {
+        ++end;
+    }
+    if (end == value_pos || (end == value_pos + 1 && (json[value_pos] == '-' || json[value_pos] == '+'))) {
+        return fallback;
+    }
+    try {
+        return std::stoi(json.substr(value_pos, end - value_pos));
+    } catch (...) {
+        return fallback;
+    }
+}
+
+bool json_message_type_is(const std::string& json, const char* expected) {
+    return extract_json_string_field(json, "type") == expected;
 }
 }
 
@@ -1016,6 +1152,11 @@ public:
         std::string language = "en";
         int sample_rate = Constants::SAMPLE_RATE;
         int channels = 1;
+        int bits_per_sample = 16;
+        std::string format = "pcm_s16le";
+        int frame_ms = Constants::MIN_AUDIO_LENGTH_MS;
+        size_t target_frame_samples = Constants::MIN_AUDIO_SAMPLES;
+        std::vector<int16_t> pending_samples;
         bool started = false;
     };
 
@@ -1023,10 +1164,16 @@ public:
 
     WebSocketPcmServer(std::string bind_address,
                        int port,
-                       bool send_transcripts)
+                       bool send_transcripts,
+                       int idle_timeout_seconds,
+                       double record_timeout_seconds = 2.0)
         : bind_address_(std::move(bind_address)),
           port_(port),
-          send_transcripts_(send_transcripts) {
+          send_transcripts_(send_transcripts),
+          idle_timeout_seconds_(idle_timeout_seconds > 0
+                                    ? idle_timeout_seconds
+                                    : Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT),
+          record_timeout_seconds_(record_timeout_seconds > 0.0 ? record_timeout_seconds : 2.0) {
     }
 
     ~WebSocketPcmServer() {
@@ -1125,6 +1272,123 @@ public:
     }
 
 private:
+    static std::string to_ascii_lower(std::string s) {
+        for (char& c : s) {
+            c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        }
+        return s;
+    }
+
+    static bool ws_format_is_float32(const std::string& format) {
+        const std::string f = to_ascii_lower(format);
+        return f == "pcm_f32le" || f == "f32le" || f == "float32" ||
+               f == "float32le" || f == "pcm_float32le";
+    }
+
+    static bool ws_format_is_s16(const std::string& format) {
+        const std::string f = to_ascii_lower(format);
+        return f.empty() || f == "pcm_s16le" || f == "s16le" || f == "pcm16";
+    }
+
+    static bool ws_format_is_supported(const std::string& format) {
+        return ws_format_is_s16(format) || ws_format_is_float32(format);
+    }
+
+    static size_t ws_bytes_per_sample(const ClientContext& ctx) {
+        return ws_format_is_float32(ctx.format) ? sizeof(float) : sizeof(int16_t);
+    }
+
+    static std::vector<int16_t> decode_ws_payload(const uint8_t* data,
+                                                  size_t byte_count,
+                                                  const ClientContext& ctx) {
+        if (data == nullptr || byte_count == 0) {
+            return {};
+        }
+
+        if (ws_format_is_float32(ctx.format)) {
+            if ((byte_count % sizeof(float)) != 0u) {
+                return {};
+            }
+            const size_t sample_count = byte_count / sizeof(float);
+            std::vector<int16_t> out;
+            out.reserve(sample_count);
+            for (size_t i = 0; i < sample_count; ++i) {
+                float v = 0.0f;
+                std::memcpy(&v, data + i * sizeof(float), sizeof(float));
+                if (!std::isfinite(v)) {
+                    v = 0.0f;
+                }
+                v = std::max(-1.0f, std::min(1.0f, v));
+                out.push_back(static_cast<int16_t>(std::lround(v * 32767.0f)));
+            }
+            return out;
+        }
+
+        if ((byte_count % sizeof(int16_t)) != 0u) {
+            return {};
+        }
+        const size_t sample_count = byte_count / sizeof(int16_t);
+        std::vector<int16_t> out(sample_count);
+        for (size_t i = 0; i < sample_count; ++i) {
+            const uint16_t lo = static_cast<uint16_t>(data[i * 2]);
+            const uint16_t hi = static_cast<uint16_t>(data[i * 2 + 1]);
+            out[i] = static_cast<int16_t>((hi << 8) | lo);
+        }
+        return out;
+    }
+
+    static std::vector<int16_t> normalize_ws_audio_to_mono_16k(const std::vector<int16_t>& in,
+                                                                int source_sample_rate,
+                                                                int source_channels) {
+        if (in.empty()) {
+            return {};
+        }
+        if (source_sample_rate <= 0) {
+            source_sample_rate = Constants::SAMPLE_RATE;
+        }
+        if (source_channels <= 0) {
+            source_channels = 1;
+        }
+
+        std::vector<int16_t> mono;
+        if (source_channels == 1) {
+            mono = in;
+        } else {
+            const size_t frame_count = in.size() / static_cast<size_t>(source_channels);
+            mono.resize(frame_count);
+            for (size_t i = 0; i < frame_count; ++i) {
+                int32_t sum = 0;
+                for (int ch = 0; ch < source_channels; ++ch) {
+                    sum += in[i * static_cast<size_t>(source_channels) + static_cast<size_t>(ch)];
+                }
+                mono[i] = static_cast<int16_t>(sum / source_channels);
+            }
+        }
+
+        if (mono.empty() || source_sample_rate == Constants::SAMPLE_RATE) {
+            return mono;
+        }
+
+        const double ratio =
+            static_cast<double>(Constants::SAMPLE_RATE) / static_cast<double>(source_sample_rate);
+        size_t out_count = static_cast<size_t>(std::llround(static_cast<double>(mono.size()) * ratio));
+        out_count = std::max<size_t>(out_count, 1);
+        std::vector<int16_t> out(out_count);
+        for (size_t i = 0; i < out_count; ++i) {
+            const double src_pos =
+                static_cast<double>(i) * static_cast<double>(source_sample_rate) /
+                static_cast<double>(Constants::SAMPLE_RATE);
+            const size_t i0 = std::min(static_cast<size_t>(src_pos), mono.size() - 1);
+            const size_t i1 = std::min(i0 + 1, mono.size() - 1);
+            const double frac = src_pos - static_cast<double>(i0);
+            const double a = static_cast<double>(mono[i0]);
+            const double b = static_cast<double>(mono[i1]);
+            const double interpolated = a + (b - a) * frac;
+            out[i] = static_cast<int16_t>(std::llround(interpolated));
+        }
+        return out;
+    }
+
     static std::string format_ws_url(const std::string& host, int port) {
         // IPv6 literals in URLs must be enclosed in brackets.
         const bool needs_brackets =
@@ -1146,8 +1410,8 @@ private:
         void run() {
             beast::error_code ec;
             auto timeout = websocket::stream_base::timeout::suggested(beast::role_type::server);
-            // Keep idle reads short so stop()/Ctrl-C can terminate session threads promptly.
-            timeout.idle_timeout = std::chrono::seconds(1);
+            // Keep connections alive across short client pauses between start/stop cycles.
+            timeout.idle_timeout = std::chrono::seconds(owner.idle_timeout_seconds_);
             ws.set_option(timeout);
             ws.accept(ec);
             if (ec) {
@@ -1175,6 +1439,7 @@ private:
                 }
             }
 
+            owner.flush_pending_audio(ctx);
             owner.unregister_session(ctx.session_id);
             owner.unregister_live_session(this);
         }
@@ -1233,21 +1498,72 @@ private:
 
     void handle_text_message(const std::shared_ptr<Session>& session, const std::string& msg) {
         // Protocol is intentionally lightweight: start/stop messages only.
-        if (msg.find("\"type\":\"start\"") != std::string::npos) {
+        if (json_message_type_is(msg, "start")) {
             session->ctx.started = true;
             session->ctx.session_id = extract_json_string_field(msg, "sessionId");
             const std::string language = extract_json_string_field(msg, "language");
             if (!language.empty()) {
                 session->ctx.language = language;
             }
+            session->ctx.sample_rate = extract_json_int_field(msg, "sampleRate", Constants::SAMPLE_RATE);
+            session->ctx.channels = extract_json_int_field(msg, "channels", 1);
+            session->ctx.bits_per_sample = extract_json_int_field(msg, "bitsPerSample", 16);
+            session->ctx.format = extract_json_string_field(msg, "format");
+            session->ctx.frame_ms = extract_json_int_field(msg, "frameMs", Constants::MIN_AUDIO_LENGTH_MS);
+            if (session->ctx.frame_ms < Constants::MIN_AUDIO_LENGTH_MS) {
+                session->ctx.frame_ms = Constants::MIN_AUDIO_LENGTH_MS;
+            }
+            if (session->ctx.sample_rate <= 0) {
+                session->ctx.sample_rate = Constants::SAMPLE_RATE;
+            }
+            if (session->ctx.channels <= 0) {
+                session->ctx.channels = 1;
+            }
+            if (session->ctx.bits_per_sample <= 0) {
+                session->ctx.bits_per_sample = 16;
+            }
+            if (session->ctx.format.empty()) {
+                session->ctx.format = (session->ctx.bits_per_sample == 32) ? "pcm_f32le" : "pcm_s16le";
+            }
+            if (!ws_format_is_supported(session->ctx.format)) {
+                session->ctx.started = false;
+                session->send_text(
+                    std::string("{\"type\":\"error\",\"message\":\"unsupported format: ") +
+                    json_escape(session->ctx.format) +
+                    "\"}");
+                return;
+            }
+            // Use the server's record_timeout (e.g. 2 s) rather than the client's
+            // frameMs (100 ms) as the Whisper chunk boundary.  Whisper needs
+            // hundreds of milliseconds to seconds of audio to detect speech;
+            // 100 ms frames produce [BLANK_AUDIO] on every call.
+            session->ctx.target_frame_samples = static_cast<size_t>(
+                std::ceil(static_cast<double>(Constants::SAMPLE_RATE) *
+                          record_timeout_seconds_));
+            session->ctx.target_frame_samples = std::max(session->ctx.target_frame_samples,
+                                                         Constants::MIN_AUDIO_SAMPLES);
+            session->ctx.pending_samples.clear();
+            session->ctx.pending_samples.reserve(session->ctx.target_frame_samples * 2);
             register_session(session->ctx.session_id, session);
+            std::cerr << "[WS] session started"
+                      << " id=" << session->ctx.session_id
+                      << " format=" << session->ctx.format
+                      << " sampleRate=" << session->ctx.sample_rate
+                      << " channels=" << session->ctx.channels
+                      << " bitsPerSample=" << session->ctx.bits_per_sample
+                      << " frameMs=" << session->ctx.frame_ms
+                      << " language=" << session->ctx.language
+                      << std::endl;
             session->send_text(
                 std::string("{\"type\":\"ack\",\"sessionId\":\"") +
                 json_escape(session->ctx.session_id) + "\"}");
             return;
         }
 
-        if (msg.find("\"type\":\"stop\"") != std::string::npos) {
+        if (json_message_type_is(msg, "stop")) {
+            flush_pending_audio(session->ctx);
+            unregister_session(session->ctx.session_id);
+            session->ctx.started = false;
             session->send_text("{\"type\":\"stopped\"}");
             return;
         }
@@ -1261,21 +1577,69 @@ private:
         }
 
         const size_t byte_count = buffer.size();
-        if (byte_count == 0 || byte_count > Constants::MAX_WS_FRAME_BYTES) {
+        const size_t bytes_per_sample = ws_bytes_per_sample(session->ctx);
+        const size_t max_frame_bytes = std::max(
+            Constants::MAX_WS_FRAME_BYTES,
+            static_cast<size_t>(std::max(session->ctx.sample_rate, Constants::SAMPLE_RATE)) *
+                static_cast<size_t>(std::max(session->ctx.channels, 1)) *
+                bytes_per_sample);
+        if (byte_count == 0 || byte_count > max_frame_bytes) {
             // Bound frame size to protect memory and latency under malformed input.
             session->send_text("{\"type\":\"error\",\"message\":\"invalid frame size\"}");
             return;
         }
-        if ((byte_count % sizeof(int16_t)) != 0u) {
-            session->send_text("{\"type\":\"error\",\"message\":\"binary frame must be PCM16LE\"}");
+        if ((byte_count % bytes_per_sample) != 0u) {
+            session->send_text("{\"type\":\"error\",\"message\":\"binary frame size not aligned with format\"}");
             return;
         }
 
-        std::vector<int16_t> samples(byte_count / sizeof(int16_t));
-        net::buffer_copy(net::buffer(samples.data(), byte_count), buffer.data());
-        if (callback_) {
-            callback_(samples, session->ctx.session_id);
+        std::vector<uint8_t> raw(byte_count);
+        net::buffer_copy(net::buffer(raw.data(), byte_count), buffer.data());
+        std::vector<int16_t> samples = decode_ws_payload(raw.data(), byte_count, session->ctx);
+        if (samples.empty()) {
+            session->send_text("{\"type\":\"error\",\"message\":\"failed to decode audio payload\"}");
+            return;
         }
+        if (!callback_) {
+            return;
+        }
+        std::vector<int16_t> normalized = normalize_ws_audio_to_mono_16k(samples,
+                                                                          session->ctx.sample_rate,
+                                                                          session->ctx.channels);
+        if (normalized.empty()) {
+            return;
+        }
+        session->ctx.pending_samples.insert(session->ctx.pending_samples.end(),
+                                            normalized.begin(),
+                                            normalized.end());
+        const size_t target = std::max(session->ctx.target_frame_samples, Constants::MIN_AUDIO_SAMPLES);
+        size_t consumed = 0;
+        while ((session->ctx.pending_samples.size() - consumed) >= target) {
+            std::vector<int16_t> chunk(target);
+            std::memcpy(chunk.data(),
+                        session->ctx.pending_samples.data() + consumed,
+                        target * sizeof(int16_t));
+            callback_(chunk, session->ctx.session_id);
+            consumed += target;
+        }
+        if (consumed > 0) {
+            session->ctx.pending_samples.erase(session->ctx.pending_samples.begin(),
+                                               session->ctx.pending_samples.begin() +
+                                                   static_cast<std::ptrdiff_t>(consumed));
+        }
+    }
+
+    void flush_pending_audio(ClientContext& ctx) {
+        if (!callback_ || ctx.pending_samples.empty()) {
+            return;
+        }
+        std::vector<int16_t> chunk = std::move(ctx.pending_samples);
+        const size_t min_samples = std::max(ctx.target_frame_samples, Constants::MIN_AUDIO_SAMPLES);
+        if (chunk.size() < min_samples) {
+            chunk.resize(min_samples, 0);
+        }
+        callback_(chunk, ctx.session_id);
+        ctx.pending_samples.clear();
     }
 
     void server_loop() {
@@ -1344,6 +1708,8 @@ private:
     std::string bind_address_;
     int port_;
     bool send_transcripts_ = true;
+    int idle_timeout_seconds_ = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
+    double record_timeout_seconds_ = 2.0;
     AudioCallback callback_;
     std::atomic<bool> running_{false};
     std::thread server_thread_;
@@ -1366,7 +1732,7 @@ Args parse_arguments(int argc, char* argv[]) {
         "--predefined_start_time", "--vad_pre_roll", "--adaptive_silence_fraction",
         "--adaptive_hangover_chunks", "--verbose",
         "--input_source", "--websocket_server", "--websocket_bind", "--websocket_port",
-        "--websocket_send_transcripts"
+        "--websocket_send_transcripts", "--websocket_idle_timeout"
     };
 
     for (int i = 1; i < argc; ++i) {
@@ -1475,6 +1841,16 @@ Args parse_arguments(int argc, char* argv[]) {
             }
         } else if (arg == "--websocket_send_transcripts") {
             args.websocket_send_transcripts = true;
+        } else if (arg == "--websocket_idle_timeout" && i + 1 < argc) {
+            try {
+                args.websocket_idle_timeout = std::stoi(argv[++i]);
+                if (args.websocket_idle_timeout < 1 || args.websocket_idle_timeout > 3600) {
+                    throw std::runtime_error("invalid");
+                }
+            } catch (...) {
+                std::cerr << "Error: websocket_idle_timeout must be an integer in 1..3600 seconds" << std::endl;
+                std::exit(1);
+            }
         } else if (arg == "--predefined_start_time" && i + 1 < argc) {
             std::tm tm{};
             std::istringstream ss(argv[++i]);
@@ -1513,7 +1889,8 @@ Args parse_arguments(int argc, char* argv[]) {
                 << " --websocket_server                Enable WebSocket PCM audio server\n"
                 << " --websocket_bind <ip>             WebSocket bind address. Default: 0.0.0.0\n"
                 << " --websocket_port <port>           WebSocket port. Default: 8080\n"
-                << " --websocket_send_transcripts      Send transcript JSON messages back to clients\n";
+                << " --websocket_send_transcripts      Send transcript JSON messages back to clients\n"
+                << " --websocket_idle_timeout <sec>    Idle timeout before closing socket. Default: 30\n";
 #ifdef __linux__
             std::cout << " --default_microphone <name>       Preferred microphone name. Use --list_microphones to inspect devices\n";
 #endif
@@ -1933,6 +2310,20 @@ std::string trim(const std::string& str) {
     return str.substr(start, end - start + 1);
 }
 
+// Whisper emits these tokens when it detects no speech; suppress them so they
+// are never written to the transcript or forwarded to WebSocket clients.
+bool is_whisper_noise_token(const std::string& text) {
+    static const std::vector<std::string> kNoiseTokens = {
+        "[BLANK_AUDIO]", "[ Silence]", "[silence]", "(silence)"
+    };
+    for (const auto& tok : kNoiseTokens) {
+        if (text == tok) {
+            return true;
+        }
+    }
+    return false;
+}
+
 std::string format_datetime(const std::chrono::time_point<std::chrono::system_clock>& tp) {
     const std::time_t tt = std::chrono::system_clock::to_time_t(tp);
     std::tm tm{};
@@ -2031,6 +2422,8 @@ struct QueuedAudioChunk {
 int main(int argc, char* argv[]) {
     try {
         std::signal(SIGINT, on_sigint);
+        std::cerr << "[ServerBuild] exe=" << (argc > 0 && argv[0] ? argv[0] : "(unknown)")
+                  << " fingerprint=" << Constants::BUILD_FINGERPRINT << std::endl;
         const auto application_start_time = std::chrono::system_clock::now();
         Args args = parse_arguments(argc, argv);
 
@@ -2089,6 +2482,7 @@ int main(int argc, char* argv[]) {
         std::unique_ptr<WebSocketPcmServer> websocket_server;
 
         WhisperModel audio_model(args.whisper_model_path);
+        audio_model.set_verbose(args.verbose);
         AudioTranscriber transcriber(audio_model, args.language);
         std::vector<std::string> transcription{""};
 
@@ -2138,7 +2532,9 @@ int main(int argc, char* argv[]) {
             websocket_server = std::make_unique<WebSocketPcmServer>(
                 args.websocket_bind,
                 args.websocket_port,
-                args.websocket_send_transcripts);
+                args.websocket_send_transcripts,
+                args.websocket_idle_timeout,
+                args.record_timeout);
 
             auto websocket_callback = [&](const std::vector<int16_t>& audio_chunk,
                                           const std::string& session_id) {
@@ -2200,7 +2596,7 @@ int main(int argc, char* argv[]) {
                     } catch (const std::exception& e) {
                         std::cerr << "Transcription error: " << e.what() << std::endl;
                     }
-                    if (!text.empty()) {
+                    if (!text.empty() && !is_whisper_noise_token(text)) {
                         if (args.pipe) {
                             if (args.timestamp) {
                                 std::cout << format_datetime(it->submitted)
@@ -2244,7 +2640,26 @@ int main(int argc, char* argv[]) {
                 const long double silent_fraction = args.adaptive_energy
                                                         ? static_cast<long double>(args.adaptive_silence_fraction)
                                                         : 0.5L;
+                if (args.verbose) {
+                    long double ss = 0.0L;
+                    int16_t mn = std::numeric_limits<int16_t>::max();
+                    int16_t mx = std::numeric_limits<int16_t>::min();
+                    for (int16_t s : queued_chunk.samples) {
+                        ss += static_cast<long double>(s) * s;
+                        mn = std::min(mn, s);
+                        mx = std::max(mx, s);
+                    }
+                    const long double rms = std::sqrt(ss / static_cast<long double>(queued_chunk.samples.size()));
+                    std::cerr << "[chunk] samples=" << queued_chunk.samples.size()
+                              << " rms=" << std::fixed << std::setprecision(1) << static_cast<double>(rms)
+                              << " min=" << mn << " max=" << mx
+                              << " threshold=" << current_energy_threshold
+                              << std::endl;
+                }
                 if (is_silent_chunk(queued_chunk.samples, current_energy_threshold, silent_fraction)) {
+                    if (args.verbose) {
+                        std::cerr << "[chunk] dropped (silent)" << std::endl;
+                    }
                     continue;
                 }
                 last_phrase_end_time = queued_chunk.submitted;
