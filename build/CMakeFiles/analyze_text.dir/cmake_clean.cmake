@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/analyze_text.dir/analyze_text.cpp.o"
   "CMakeFiles/analyze_text.dir/analyze_text.cpp.o.d"
-  "analyze_text.exe"
-  "analyze_text.exe.pdb"
+  "bin/analyze_text"
+  "bin/analyze_text.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -4,7 +4,7 @@
 # compile CXX with /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/opt/local/include -I/Users/mmartign/Speech-to-Knowledge/../whisper.cpp/include -I/Users/mmartign/Speech-to-Knowledge/../whisper.cpp/ggml/include
+CXX_INCLUDES = -I/opt/local/include -I/Users/mmartign/Speech-to-Knowledge/../whisper.cpp/include -I/Users/mmartign/Speech-to-Knowledge/../whisper.cpp/ggml/include -I/opt/homebrew/include
 
-CXX_FLAGS = -std=c++20 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk
+CXX_FLAGS = -std=gnu++20 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk
 

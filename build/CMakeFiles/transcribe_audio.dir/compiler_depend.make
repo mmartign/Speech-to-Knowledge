@@ -10,6 +10,7 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/__wctype.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/__xlocale.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_abort.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_bounds.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_ctermid.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_ctype.h \
@@ -17,6 +18,7 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_locale_posix2008.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_mb_cur_max.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_printf.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_static_assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_string.h \
@@ -40,11 +42,14 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_endian.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_limits.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_mcontext.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_param.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_types.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/endian.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/limits.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/signal.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/types.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arpa/inet.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/adjacent_find.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/all_of.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/any_of.h \
@@ -360,6 +365,10 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/compiler.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/language.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/platform.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/coroutine_handle.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/coroutine_traits.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/noop_coroutine_handle.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/trivial_awaitables.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/byte.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/max_align_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/nullptr_t.h \
@@ -609,10 +618,43 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/transform_reduce.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ostream/basic_ostream.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ostream/put_character_sequence.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/bernoulli_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/binomial_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/cauchy_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/chi_squared_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/clamp_to_integral.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/default_random_engine.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/discard_block_engine.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/discrete_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/exponential_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/extreme_value_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/fisher_f_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/gamma_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/generate_canonical.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/geometric_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/independent_bits_engine.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/is_seed_sequence.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/is_valid.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/knuth_b.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/linear_congruential_engine.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/log2.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/lognormal_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/mersenne_twister_engine.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/negative_binomial_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/normal_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/piecewise_constant_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/piecewise_linear_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/poisson_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/random_device.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/ranlux.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/seed_seq.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/shuffle_order_engine.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/student_t_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/subtract_with_carry_engine.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/uniform_int_distribution.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/uniform_random_bit_generator.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/uniform_real_distribution.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/weibull_distribution.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/access.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/concepts.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/container_compatible_range.h \
@@ -652,6 +694,7 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/support/pthread.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/this_thread.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/thread.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tree \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/find_index.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/ignore.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/make_tuple_types.h \
@@ -817,10 +860,13 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/vector_bool.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__verbose_abort \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/algorithm \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/any \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/array \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/atomic \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/barrier \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/bit \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/bitset \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cassert \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cctype \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cerrno \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/charconv \
@@ -829,8 +875,10 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/clocale \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cmath \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/compare \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/complex \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/concepts \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/condition_variable \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/coroutine \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/csignal \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstdarg \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstddef \
@@ -859,18 +907,28 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/istream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/iterator \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/latch \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/limits \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/locale \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/map \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/math.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/memory \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/memory_resource \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/mutex \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/new \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/numbers \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/numeric \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/optional \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/print \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/queue \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/random \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ranges \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ratio \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/semaphore \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/shared_mutex \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/source_location \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/span \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/sstream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stack \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdbool.h \
@@ -879,14 +937,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdlib.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stop_token \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/streambuf \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/string \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/string.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/string_view \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/syncstream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/system_error \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/thread \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/tuple \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/type_traits \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/typeindex \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/typeinfo \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/unordered_map \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/unordered_set \
@@ -898,6 +959,8 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/wctype.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/ctype.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/errno.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/fcntl.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/gethostuuid.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/libkern/_OSByteOrder.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/libkern/arm/_OSByteOrder.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/limits.h \
@@ -906,6 +969,7 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/mach/machine/_structs.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/_endian.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/_mcontext.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/_param.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/_types.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/endian.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/limits.h \
@@ -915,7 +979,15 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/malloc/_malloc_type.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/malloc/_ptrcheck.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/math.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/net/if.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/net/if_var.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/net/net_kev.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netdb.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netinet/in.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netinet/tcp.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netinet6/in6.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/nl_types.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/poll.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread/pthread_impl.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread/qos.h \
@@ -942,6 +1014,7 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_types.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_select.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_symbol_aliasing.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_blkcnt_t.h \
@@ -958,6 +1031,7 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_set.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_setsize.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_zero.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_filesec_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fsblkcnt_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fsfilcnt_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_gid_t.h \
@@ -971,25 +1045,34 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_int64_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_int8_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_intptr_t.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_iovec_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_key_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_mach_port_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_mbstate_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_mode_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_nlink_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_null.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_o_dsync.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_o_sync.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_off_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_pid_t.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_posix_vdisable.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_rsize_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_rune_t.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_s_ifmt.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_sa_family_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_seek_set.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_sigaltstack.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_sigset_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_size_t.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_socklen_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_ssize_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_suseconds_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_time_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_timespec.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_timeval.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_timeval32.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_timeval64.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_char.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_int.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_int16_t.h \
@@ -1001,19 +1084,40 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_uid_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_uintptr_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_useconds_t.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_uuid_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_va_list.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_wchar_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_wint_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/appleapiopts.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/cdefs.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/constrained_ctypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/errno.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/event.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/fcntl.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/filio.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ioccom.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ioctl.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/poll.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/qos.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/queue.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/resource.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/select.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/signal.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/socket.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/sockio.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/stat.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/syslimits.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/termios.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/time.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ttycom.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ttydefaults.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/types.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/uio.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/un.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/unistd.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/wait.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/termios.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/time.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/unistd.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/wchar.h \
@@ -1039,6 +1143,7 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_nullptr_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_offsetof.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_ptrdiff_t.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_rsize_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_size_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_wchar_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/limits.h \
@@ -1052,48 +1157,2524 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
   /Users/mmartign/whisper.cpp/ggml/include/ggml-cpu.h \
   /Users/mmartign/whisper.cpp/ggml/include/ggml.h \
   /Users/mmartign/whisper.cpp/include/whisper.h \
+  /opt/homebrew/include/boost/asio.hpp \
+  /opt/homebrew/include/boost/asio/any_completion_executor.hpp \
+  /opt/homebrew/include/boost/asio/any_completion_handler.hpp \
+  /opt/homebrew/include/boost/asio/any_io_executor.hpp \
+  /opt/homebrew/include/boost/asio/append.hpp \
+  /opt/homebrew/include/boost/asio/as_tuple.hpp \
+  /opt/homebrew/include/boost/asio/associated_allocator.hpp \
+  /opt/homebrew/include/boost/asio/associated_cancellation_slot.hpp \
+  /opt/homebrew/include/boost/asio/associated_executor.hpp \
+  /opt/homebrew/include/boost/asio/associated_immediate_executor.hpp \
+  /opt/homebrew/include/boost/asio/associator.hpp \
+  /opt/homebrew/include/boost/asio/async_result.hpp \
+  /opt/homebrew/include/boost/asio/awaitable.hpp \
+  /opt/homebrew/include/boost/asio/basic_datagram_socket.hpp \
+  /opt/homebrew/include/boost/asio/basic_file.hpp \
+  /opt/homebrew/include/boost/asio/basic_io_object.hpp \
+  /opt/homebrew/include/boost/asio/basic_random_access_file.hpp \
+  /opt/homebrew/include/boost/asio/basic_raw_socket.hpp \
+  /opt/homebrew/include/boost/asio/basic_readable_pipe.hpp \
+  /opt/homebrew/include/boost/asio/basic_seq_packet_socket.hpp \
+  /opt/homebrew/include/boost/asio/basic_serial_port.hpp \
+  /opt/homebrew/include/boost/asio/basic_signal_set.hpp \
+  /opt/homebrew/include/boost/asio/basic_socket.hpp \
+  /opt/homebrew/include/boost/asio/basic_socket_acceptor.hpp \
+  /opt/homebrew/include/boost/asio/basic_socket_iostream.hpp \
+  /opt/homebrew/include/boost/asio/basic_socket_streambuf.hpp \
+  /opt/homebrew/include/boost/asio/basic_stream_file.hpp \
+  /opt/homebrew/include/boost/asio/basic_stream_socket.hpp \
+  /opt/homebrew/include/boost/asio/basic_streambuf.hpp \
+  /opt/homebrew/include/boost/asio/basic_streambuf_fwd.hpp \
+  /opt/homebrew/include/boost/asio/basic_waitable_timer.hpp \
+  /opt/homebrew/include/boost/asio/basic_writable_pipe.hpp \
+  /opt/homebrew/include/boost/asio/bind_allocator.hpp \
+  /opt/homebrew/include/boost/asio/bind_cancellation_slot.hpp \
+  /opt/homebrew/include/boost/asio/bind_executor.hpp \
+  /opt/homebrew/include/boost/asio/bind_immediate_executor.hpp \
+  /opt/homebrew/include/boost/asio/buffer.hpp \
+  /opt/homebrew/include/boost/asio/buffer_registration.hpp \
+  /opt/homebrew/include/boost/asio/buffered_read_stream.hpp \
+  /opt/homebrew/include/boost/asio/buffered_read_stream_fwd.hpp \
+  /opt/homebrew/include/boost/asio/buffered_stream.hpp \
+  /opt/homebrew/include/boost/asio/buffered_stream_fwd.hpp \
+  /opt/homebrew/include/boost/asio/buffered_write_stream.hpp \
+  /opt/homebrew/include/boost/asio/buffered_write_stream_fwd.hpp \
+  /opt/homebrew/include/boost/asio/buffers_iterator.hpp \
+  /opt/homebrew/include/boost/asio/cancel_after.hpp \
+  /opt/homebrew/include/boost/asio/cancel_at.hpp \
+  /opt/homebrew/include/boost/asio/cancellation_signal.hpp \
+  /opt/homebrew/include/boost/asio/cancellation_state.hpp \
+  /opt/homebrew/include/boost/asio/cancellation_type.hpp \
+  /opt/homebrew/include/boost/asio/co_composed.hpp \
+  /opt/homebrew/include/boost/asio/co_spawn.hpp \
+  /opt/homebrew/include/boost/asio/completion_condition.hpp \
+  /opt/homebrew/include/boost/asio/compose.hpp \
+  /opt/homebrew/include/boost/asio/composed.hpp \
+  /opt/homebrew/include/boost/asio/config.hpp \
+  /opt/homebrew/include/boost/asio/connect.hpp \
+  /opt/homebrew/include/boost/asio/connect_pipe.hpp \
+  /opt/homebrew/include/boost/asio/consign.hpp \
+  /opt/homebrew/include/boost/asio/coroutine.hpp \
+  /opt/homebrew/include/boost/asio/default_completion_token.hpp \
+  /opt/homebrew/include/boost/asio/defer.hpp \
+  /opt/homebrew/include/boost/asio/deferred.hpp \
+  /opt/homebrew/include/boost/asio/detached.hpp \
+  /opt/homebrew/include/boost/asio/detail/array.hpp \
+  /opt/homebrew/include/boost/asio/detail/array_fwd.hpp \
+  /opt/homebrew/include/boost/asio/detail/assert.hpp \
+  /opt/homebrew/include/boost/asio/detail/atomic_count.hpp \
+  /opt/homebrew/include/boost/asio/detail/base_from_cancellation_state.hpp \
+  /opt/homebrew/include/boost/asio/detail/base_from_completion_cond.hpp \
+  /opt/homebrew/include/boost/asio/detail/bind_handler.hpp \
+  /opt/homebrew/include/boost/asio/detail/blocking_executor_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/buffer_resize_guard.hpp \
+  /opt/homebrew/include/boost/asio/detail/buffer_sequence_adapter.hpp \
+  /opt/homebrew/include/boost/asio/detail/buffered_stream_storage.hpp \
+  /opt/homebrew/include/boost/asio/detail/call_stack.hpp \
+  /opt/homebrew/include/boost/asio/detail/chrono.hpp \
+  /opt/homebrew/include/boost/asio/detail/chrono_time_traits.hpp \
+  /opt/homebrew/include/boost/asio/detail/completion_handler.hpp \
+  /opt/homebrew/include/boost/asio/detail/completion_message.hpp \
+  /opt/homebrew/include/boost/asio/detail/completion_payload.hpp \
+  /opt/homebrew/include/boost/asio/detail/completion_payload_handler.hpp \
+  /opt/homebrew/include/boost/asio/detail/composed_work.hpp \
+  /opt/homebrew/include/boost/asio/detail/concurrency_hint.hpp \
+  /opt/homebrew/include/boost/asio/detail/conditionally_enabled_event.hpp \
+  /opt/homebrew/include/boost/asio/detail/conditionally_enabled_mutex.hpp \
+  /opt/homebrew/include/boost/asio/detail/config.hpp \
+  /opt/homebrew/include/boost/asio/detail/consuming_buffers.hpp \
+  /opt/homebrew/include/boost/asio/detail/cstddef.hpp \
+  /opt/homebrew/include/boost/asio/detail/cstdint.hpp \
+  /opt/homebrew/include/boost/asio/detail/date_time_fwd.hpp \
+  /opt/homebrew/include/boost/asio/detail/deadline_timer_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/dependent_type.hpp \
+  /opt/homebrew/include/boost/asio/detail/descriptor_ops.hpp \
+  /opt/homebrew/include/boost/asio/detail/descriptor_read_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/descriptor_write_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/event.hpp \
+  /opt/homebrew/include/boost/asio/detail/executor_function.hpp \
+  /opt/homebrew/include/boost/asio/detail/executor_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/fenced_block.hpp \
+  /opt/homebrew/include/boost/asio/detail/functional.hpp \
+  /opt/homebrew/include/boost/asio/detail/future.hpp \
+  /opt/homebrew/include/boost/asio/detail/global.hpp \
+  /opt/homebrew/include/boost/asio/detail/handler_alloc_helpers.hpp \
+  /opt/homebrew/include/boost/asio/detail/handler_cont_helpers.hpp \
+  /opt/homebrew/include/boost/asio/detail/handler_tracking.hpp \
+  /opt/homebrew/include/boost/asio/detail/handler_type_requirements.hpp \
+  /opt/homebrew/include/boost/asio/detail/handler_work.hpp \
+  /opt/homebrew/include/boost/asio/detail/impl/buffer_sequence_adapter.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/descriptor_ops.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/handler_tracking.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/kqueue_reactor.hpp \
+  /opt/homebrew/include/boost/asio/detail/impl/kqueue_reactor.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/null_event.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/pipe_select_interrupter.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/posix_event.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/posix_mutex.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/posix_serial_port_service.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/posix_thread.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/reactive_descriptor_service.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/reactive_socket_service_base.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/resolver_service_base.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/resolver_thread_pool.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/scheduler.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/service_registry.hpp \
+  /opt/homebrew/include/boost/asio/detail/impl/service_registry.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/signal_set_service.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/socket_ops.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/strand_executor_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/impl/strand_executor_service.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/strand_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/impl/strand_service.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/thread_context.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/throw_error.ipp \
+  /opt/homebrew/include/boost/asio/detail/impl/timer_queue_set.ipp \
+  /opt/homebrew/include/boost/asio/detail/initiate_defer.hpp \
+  /opt/homebrew/include/boost/asio/detail/initiate_dispatch.hpp \
+  /opt/homebrew/include/boost/asio/detail/initiate_post.hpp \
+  /opt/homebrew/include/boost/asio/detail/initiation_base.hpp \
+  /opt/homebrew/include/boost/asio/detail/io_control.hpp \
+  /opt/homebrew/include/boost/asio/detail/io_object_impl.hpp \
+  /opt/homebrew/include/boost/asio/detail/is_buffer_sequence.hpp \
+  /opt/homebrew/include/boost/asio/detail/is_executor.hpp \
+  /opt/homebrew/include/boost/asio/detail/keyword_tss_ptr.hpp \
+  /opt/homebrew/include/boost/asio/detail/kqueue_reactor.hpp \
+  /opt/homebrew/include/boost/asio/detail/limits.hpp \
+  /opt/homebrew/include/boost/asio/detail/memory.hpp \
+  /opt/homebrew/include/boost/asio/detail/mutex.hpp \
+  /opt/homebrew/include/boost/asio/detail/non_const_lvalue.hpp \
+  /opt/homebrew/include/boost/asio/detail/noncopyable.hpp \
+  /opt/homebrew/include/boost/asio/detail/null_event.hpp \
+  /opt/homebrew/include/boost/asio/detail/object_pool.hpp \
+  /opt/homebrew/include/boost/asio/detail/op_queue.hpp \
+  /opt/homebrew/include/boost/asio/detail/operation.hpp \
+  /opt/homebrew/include/boost/asio/detail/pipe_select_interrupter.hpp \
+  /opt/homebrew/include/boost/asio/detail/pop_options.hpp \
+  /opt/homebrew/include/boost/asio/detail/posix_event.hpp \
+  /opt/homebrew/include/boost/asio/detail/posix_global.hpp \
+  /opt/homebrew/include/boost/asio/detail/posix_mutex.hpp \
+  /opt/homebrew/include/boost/asio/detail/posix_serial_port_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/posix_signal_blocker.hpp \
+  /opt/homebrew/include/boost/asio/detail/posix_static_mutex.hpp \
+  /opt/homebrew/include/boost/asio/detail/posix_thread.hpp \
+  /opt/homebrew/include/boost/asio/detail/push_options.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_descriptor_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_null_buffers_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_accept_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_connect_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_recv_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_recvfrom_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_recvmsg_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_send_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_sendto_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_socket_service_base.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactive_wait_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactor.hpp \
+  /opt/homebrew/include/boost/asio/detail/reactor_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/recycling_allocator.hpp \
+  /opt/homebrew/include/boost/asio/detail/regex_fwd.hpp \
+  /opt/homebrew/include/boost/asio/detail/resolve_endpoint_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/resolve_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/resolve_query_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/resolver_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/resolver_service_base.hpp \
+  /opt/homebrew/include/boost/asio/detail/resolver_thread_pool.hpp \
+  /opt/homebrew/include/boost/asio/detail/scheduler.hpp \
+  /opt/homebrew/include/boost/asio/detail/scheduler_operation.hpp \
+  /opt/homebrew/include/boost/asio/detail/scheduler_task.hpp \
+  /opt/homebrew/include/boost/asio/detail/scheduler_thread_info.hpp \
+  /opt/homebrew/include/boost/asio/detail/scoped_lock.hpp \
+  /opt/homebrew/include/boost/asio/detail/scoped_ptr.hpp \
+  /opt/homebrew/include/boost/asio/detail/select_interrupter.hpp \
+  /opt/homebrew/include/boost/asio/detail/service_registry.hpp \
+  /opt/homebrew/include/boost/asio/detail/signal_blocker.hpp \
+  /opt/homebrew/include/boost/asio/detail/signal_handler.hpp \
+  /opt/homebrew/include/boost/asio/detail/signal_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/signal_set_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/socket_holder.hpp \
+  /opt/homebrew/include/boost/asio/detail/socket_ops.hpp \
+  /opt/homebrew/include/boost/asio/detail/socket_option.hpp \
+  /opt/homebrew/include/boost/asio/detail/socket_types.hpp \
+  /opt/homebrew/include/boost/asio/detail/static_mutex.hpp \
+  /opt/homebrew/include/boost/asio/detail/std_fenced_block.hpp \
+  /opt/homebrew/include/boost/asio/detail/strand_executor_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/strand_service.hpp \
+  /opt/homebrew/include/boost/asio/detail/string_view.hpp \
+  /opt/homebrew/include/boost/asio/detail/thread.hpp \
+  /opt/homebrew/include/boost/asio/detail/thread_context.hpp \
+  /opt/homebrew/include/boost/asio/detail/thread_group.hpp \
+  /opt/homebrew/include/boost/asio/detail/thread_info_base.hpp \
+  /opt/homebrew/include/boost/asio/detail/throw_error.hpp \
+  /opt/homebrew/include/boost/asio/detail/throw_exception.hpp \
+  /opt/homebrew/include/boost/asio/detail/timed_cancel_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/timer_queue.hpp \
+  /opt/homebrew/include/boost/asio/detail/timer_queue_base.hpp \
+  /opt/homebrew/include/boost/asio/detail/timer_queue_set.hpp \
+  /opt/homebrew/include/boost/asio/detail/timer_scheduler.hpp \
+  /opt/homebrew/include/boost/asio/detail/timer_scheduler_fwd.hpp \
+  /opt/homebrew/include/boost/asio/detail/tss_ptr.hpp \
+  /opt/homebrew/include/boost/asio/detail/type_traits.hpp \
+  /opt/homebrew/include/boost/asio/detail/utility.hpp \
+  /opt/homebrew/include/boost/asio/detail/wait_handler.hpp \
+  /opt/homebrew/include/boost/asio/detail/wait_op.hpp \
+  /opt/homebrew/include/boost/asio/detail/winsock_init.hpp \
+  /opt/homebrew/include/boost/asio/detail/work_dispatcher.hpp \
+  /opt/homebrew/include/boost/asio/detail/wrapped_handler.hpp \
+  /opt/homebrew/include/boost/asio/dispatch.hpp \
+  /opt/homebrew/include/boost/asio/disposition.hpp \
+  /opt/homebrew/include/boost/asio/error.hpp \
+  /opt/homebrew/include/boost/asio/execution.hpp \
+  /opt/homebrew/include/boost/asio/execution/allocator.hpp \
+  /opt/homebrew/include/boost/asio/execution/any_executor.hpp \
+  /opt/homebrew/include/boost/asio/execution/bad_executor.hpp \
+  /opt/homebrew/include/boost/asio/execution/blocking.hpp \
+  /opt/homebrew/include/boost/asio/execution/blocking_adaptation.hpp \
+  /opt/homebrew/include/boost/asio/execution/context.hpp \
+  /opt/homebrew/include/boost/asio/execution/context_as.hpp \
+  /opt/homebrew/include/boost/asio/execution/executor.hpp \
+  /opt/homebrew/include/boost/asio/execution/impl/bad_executor.ipp \
+  /opt/homebrew/include/boost/asio/execution/inline_exception_handling.hpp \
+  /opt/homebrew/include/boost/asio/execution/invocable_archetype.hpp \
+  /opt/homebrew/include/boost/asio/execution/mapping.hpp \
+  /opt/homebrew/include/boost/asio/execution/occupancy.hpp \
+  /opt/homebrew/include/boost/asio/execution/outstanding_work.hpp \
+  /opt/homebrew/include/boost/asio/execution/prefer_only.hpp \
+  /opt/homebrew/include/boost/asio/execution/relationship.hpp \
+  /opt/homebrew/include/boost/asio/execution_context.hpp \
+  /opt/homebrew/include/boost/asio/executor.hpp \
+  /opt/homebrew/include/boost/asio/executor_work_guard.hpp \
+  /opt/homebrew/include/boost/asio/file_base.hpp \
+  /opt/homebrew/include/boost/asio/generic/basic_endpoint.hpp \
+  /opt/homebrew/include/boost/asio/generic/datagram_protocol.hpp \
+  /opt/homebrew/include/boost/asio/generic/detail/endpoint.hpp \
+  /opt/homebrew/include/boost/asio/generic/detail/impl/endpoint.ipp \
+  /opt/homebrew/include/boost/asio/generic/raw_protocol.hpp \
+  /opt/homebrew/include/boost/asio/generic/seq_packet_protocol.hpp \
+  /opt/homebrew/include/boost/asio/generic/stream_protocol.hpp \
+  /opt/homebrew/include/boost/asio/handler_continuation_hook.hpp \
+  /opt/homebrew/include/boost/asio/high_resolution_timer.hpp \
+  /opt/homebrew/include/boost/asio/immediate.hpp \
+  /opt/homebrew/include/boost/asio/impl/any_completion_executor.ipp \
+  /opt/homebrew/include/boost/asio/impl/any_io_executor.ipp \
+  /opt/homebrew/include/boost/asio/impl/append.hpp \
+  /opt/homebrew/include/boost/asio/impl/as_tuple.hpp \
+  /opt/homebrew/include/boost/asio/impl/awaitable.hpp \
+  /opt/homebrew/include/boost/asio/impl/awaitable.ipp \
+  /opt/homebrew/include/boost/asio/impl/buffered_read_stream.hpp \
+  /opt/homebrew/include/boost/asio/impl/buffered_write_stream.hpp \
+  /opt/homebrew/include/boost/asio/impl/cancel_after.hpp \
+  /opt/homebrew/include/boost/asio/impl/cancel_at.hpp \
+  /opt/homebrew/include/boost/asio/impl/cancellation_signal.ipp \
+  /opt/homebrew/include/boost/asio/impl/co_spawn.hpp \
+  /opt/homebrew/include/boost/asio/impl/config.hpp \
+  /opt/homebrew/include/boost/asio/impl/config.ipp \
+  /opt/homebrew/include/boost/asio/impl/connect.hpp \
+  /opt/homebrew/include/boost/asio/impl/connect_pipe.hpp \
+  /opt/homebrew/include/boost/asio/impl/connect_pipe.ipp \
+  /opt/homebrew/include/boost/asio/impl/consign.hpp \
+  /opt/homebrew/include/boost/asio/impl/deferred.hpp \
+  /opt/homebrew/include/boost/asio/impl/detached.hpp \
+  /opt/homebrew/include/boost/asio/impl/error.ipp \
+  /opt/homebrew/include/boost/asio/impl/execution_context.hpp \
+  /opt/homebrew/include/boost/asio/impl/execution_context.ipp \
+  /opt/homebrew/include/boost/asio/impl/executor.hpp \
+  /opt/homebrew/include/boost/asio/impl/executor.ipp \
+  /opt/homebrew/include/boost/asio/impl/io_context.hpp \
+  /opt/homebrew/include/boost/asio/impl/io_context.ipp \
+  /opt/homebrew/include/boost/asio/impl/multiple_exceptions.ipp \
+  /opt/homebrew/include/boost/asio/impl/prepend.hpp \
+  /opt/homebrew/include/boost/asio/impl/read.hpp \
+  /opt/homebrew/include/boost/asio/impl/read_at.hpp \
+  /opt/homebrew/include/boost/asio/impl/read_until.hpp \
+  /opt/homebrew/include/boost/asio/impl/redirect_disposition.hpp \
+  /opt/homebrew/include/boost/asio/impl/redirect_error.hpp \
+  /opt/homebrew/include/boost/asio/impl/serial_port_base.hpp \
+  /opt/homebrew/include/boost/asio/impl/serial_port_base.ipp \
+  /opt/homebrew/include/boost/asio/impl/system_context.hpp \
+  /opt/homebrew/include/boost/asio/impl/system_context.ipp \
+  /opt/homebrew/include/boost/asio/impl/system_executor.hpp \
+  /opt/homebrew/include/boost/asio/impl/thread_pool.hpp \
+  /opt/homebrew/include/boost/asio/impl/thread_pool.ipp \
+  /opt/homebrew/include/boost/asio/impl/use_awaitable.hpp \
+  /opt/homebrew/include/boost/asio/impl/use_future.hpp \
+  /opt/homebrew/include/boost/asio/impl/write.hpp \
+  /opt/homebrew/include/boost/asio/impl/write_at.hpp \
+  /opt/homebrew/include/boost/asio/inline_executor.hpp \
+  /opt/homebrew/include/boost/asio/inline_or_executor.hpp \
+  /opt/homebrew/include/boost/asio/io_context.hpp \
+  /opt/homebrew/include/boost/asio/io_context_strand.hpp \
+  /opt/homebrew/include/boost/asio/ip/address.hpp \
+  /opt/homebrew/include/boost/asio/ip/address_v4.hpp \
+  /opt/homebrew/include/boost/asio/ip/address_v4_iterator.hpp \
+  /opt/homebrew/include/boost/asio/ip/address_v4_range.hpp \
+  /opt/homebrew/include/boost/asio/ip/address_v6.hpp \
+  /opt/homebrew/include/boost/asio/ip/address_v6_iterator.hpp \
+  /opt/homebrew/include/boost/asio/ip/address_v6_range.hpp \
+  /opt/homebrew/include/boost/asio/ip/bad_address_cast.hpp \
+  /opt/homebrew/include/boost/asio/ip/basic_endpoint.hpp \
+  /opt/homebrew/include/boost/asio/ip/basic_resolver.hpp \
+  /opt/homebrew/include/boost/asio/ip/basic_resolver_entry.hpp \
+  /opt/homebrew/include/boost/asio/ip/basic_resolver_iterator.hpp \
+  /opt/homebrew/include/boost/asio/ip/basic_resolver_query.hpp \
+  /opt/homebrew/include/boost/asio/ip/basic_resolver_results.hpp \
+  /opt/homebrew/include/boost/asio/ip/detail/endpoint.hpp \
+  /opt/homebrew/include/boost/asio/ip/detail/impl/endpoint.ipp \
+  /opt/homebrew/include/boost/asio/ip/detail/socket_option.hpp \
+  /opt/homebrew/include/boost/asio/ip/host_name.hpp \
+  /opt/homebrew/include/boost/asio/ip/icmp.hpp \
+  /opt/homebrew/include/boost/asio/ip/impl/address.hpp \
+  /opt/homebrew/include/boost/asio/ip/impl/address.ipp \
+  /opt/homebrew/include/boost/asio/ip/impl/address_v4.hpp \
+  /opt/homebrew/include/boost/asio/ip/impl/address_v4.ipp \
+  /opt/homebrew/include/boost/asio/ip/impl/address_v6.hpp \
+  /opt/homebrew/include/boost/asio/ip/impl/address_v6.ipp \
+  /opt/homebrew/include/boost/asio/ip/impl/basic_endpoint.hpp \
+  /opt/homebrew/include/boost/asio/ip/impl/host_name.ipp \
+  /opt/homebrew/include/boost/asio/ip/impl/network_v4.hpp \
+  /opt/homebrew/include/boost/asio/ip/impl/network_v4.ipp \
+  /opt/homebrew/include/boost/asio/ip/impl/network_v6.hpp \
+  /opt/homebrew/include/boost/asio/ip/impl/network_v6.ipp \
+  /opt/homebrew/include/boost/asio/ip/multicast.hpp \
+  /opt/homebrew/include/boost/asio/ip/network_v4.hpp \
+  /opt/homebrew/include/boost/asio/ip/network_v6.hpp \
+  /opt/homebrew/include/boost/asio/ip/resolver_base.hpp \
+  /opt/homebrew/include/boost/asio/ip/resolver_query_base.hpp \
+  /opt/homebrew/include/boost/asio/ip/tcp.hpp \
+  /opt/homebrew/include/boost/asio/ip/udp.hpp \
+  /opt/homebrew/include/boost/asio/ip/unicast.hpp \
+  /opt/homebrew/include/boost/asio/ip/v6_only.hpp \
+  /opt/homebrew/include/boost/asio/is_applicable_property.hpp \
+  /opt/homebrew/include/boost/asio/is_contiguous_iterator.hpp \
+  /opt/homebrew/include/boost/asio/is_executor.hpp \
+  /opt/homebrew/include/boost/asio/is_read_buffered.hpp \
+  /opt/homebrew/include/boost/asio/is_write_buffered.hpp \
+  /opt/homebrew/include/boost/asio/local/basic_endpoint.hpp \
+  /opt/homebrew/include/boost/asio/local/connect_pair.hpp \
+  /opt/homebrew/include/boost/asio/local/datagram_protocol.hpp \
+  /opt/homebrew/include/boost/asio/local/detail/endpoint.hpp \
+  /opt/homebrew/include/boost/asio/local/detail/impl/endpoint.ipp \
+  /opt/homebrew/include/boost/asio/local/seq_packet_protocol.hpp \
+  /opt/homebrew/include/boost/asio/local/stream_protocol.hpp \
+  /opt/homebrew/include/boost/asio/multiple_exceptions.hpp \
+  /opt/homebrew/include/boost/asio/packaged_task.hpp \
+  /opt/homebrew/include/boost/asio/placeholders.hpp \
+  /opt/homebrew/include/boost/asio/posix/basic_descriptor.hpp \
+  /opt/homebrew/include/boost/asio/posix/basic_stream_descriptor.hpp \
+  /opt/homebrew/include/boost/asio/posix/descriptor.hpp \
+  /opt/homebrew/include/boost/asio/posix/descriptor_base.hpp \
+  /opt/homebrew/include/boost/asio/posix/stream_descriptor.hpp \
+  /opt/homebrew/include/boost/asio/post.hpp \
+  /opt/homebrew/include/boost/asio/prefer.hpp \
+  /opt/homebrew/include/boost/asio/prepend.hpp \
+  /opt/homebrew/include/boost/asio/query.hpp \
+  /opt/homebrew/include/boost/asio/random_access_file.hpp \
+  /opt/homebrew/include/boost/asio/read.hpp \
+  /opt/homebrew/include/boost/asio/read_at.hpp \
+  /opt/homebrew/include/boost/asio/read_until.hpp \
+  /opt/homebrew/include/boost/asio/readable_pipe.hpp \
+  /opt/homebrew/include/boost/asio/recycling_allocator.hpp \
+  /opt/homebrew/include/boost/asio/redirect_disposition.hpp \
+  /opt/homebrew/include/boost/asio/redirect_error.hpp \
+  /opt/homebrew/include/boost/asio/registered_buffer.hpp \
+  /opt/homebrew/include/boost/asio/require.hpp \
+  /opt/homebrew/include/boost/asio/require_concept.hpp \
+  /opt/homebrew/include/boost/asio/serial_port.hpp \
+  /opt/homebrew/include/boost/asio/serial_port_base.hpp \
+  /opt/homebrew/include/boost/asio/signal_set.hpp \
+  /opt/homebrew/include/boost/asio/signal_set_base.hpp \
+  /opt/homebrew/include/boost/asio/socket_base.hpp \
+  /opt/homebrew/include/boost/asio/static_thread_pool.hpp \
+  /opt/homebrew/include/boost/asio/steady_timer.hpp \
+  /opt/homebrew/include/boost/asio/strand.hpp \
+  /opt/homebrew/include/boost/asio/stream_file.hpp \
+  /opt/homebrew/include/boost/asio/streambuf.hpp \
+  /opt/homebrew/include/boost/asio/system_context.hpp \
+  /opt/homebrew/include/boost/asio/system_executor.hpp \
+  /opt/homebrew/include/boost/asio/system_timer.hpp \
+  /opt/homebrew/include/boost/asio/this_coro.hpp \
+  /opt/homebrew/include/boost/asio/thread_pool.hpp \
+  /opt/homebrew/include/boost/asio/traits/equality_comparable.hpp \
+  /opt/homebrew/include/boost/asio/traits/execute_member.hpp \
+  /opt/homebrew/include/boost/asio/traits/prefer_free.hpp \
+  /opt/homebrew/include/boost/asio/traits/prefer_member.hpp \
+  /opt/homebrew/include/boost/asio/traits/query_free.hpp \
+  /opt/homebrew/include/boost/asio/traits/query_member.hpp \
+  /opt/homebrew/include/boost/asio/traits/query_static_constexpr_member.hpp \
+  /opt/homebrew/include/boost/asio/traits/require_concept_free.hpp \
+  /opt/homebrew/include/boost/asio/traits/require_concept_member.hpp \
+  /opt/homebrew/include/boost/asio/traits/require_free.hpp \
+  /opt/homebrew/include/boost/asio/traits/require_member.hpp \
+  /opt/homebrew/include/boost/asio/traits/static_query.hpp \
+  /opt/homebrew/include/boost/asio/traits/static_require.hpp \
+  /opt/homebrew/include/boost/asio/traits/static_require_concept.hpp \
+  /opt/homebrew/include/boost/asio/unyield.hpp \
+  /opt/homebrew/include/boost/asio/use_awaitable.hpp \
+  /opt/homebrew/include/boost/asio/use_future.hpp \
+  /opt/homebrew/include/boost/asio/uses_executor.hpp \
+  /opt/homebrew/include/boost/asio/version.hpp \
+  /opt/homebrew/include/boost/asio/wait_traits.hpp \
+  /opt/homebrew/include/boost/asio/windows/basic_object_handle.hpp \
+  /opt/homebrew/include/boost/asio/windows/basic_overlapped_handle.hpp \
+  /opt/homebrew/include/boost/asio/windows/basic_random_access_handle.hpp \
+  /opt/homebrew/include/boost/asio/windows/basic_stream_handle.hpp \
+  /opt/homebrew/include/boost/asio/windows/object_handle.hpp \
+  /opt/homebrew/include/boost/asio/windows/overlapped_handle.hpp \
+  /opt/homebrew/include/boost/asio/windows/overlapped_ptr.hpp \
+  /opt/homebrew/include/boost/asio/windows/random_access_handle.hpp \
+  /opt/homebrew/include/boost/asio/windows/stream_handle.hpp \
+  /opt/homebrew/include/boost/asio/writable_pipe.hpp \
+  /opt/homebrew/include/boost/asio/write.hpp \
+  /opt/homebrew/include/boost/asio/write_at.hpp \
+  /opt/homebrew/include/boost/asio/yield.hpp \
+  /opt/homebrew/include/boost/assert.hpp \
+  /opt/homebrew/include/boost/assert/source_location.hpp \
+  /opt/homebrew/include/boost/beast/core.hpp \
+  /opt/homebrew/include/boost/beast/core/async_base.hpp \
+  /opt/homebrew/include/boost/beast/core/basic_stream.hpp \
+  /opt/homebrew/include/boost/beast/core/bind_handler.hpp \
+  /opt/homebrew/include/boost/beast/core/buffer_traits.hpp \
+  /opt/homebrew/include/boost/beast/core/buffered_read_stream.hpp \
+  /opt/homebrew/include/boost/beast/core/buffers_adaptor.hpp \
+  /opt/homebrew/include/boost/beast/core/buffers_cat.hpp \
+  /opt/homebrew/include/boost/beast/core/buffers_generator.hpp \
+  /opt/homebrew/include/boost/beast/core/buffers_prefix.hpp \
+  /opt/homebrew/include/boost/beast/core/buffers_range.hpp \
+  /opt/homebrew/include/boost/beast/core/buffers_suffix.hpp \
+  /opt/homebrew/include/boost/beast/core/buffers_to_string.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/allocator.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/async_base.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/base64.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/base64.ipp \
+  /opt/homebrew/include/boost/beast/core/detail/bind_continuation.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/bind_handler.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/buffer_traits.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/buffers_pair.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/buffers_range_adaptor.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/buffers_ref.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/chacha.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/char_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/clamp.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/config.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/filtering_cancellation_slot.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/flat_stream.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/impl/read.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/impl/temporary_buffer.ipp \
+  /opt/homebrew/include/boost/beast/core/detail/is_invocable.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/ostream.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/pcg.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/read.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/remap_post_to_defer.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/service_base.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/sha1.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/sha1.ipp \
+  /opt/homebrew/include/boost/beast/core/detail/static_const.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/static_string.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/stream_base.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/stream_traits.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/string.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/temporary_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/tuple.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/type_traits.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/variant.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/varint.hpp \
+  /opt/homebrew/include/boost/beast/core/detail/win32_unicode_path.hpp \
+  /opt/homebrew/include/boost/beast/core/detect_ssl.hpp \
+  /opt/homebrew/include/boost/beast/core/error.hpp \
+  /opt/homebrew/include/boost/beast/core/file.hpp \
+  /opt/homebrew/include/boost/beast/core/file_base.hpp \
+  /opt/homebrew/include/boost/beast/core/file_posix.hpp \
+  /opt/homebrew/include/boost/beast/core/file_stdio.hpp \
+  /opt/homebrew/include/boost/beast/core/file_win32.hpp \
+  /opt/homebrew/include/boost/beast/core/flat_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/flat_static_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/flat_stream.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/async_base.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/basic_stream.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/buffered_read_stream.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/buffers_adaptor.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/buffers_cat.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/buffers_generator.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/buffers_prefix.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/buffers_suffix.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/error.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/error.ipp \
+  /opt/homebrew/include/boost/beast/core/impl/file_posix.ipp \
+  /opt/homebrew/include/boost/beast/core/impl/file_stdio.ipp \
+  /opt/homebrew/include/boost/beast/core/impl/flat_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/flat_static_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/flat_static_buffer.ipp \
+  /opt/homebrew/include/boost/beast/core/impl/flat_stream.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/multi_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/read_size.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/saved_handler.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/saved_handler.ipp \
+  /opt/homebrew/include/boost/beast/core/impl/static_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/impl/static_buffer.ipp \
+  /opt/homebrew/include/boost/beast/core/impl/string.ipp \
+  /opt/homebrew/include/boost/beast/core/make_printable.hpp \
+  /opt/homebrew/include/boost/beast/core/multi_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/ostream.hpp \
+  /opt/homebrew/include/boost/beast/core/rate_policy.hpp \
+  /opt/homebrew/include/boost/beast/core/read_size.hpp \
+  /opt/homebrew/include/boost/beast/core/role.hpp \
+  /opt/homebrew/include/boost/beast/core/saved_handler.hpp \
+  /opt/homebrew/include/boost/beast/core/span.hpp \
+  /opt/homebrew/include/boost/beast/core/static_buffer.hpp \
+  /opt/homebrew/include/boost/beast/core/static_string.hpp \
+  /opt/homebrew/include/boost/beast/core/stream_traits.hpp \
+  /opt/homebrew/include/boost/beast/core/string.hpp \
+  /opt/homebrew/include/boost/beast/core/string_type.hpp \
+  /opt/homebrew/include/boost/beast/core/tcp_stream.hpp \
+  /opt/homebrew/include/boost/beast/http/basic_parser.hpp \
+  /opt/homebrew/include/boost/beast/http/chunk_encode.hpp \
+  /opt/homebrew/include/boost/beast/http/detail/basic_parsed_list.hpp \
+  /opt/homebrew/include/boost/beast/http/detail/basic_parser.hpp \
+  /opt/homebrew/include/boost/beast/http/detail/basic_parser.ipp \
+  /opt/homebrew/include/boost/beast/http/detail/chunk_encode.hpp \
+  /opt/homebrew/include/boost/beast/http/detail/rfc7230.hpp \
+  /opt/homebrew/include/boost/beast/http/detail/rfc7230.ipp \
+  /opt/homebrew/include/boost/beast/http/detail/type_traits.hpp \
+  /opt/homebrew/include/boost/beast/http/empty_body.hpp \
+  /opt/homebrew/include/boost/beast/http/empty_body_fwd.hpp \
+  /opt/homebrew/include/boost/beast/http/error.hpp \
+  /opt/homebrew/include/boost/beast/http/field.hpp \
+  /opt/homebrew/include/boost/beast/http/fields.hpp \
+  /opt/homebrew/include/boost/beast/http/fields_fwd.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/basic_parser.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/basic_parser.ipp \
+  /opt/homebrew/include/boost/beast/http/impl/chunk_encode.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/error.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/error.ipp \
+  /opt/homebrew/include/boost/beast/http/impl/field.ipp \
+  /opt/homebrew/include/boost/beast/http/impl/fields.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/fields.ipp \
+  /opt/homebrew/include/boost/beast/http/impl/message.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/parser.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/read.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/rfc7230.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/rfc7230.ipp \
+  /opt/homebrew/include/boost/beast/http/impl/serializer.hpp \
+  /opt/homebrew/include/boost/beast/http/impl/status.ipp \
+  /opt/homebrew/include/boost/beast/http/impl/verb.ipp \
+  /opt/homebrew/include/boost/beast/http/impl/write.hpp \
+  /opt/homebrew/include/boost/beast/http/message.hpp \
+  /opt/homebrew/include/boost/beast/http/message_fwd.hpp \
+  /opt/homebrew/include/boost/beast/http/parser.hpp \
+  /opt/homebrew/include/boost/beast/http/parser_fwd.hpp \
+  /opt/homebrew/include/boost/beast/http/read.hpp \
+  /opt/homebrew/include/boost/beast/http/rfc7230.hpp \
+  /opt/homebrew/include/boost/beast/http/serializer.hpp \
+  /opt/homebrew/include/boost/beast/http/serializer_fwd.hpp \
+  /opt/homebrew/include/boost/beast/http/status.hpp \
+  /opt/homebrew/include/boost/beast/http/string_body.hpp \
+  /opt/homebrew/include/boost/beast/http/string_body_fwd.hpp \
+  /opt/homebrew/include/boost/beast/http/type_traits.hpp \
+  /opt/homebrew/include/boost/beast/http/verb.hpp \
+  /opt/homebrew/include/boost/beast/http/write.hpp \
+  /opt/homebrew/include/boost/beast/version.hpp \
+  /opt/homebrew/include/boost/beast/websocket.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/decorator.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/frame.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/hybi13.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/hybi13.ipp \
+  /opt/homebrew/include/boost/beast/websocket/detail/impl_base.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/mask.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/mask.ipp \
+  /opt/homebrew/include/boost/beast/websocket/detail/pmd_extension.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/pmd_extension.ipp \
+  /opt/homebrew/include/boost/beast/websocket/detail/prng.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/prng.ipp \
+  /opt/homebrew/include/boost/beast/websocket/detail/service.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/service.ipp \
+  /opt/homebrew/include/boost/beast/websocket/detail/soft_mutex.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/type_traits.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/utf8_checker.hpp \
+  /opt/homebrew/include/boost/beast/websocket/detail/utf8_checker.ipp \
+  /opt/homebrew/include/boost/beast/websocket/error.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/accept.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/close.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/error.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/error.ipp \
+  /opt/homebrew/include/boost/beast/websocket/impl/handshake.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/ping.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/read.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/rfc6455.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/stream.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/stream_impl.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/teardown.hpp \
+  /opt/homebrew/include/boost/beast/websocket/impl/write.hpp \
+  /opt/homebrew/include/boost/beast/websocket/option.hpp \
+  /opt/homebrew/include/boost/beast/websocket/rfc6455.hpp \
+  /opt/homebrew/include/boost/beast/websocket/stream.hpp \
+  /opt/homebrew/include/boost/beast/websocket/stream_base.hpp \
+  /opt/homebrew/include/boost/beast/websocket/stream_fwd.hpp \
+  /opt/homebrew/include/boost/beast/websocket/teardown.hpp \
+  /opt/homebrew/include/boost/beast/zlib/deflate_stream.hpp \
+  /opt/homebrew/include/boost/beast/zlib/detail/bitstream.hpp \
+  /opt/homebrew/include/boost/beast/zlib/detail/deflate_stream.hpp \
+  /opt/homebrew/include/boost/beast/zlib/detail/deflate_stream.ipp \
+  /opt/homebrew/include/boost/beast/zlib/detail/inflate_stream.hpp \
+  /opt/homebrew/include/boost/beast/zlib/detail/inflate_stream.ipp \
+  /opt/homebrew/include/boost/beast/zlib/detail/ranges.hpp \
+  /opt/homebrew/include/boost/beast/zlib/detail/window.hpp \
+  /opt/homebrew/include/boost/beast/zlib/error.hpp \
+  /opt/homebrew/include/boost/beast/zlib/impl/error.hpp \
+  /opt/homebrew/include/boost/beast/zlib/impl/error.ipp \
+  /opt/homebrew/include/boost/beast/zlib/inflate_stream.hpp \
+  /opt/homebrew/include/boost/beast/zlib/zlib.hpp \
+  /opt/homebrew/include/boost/bind/std_placeholders.hpp \
+  /opt/homebrew/include/boost/cerrno.hpp \
+  /opt/homebrew/include/boost/config.hpp \
+  /opt/homebrew/include/boost/config/compiler/clang.hpp \
+  /opt/homebrew/include/boost/config/compiler/clang_version.hpp \
+  /opt/homebrew/include/boost/config/detail/cxx_composite.hpp \
+  /opt/homebrew/include/boost/config/detail/posix_features.hpp \
+  /opt/homebrew/include/boost/config/detail/select_compiler_config.hpp \
+  /opt/homebrew/include/boost/config/detail/select_platform_config.hpp \
+  /opt/homebrew/include/boost/config/detail/select_stdlib_config.hpp \
+  /opt/homebrew/include/boost/config/detail/suffix.hpp \
+  /opt/homebrew/include/boost/config/helper_macros.hpp \
+  /opt/homebrew/include/boost/config/platform/macos.hpp \
+  /opt/homebrew/include/boost/config/pragma_message.hpp \
+  /opt/homebrew/include/boost/config/stdlib/libcpp.hpp \
+  /opt/homebrew/include/boost/config/user.hpp \
+  /opt/homebrew/include/boost/config/workaround.hpp \
+  /opt/homebrew/include/boost/container_hash/detail/hash_integral.hpp \
+  /opt/homebrew/include/boost/container_hash/detail/hash_mix.hpp \
+  /opt/homebrew/include/boost/container_hash/detail/hash_range.hpp \
+  /opt/homebrew/include/boost/container_hash/detail/hash_tuple_like.hpp \
+  /opt/homebrew/include/boost/container_hash/detail/mulx.hpp \
+  /opt/homebrew/include/boost/container_hash/hash.hpp \
+  /opt/homebrew/include/boost/container_hash/hash_fwd.hpp \
+  /opt/homebrew/include/boost/container_hash/hash_is_avalanching.hpp \
+  /opt/homebrew/include/boost/container_hash/is_contiguous_range.hpp \
+  /opt/homebrew/include/boost/container_hash/is_described_class.hpp \
+  /opt/homebrew/include/boost/container_hash/is_range.hpp \
+  /opt/homebrew/include/boost/container_hash/is_tuple_like.hpp \
+  /opt/homebrew/include/boost/container_hash/is_unordered_range.hpp \
+  /opt/homebrew/include/boost/core/addressof.hpp \
+  /opt/homebrew/include/boost/core/alloc_construct.hpp \
+  /opt/homebrew/include/boost/core/allocator_access.hpp \
+  /opt/homebrew/include/boost/core/checked_delete.hpp \
+  /opt/homebrew/include/boost/core/data.hpp \
+  /opt/homebrew/include/boost/core/default_allocator.hpp \
+  /opt/homebrew/include/boost/core/detail/assert.hpp \
+  /opt/homebrew/include/boost/core/detail/is_same.hpp \
+  /opt/homebrew/include/boost/core/detail/sp_thread_pause.hpp \
+  /opt/homebrew/include/boost/core/detail/sp_thread_sleep.hpp \
+  /opt/homebrew/include/boost/core/detail/sp_thread_yield.hpp \
+  /opt/homebrew/include/boost/core/detail/static_assert.hpp \
+  /opt/homebrew/include/boost/core/detail/string_view.hpp \
+  /opt/homebrew/include/boost/core/empty_value.hpp \
+  /opt/homebrew/include/boost/core/enable_if.hpp \
+  /opt/homebrew/include/boost/core/exchange.hpp \
+  /opt/homebrew/include/boost/core/first_scalar.hpp \
+  /opt/homebrew/include/boost/core/ignore_unused.hpp \
+  /opt/homebrew/include/boost/core/invoke_swap.hpp \
+  /opt/homebrew/include/boost/core/launder.hpp \
+  /opt/homebrew/include/boost/core/noinit_adaptor.hpp \
+  /opt/homebrew/include/boost/core/pointer_traits.hpp \
+  /opt/homebrew/include/boost/core/span.hpp \
+  /opt/homebrew/include/boost/core/yield_primitives.hpp \
+  /opt/homebrew/include/boost/cstdint.hpp \
+  /opt/homebrew/include/boost/describe/bases.hpp \
+  /opt/homebrew/include/boost/describe/detail/config.hpp \
+  /opt/homebrew/include/boost/describe/detail/cx_streq.hpp \
+  /opt/homebrew/include/boost/describe/detail/void_t.hpp \
+  /opt/homebrew/include/boost/describe/members.hpp \
+  /opt/homebrew/include/boost/describe/modifiers.hpp \
+  /opt/homebrew/include/boost/detail/workaround.hpp \
+  /opt/homebrew/include/boost/enable_shared_from_this.hpp \
+  /opt/homebrew/include/boost/endian/conversion.hpp \
+  /opt/homebrew/include/boost/endian/detail/endian_load.hpp \
+  /opt/homebrew/include/boost/endian/detail/endian_reverse.hpp \
+  /opt/homebrew/include/boost/endian/detail/endian_store.hpp \
+  /opt/homebrew/include/boost/endian/detail/integral_by_size.hpp \
+  /opt/homebrew/include/boost/endian/detail/intrinsic.hpp \
+  /opt/homebrew/include/boost/endian/detail/is_integral.hpp \
+  /opt/homebrew/include/boost/endian/detail/is_scoped_enum.hpp \
+  /opt/homebrew/include/boost/endian/detail/is_trivially_copyable.hpp \
+  /opt/homebrew/include/boost/endian/detail/order.hpp \
+  /opt/homebrew/include/boost/endian/detail/static_assert.hpp \
+  /opt/homebrew/include/boost/exception/exception.hpp \
+  /opt/homebrew/include/boost/intrusive/bs_set_hook.hpp \
+  /opt/homebrew/include/boost/intrusive/bstree.hpp \
+  /opt/homebrew/include/boost/intrusive/bstree_algorithms.hpp \
+  /opt/homebrew/include/boost/intrusive/circular_list_algorithms.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/algo_type.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/algorithm.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/array_initializer.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/assert.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/bstree_algorithms_base.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/config_begin.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/config_end.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/default_header_holder.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/ebo_functor_holder.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/empty_node_checker.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/equal_to_value.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/exception_disposer.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/function_detector.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/generic_hook.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/get_value_traits.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/hook_traits.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/iiterator.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/is_stateful_value_traits.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/iterator.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/key_nodeptr_comp.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/list_iterator.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/list_node.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/math.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/minimal_less_equal_header.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/minimal_pair_header.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/mpl.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/node_cloner_disposer.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/node_holder.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/parent_from_member.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/rbtree_node.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/reverse_iterator.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/simple_disposers.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/size_holder.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/std_fwd.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/tree_iterator.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/tree_node.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/tree_value_compare.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/uncast.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/value_functors.hpp \
+  /opt/homebrew/include/boost/intrusive/detail/workaround.hpp \
+  /opt/homebrew/include/boost/intrusive/intrusive_fwd.hpp \
+  /opt/homebrew/include/boost/intrusive/link_mode.hpp \
+  /opt/homebrew/include/boost/intrusive/list.hpp \
+  /opt/homebrew/include/boost/intrusive/list_hook.hpp \
+  /opt/homebrew/include/boost/intrusive/options.hpp \
+  /opt/homebrew/include/boost/intrusive/pack_options.hpp \
+  /opt/homebrew/include/boost/intrusive/parent_from_member.hpp \
+  /opt/homebrew/include/boost/intrusive/pointer_plus_bits.hpp \
+  /opt/homebrew/include/boost/intrusive/pointer_rebind.hpp \
+  /opt/homebrew/include/boost/intrusive/pointer_traits.hpp \
+  /opt/homebrew/include/boost/intrusive/rbtree.hpp \
+  /opt/homebrew/include/boost/intrusive/rbtree_algorithms.hpp \
+  /opt/homebrew/include/boost/intrusive/set.hpp \
+  /opt/homebrew/include/boost/intrusive/set_hook.hpp \
+  /opt/homebrew/include/boost/io/detail/buffer_fill.hpp \
+  /opt/homebrew/include/boost/io/detail/ostream_guard.hpp \
+  /opt/homebrew/include/boost/io/ostream_put.hpp \
+  /opt/homebrew/include/boost/is_placeholder.hpp \
+  /opt/homebrew/include/boost/logic/tribool.hpp \
+  /opt/homebrew/include/boost/logic/tribool_fwd.hpp \
+  /opt/homebrew/include/boost/make_shared.hpp \
+  /opt/homebrew/include/boost/make_unique.hpp \
+  /opt/homebrew/include/boost/move/adl_move_swap.hpp \
+  /opt/homebrew/include/boost/move/core.hpp \
+  /opt/homebrew/include/boost/move/detail/addressof.hpp \
+  /opt/homebrew/include/boost/move/detail/config_begin.hpp \
+  /opt/homebrew/include/boost/move/detail/config_end.hpp \
+  /opt/homebrew/include/boost/move/detail/force_ptr.hpp \
+  /opt/homebrew/include/boost/move/detail/iterator_traits.hpp \
+  /opt/homebrew/include/boost/move/detail/launder.hpp \
+  /opt/homebrew/include/boost/move/detail/meta_utils.hpp \
+  /opt/homebrew/include/boost/move/detail/meta_utils_core.hpp \
+  /opt/homebrew/include/boost/move/detail/placement_new.hpp \
+  /opt/homebrew/include/boost/move/detail/pointer_element.hpp \
+  /opt/homebrew/include/boost/move/detail/reverse_iterator.hpp \
+  /opt/homebrew/include/boost/move/detail/std_ns_begin.hpp \
+  /opt/homebrew/include/boost/move/detail/std_ns_end.hpp \
+  /opt/homebrew/include/boost/move/detail/to_raw_pointer.hpp \
+  /opt/homebrew/include/boost/move/detail/type_traits.hpp \
+  /opt/homebrew/include/boost/move/detail/workaround.hpp \
+  /opt/homebrew/include/boost/move/utility_core.hpp \
+  /opt/homebrew/include/boost/mp11/algorithm.hpp \
+  /opt/homebrew/include/boost/mp11/bind.hpp \
+  /opt/homebrew/include/boost/mp11/detail/config.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_append.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_copy_if.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_count.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_defer.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_fold.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_front.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_is_list.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_is_value_list.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_list.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_list_v.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_map_find.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_min_element.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_plus.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_remove_if.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_rename.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_value.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_void.hpp \
+  /opt/homebrew/include/boost/mp11/detail/mp_with_index.hpp \
+  /opt/homebrew/include/boost/mp11/function.hpp \
+  /opt/homebrew/include/boost/mp11/integer_sequence.hpp \
+  /opt/homebrew/include/boost/mp11/integral.hpp \
+  /opt/homebrew/include/boost/mp11/list.hpp \
+  /opt/homebrew/include/boost/mp11/set.hpp \
+  /opt/homebrew/include/boost/mp11/utility.hpp \
+  /opt/homebrew/include/boost/mp11/version.hpp \
+  /opt/homebrew/include/boost/none.hpp \
+  /opt/homebrew/include/boost/none_t.hpp \
+  /opt/homebrew/include/boost/optional.hpp \
+  /opt/homebrew/include/boost/optional/bad_optional_access.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_aligned_storage.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_config.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_factory_support.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_hash.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_reference_spec.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_relops.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_swap.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_trivially_copyable_base.hpp \
+  /opt/homebrew/include/boost/optional/detail/optional_utility.hpp \
+  /opt/homebrew/include/boost/optional/optional.hpp \
+  /opt/homebrew/include/boost/optional/optional_fwd.hpp \
+  /opt/homebrew/include/boost/shared_ptr.hpp \
+  /opt/homebrew/include/boost/smart_ptr/allocate_shared_array.hpp \
+  /opt/homebrew/include/boost/smart_ptr/bad_weak_ptr.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/deprecated_macros.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/local_counted_base.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/local_sp_deleter.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/shared_count.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_convertible.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_counted_base.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_counted_base_std_atomic.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_counted_impl.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_disable_deprecated.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_noexcept.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_type_traits.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/sp_typeinfo_.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/spinlock.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/spinlock_pool.hpp \
+  /opt/homebrew/include/boost/smart_ptr/detail/yield_k.hpp \
+  /opt/homebrew/include/boost/smart_ptr/enable_shared_from_this.hpp \
+  /opt/homebrew/include/boost/smart_ptr/make_shared.hpp \
+  /opt/homebrew/include/boost/smart_ptr/make_shared_array.hpp \
+  /opt/homebrew/include/boost/smart_ptr/make_shared_object.hpp \
+  /opt/homebrew/include/boost/smart_ptr/make_unique.hpp \
+  /opt/homebrew/include/boost/smart_ptr/shared_ptr.hpp \
+  /opt/homebrew/include/boost/smart_ptr/weak_ptr.hpp \
+  /opt/homebrew/include/boost/static_assert.hpp \
+  /opt/homebrew/include/boost/static_string/config.hpp \
+  /opt/homebrew/include/boost/static_string/static_string.hpp \
+  /opt/homebrew/include/boost/system/api_config.hpp \
+  /opt/homebrew/include/boost/system/detail/append_int.hpp \
+  /opt/homebrew/include/boost/system/detail/cerrno.hpp \
+  /opt/homebrew/include/boost/system/detail/config.hpp \
+  /opt/homebrew/include/boost/system/detail/enable_if.hpp \
+  /opt/homebrew/include/boost/system/detail/errc.hpp \
+  /opt/homebrew/include/boost/system/detail/error_category.hpp \
+  /opt/homebrew/include/boost/system/detail/error_category_impl.hpp \
+  /opt/homebrew/include/boost/system/detail/error_code.hpp \
+  /opt/homebrew/include/boost/system/detail/error_condition.hpp \
+  /opt/homebrew/include/boost/system/detail/generic_category.hpp \
+  /opt/homebrew/include/boost/system/detail/generic_category_message.hpp \
+  /opt/homebrew/include/boost/system/detail/interop_category.hpp \
+  /opt/homebrew/include/boost/system/detail/is_same.hpp \
+  /opt/homebrew/include/boost/system/detail/mutex.hpp \
+  /opt/homebrew/include/boost/system/detail/snprintf.hpp \
+  /opt/homebrew/include/boost/system/detail/std_category.hpp \
+  /opt/homebrew/include/boost/system/detail/std_category_impl.hpp \
+  /opt/homebrew/include/boost/system/detail/system_category.hpp \
+  /opt/homebrew/include/boost/system/detail/system_category_impl.hpp \
+  /opt/homebrew/include/boost/system/detail/system_category_message.hpp \
+  /opt/homebrew/include/boost/system/detail/throws.hpp \
+  /opt/homebrew/include/boost/system/errc.hpp \
+  /opt/homebrew/include/boost/system/error_category.hpp \
+  /opt/homebrew/include/boost/system/error_code.hpp \
+  /opt/homebrew/include/boost/system/error_condition.hpp \
+  /opt/homebrew/include/boost/system/generic_category.hpp \
+  /opt/homebrew/include/boost/system/is_error_code_enum.hpp \
+  /opt/homebrew/include/boost/system/is_error_condition_enum.hpp \
+  /opt/homebrew/include/boost/system/system_category.hpp \
+  /opt/homebrew/include/boost/system/system_error.hpp \
+  /opt/homebrew/include/boost/throw_exception.hpp \
+  /opt/homebrew/include/boost/type_traits.hpp \
+  /opt/homebrew/include/boost/type_traits/add_const.hpp \
+  /opt/homebrew/include/boost/type_traits/add_cv.hpp \
+  /opt/homebrew/include/boost/type_traits/add_lvalue_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/add_pointer.hpp \
+  /opt/homebrew/include/boost/type_traits/add_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/add_rvalue_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/add_volatile.hpp \
+  /opt/homebrew/include/boost/type_traits/aligned_storage.hpp \
+  /opt/homebrew/include/boost/type_traits/alignment_of.hpp \
+  /opt/homebrew/include/boost/type_traits/common_type.hpp \
+  /opt/homebrew/include/boost/type_traits/conditional.hpp \
+  /opt/homebrew/include/boost/type_traits/conjunction.hpp \
+  /opt/homebrew/include/boost/type_traits/copy_cv.hpp \
+  /opt/homebrew/include/boost/type_traits/copy_cv_ref.hpp \
+  /opt/homebrew/include/boost/type_traits/copy_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/decay.hpp \
+  /opt/homebrew/include/boost/type_traits/declval.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/config.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/has_binary_operator.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/has_postfix_operator.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/has_prefix_operator.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/is_function_cxx_11.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/is_member_function_pointer_cxx_11.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/is_swappable_cxx_11.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/mp_defer.hpp \
+  /opt/homebrew/include/boost/type_traits/detail/yes_no_type.hpp \
+  /opt/homebrew/include/boost/type_traits/disjunction.hpp \
+  /opt/homebrew/include/boost/type_traits/enable_if.hpp \
+  /opt/homebrew/include/boost/type_traits/extent.hpp \
+  /opt/homebrew/include/boost/type_traits/floating_point_promotion.hpp \
+  /opt/homebrew/include/boost/type_traits/function_traits.hpp \
+  /opt/homebrew/include/boost/type_traits/has_bit_and.hpp \
+  /opt/homebrew/include/boost/type_traits/has_bit_and_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_bit_or.hpp \
+  /opt/homebrew/include/boost/type_traits/has_bit_or_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_bit_xor.hpp \
+  /opt/homebrew/include/boost/type_traits/has_bit_xor_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_complement.hpp \
+  /opt/homebrew/include/boost/type_traits/has_dereference.hpp \
+  /opt/homebrew/include/boost/type_traits/has_divides.hpp \
+  /opt/homebrew/include/boost/type_traits/has_divides_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_equal_to.hpp \
+  /opt/homebrew/include/boost/type_traits/has_greater.hpp \
+  /opt/homebrew/include/boost/type_traits/has_greater_equal.hpp \
+  /opt/homebrew/include/boost/type_traits/has_left_shift.hpp \
+  /opt/homebrew/include/boost/type_traits/has_left_shift_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_less.hpp \
+  /opt/homebrew/include/boost/type_traits/has_less_equal.hpp \
+  /opt/homebrew/include/boost/type_traits/has_logical_and.hpp \
+  /opt/homebrew/include/boost/type_traits/has_logical_not.hpp \
+  /opt/homebrew/include/boost/type_traits/has_logical_or.hpp \
+  /opt/homebrew/include/boost/type_traits/has_minus.hpp \
+  /opt/homebrew/include/boost/type_traits/has_minus_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_modulus.hpp \
+  /opt/homebrew/include/boost/type_traits/has_modulus_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_multiplies.hpp \
+  /opt/homebrew/include/boost/type_traits/has_multiplies_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_negate.hpp \
+  /opt/homebrew/include/boost/type_traits/has_new_operator.hpp \
+  /opt/homebrew/include/boost/type_traits/has_not_equal_to.hpp \
+  /opt/homebrew/include/boost/type_traits/has_nothrow_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_nothrow_constructor.hpp \
+  /opt/homebrew/include/boost/type_traits/has_nothrow_copy.hpp \
+  /opt/homebrew/include/boost/type_traits/has_nothrow_destructor.hpp \
+  /opt/homebrew/include/boost/type_traits/has_plus.hpp \
+  /opt/homebrew/include/boost/type_traits/has_plus_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_post_decrement.hpp \
+  /opt/homebrew/include/boost/type_traits/has_post_increment.hpp \
+  /opt/homebrew/include/boost/type_traits/has_pre_decrement.hpp \
+  /opt/homebrew/include/boost/type_traits/has_pre_increment.hpp \
+  /opt/homebrew/include/boost/type_traits/has_right_shift.hpp \
+  /opt/homebrew/include/boost/type_traits/has_right_shift_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_trivial_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_trivial_constructor.hpp \
+  /opt/homebrew/include/boost/type_traits/has_trivial_copy.hpp \
+  /opt/homebrew/include/boost/type_traits/has_trivial_destructor.hpp \
+  /opt/homebrew/include/boost/type_traits/has_trivial_move_assign.hpp \
+  /opt/homebrew/include/boost/type_traits/has_trivial_move_constructor.hpp \
+  /opt/homebrew/include/boost/type_traits/has_unary_minus.hpp \
+  /opt/homebrew/include/boost/type_traits/has_unary_plus.hpp \
+  /opt/homebrew/include/boost/type_traits/has_virtual_destructor.hpp \
+  /opt/homebrew/include/boost/type_traits/integral_constant.hpp \
+  /opt/homebrew/include/boost/type_traits/integral_promotion.hpp \
+  /opt/homebrew/include/boost/type_traits/intrinsics.hpp \
+  /opt/homebrew/include/boost/type_traits/is_abstract.hpp \
+  /opt/homebrew/include/boost/type_traits/is_arithmetic.hpp \
+  /opt/homebrew/include/boost/type_traits/is_array.hpp \
+  /opt/homebrew/include/boost/type_traits/is_assignable.hpp \
+  /opt/homebrew/include/boost/type_traits/is_base_and_derived.hpp \
+  /opt/homebrew/include/boost/type_traits/is_base_of.hpp \
+  /opt/homebrew/include/boost/type_traits/is_class.hpp \
+  /opt/homebrew/include/boost/type_traits/is_complete.hpp \
+  /opt/homebrew/include/boost/type_traits/is_complex.hpp \
+  /opt/homebrew/include/boost/type_traits/is_compound.hpp \
+  /opt/homebrew/include/boost/type_traits/is_const.hpp \
+  /opt/homebrew/include/boost/type_traits/is_constructible.hpp \
+  /opt/homebrew/include/boost/type_traits/is_convertible.hpp \
+  /opt/homebrew/include/boost/type_traits/is_copy_assignable.hpp \
+  /opt/homebrew/include/boost/type_traits/is_copy_constructible.hpp \
+  /opt/homebrew/include/boost/type_traits/is_default_constructible.hpp \
+  /opt/homebrew/include/boost/type_traits/is_destructible.hpp \
+  /opt/homebrew/include/boost/type_traits/is_empty.hpp \
+  /opt/homebrew/include/boost/type_traits/is_enum.hpp \
+  /opt/homebrew/include/boost/type_traits/is_final.hpp \
+  /opt/homebrew/include/boost/type_traits/is_float.hpp \
+  /opt/homebrew/include/boost/type_traits/is_floating_point.hpp \
+  /opt/homebrew/include/boost/type_traits/is_function.hpp \
+  /opt/homebrew/include/boost/type_traits/is_fundamental.hpp \
+  /opt/homebrew/include/boost/type_traits/is_integral.hpp \
+  /opt/homebrew/include/boost/type_traits/is_list_constructible.hpp \
+  /opt/homebrew/include/boost/type_traits/is_lvalue_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/is_member_function_pointer.hpp \
+  /opt/homebrew/include/boost/type_traits/is_member_object_pointer.hpp \
+  /opt/homebrew/include/boost/type_traits/is_member_pointer.hpp \
+  /opt/homebrew/include/boost/type_traits/is_noncopyable.hpp \
+  /opt/homebrew/include/boost/type_traits/is_nothrow_move_assignable.hpp \
+  /opt/homebrew/include/boost/type_traits/is_nothrow_move_constructible.hpp \
+  /opt/homebrew/include/boost/type_traits/is_nothrow_swappable.hpp \
+  /opt/homebrew/include/boost/type_traits/is_object.hpp \
+  /opt/homebrew/include/boost/type_traits/is_pod.hpp \
+  /opt/homebrew/include/boost/type_traits/is_pointer.hpp \
+  /opt/homebrew/include/boost/type_traits/is_polymorphic.hpp \
+  /opt/homebrew/include/boost/type_traits/is_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/is_rvalue_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/is_same.hpp \
+  /opt/homebrew/include/boost/type_traits/is_scalar.hpp \
+  /opt/homebrew/include/boost/type_traits/is_scoped_enum.hpp \
+  /opt/homebrew/include/boost/type_traits/is_signed.hpp \
+  /opt/homebrew/include/boost/type_traits/is_stateless.hpp \
+  /opt/homebrew/include/boost/type_traits/is_swappable.hpp \
+  /opt/homebrew/include/boost/type_traits/is_trivially_copyable.hpp \
+  /opt/homebrew/include/boost/type_traits/is_union.hpp \
+  /opt/homebrew/include/boost/type_traits/is_unscoped_enum.hpp \
+  /opt/homebrew/include/boost/type_traits/is_unsigned.hpp \
+  /opt/homebrew/include/boost/type_traits/is_virtual_base_of.hpp \
+  /opt/homebrew/include/boost/type_traits/is_void.hpp \
+  /opt/homebrew/include/boost/type_traits/is_volatile.hpp \
+  /opt/homebrew/include/boost/type_traits/make_signed.hpp \
+  /opt/homebrew/include/boost/type_traits/make_unsigned.hpp \
+  /opt/homebrew/include/boost/type_traits/make_void.hpp \
+  /opt/homebrew/include/boost/type_traits/negation.hpp \
+  /opt/homebrew/include/boost/type_traits/promote.hpp \
+  /opt/homebrew/include/boost/type_traits/rank.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_all_extents.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_bounds.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_const.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_cv.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_cv_ref.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_extent.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_pointer.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_reference.hpp \
+  /opt/homebrew/include/boost/type_traits/remove_volatile.hpp \
+  /opt/homebrew/include/boost/type_traits/type_identity.hpp \
+  /opt/homebrew/include/boost/type_traits/type_with_alignment.hpp \
+  /opt/homebrew/include/boost/utility/string_view.hpp \
+  /opt/homebrew/include/boost/utility/string_view_fwd.hpp \
+  /opt/homebrew/include/boost/version.hpp \
   /opt/local/include/portaudio.h
 
 
-/Users/mmartign/whisper.cpp/include/whisper.h:
+/opt/homebrew/include/boost/version.hpp:
 
-/Users/mmartign/whisper.cpp/ggml/include/ggml-alloc.h:
+/opt/homebrew/include/boost/utility/string_view_fwd.hpp:
+
+/opt/homebrew/include/boost/utility/string_view.hpp:
+
+/opt/homebrew/include/boost/type_traits/type_with_alignment.hpp:
+
+/opt/homebrew/include/boost/type_traits/remove_volatile.hpp:
+
+/opt/homebrew/include/boost/type_traits/remove_reference.hpp:
+
+/opt/homebrew/include/boost/type_traits/remove_pointer.hpp:
+
+/opt/homebrew/include/boost/type_traits/remove_extent.hpp:
+
+/opt/homebrew/include/boost/type_traits/remove_cv.hpp:
+
+/opt/homebrew/include/boost/type_traits/remove_bounds.hpp:
+
+/opt/homebrew/include/boost/type_traits/remove_all_extents.hpp:
+
+/opt/homebrew/include/boost/type_traits/make_void.hpp:
+
+/opt/homebrew/include/boost/type_traits/make_unsigned.hpp:
+
+/opt/homebrew/include/boost/type_traits/make_signed.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_void.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_virtual_base_of.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_unsigned.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_trivially_copyable.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_swappable.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_scoped_enum.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_scalar.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_same.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_rvalue_reference.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_pod.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_object.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_noncopyable.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_member_function_pointer.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_float.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_enum.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_empty.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_destructible.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_copy_constructible.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_copy_assignable.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_constructible.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_class.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_array.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_abstract.hpp:
+
+/opt/homebrew/include/boost/type_traits/intrinsics.hpp:
+
+/opt/homebrew/include/boost/type_traits/integral_promotion.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_virtual_destructor.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_unary_minus.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_trivial_move_constructor.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_trivial_constructor.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_base_and_derived.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_right_shift.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_pre_increment.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_post_increment.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_post_decrement.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_plus_assign.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_plus.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_nothrow_destructor.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_nothrow_copy.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_nothrow_constructor.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_nothrow_assign.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_multiplies.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_modulus.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_logical_or.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_less_equal.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_left_shift_assign.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_greater_equal.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_greater.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_complement.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_bit_xor.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_bit_or.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_bit_and_assign.hpp:
+
+/opt/homebrew/include/boost/type_traits/function_traits.hpp:
+
+/opt/homebrew/include/boost/type_traits/extent.hpp:
+
+/opt/homebrew/include/boost/type_traits/disjunction.hpp:
+
+/opt/homebrew/include/boost/type_traits/detail/yes_no_type.hpp:
+
+/opt/homebrew/include/boost/type_traits/detail/mp_defer.hpp:
+
+/opt/homebrew/include/boost/type_traits/detail/is_swappable_cxx_11.hpp:
+
+/opt/homebrew/include/boost/type_traits/detail/has_prefix_operator.hpp:
+
+/opt/homebrew/include/boost/type_traits/detail/has_postfix_operator.hpp:
+
+/opt/homebrew/include/boost/type_traits/detail/config.hpp:
+
+/opt/homebrew/include/boost/type_traits/decay.hpp:
+
+/opt/homebrew/include/boost/type_traits/copy_cv_ref.hpp:
+
+/opt/homebrew/include/boost/type_traits/conjunction.hpp:
+
+/opt/homebrew/include/boost/type_traits/conditional.hpp:
+
+/opt/homebrew/include/boost/type_traits/common_type.hpp:
+
+/opt/homebrew/include/boost/type_traits/aligned_storage.hpp:
+
+/opt/homebrew/include/boost/type_traits/add_volatile.hpp:
+
+/opt/homebrew/include/boost/type_traits/add_reference.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_member_object_pointer.hpp:
+
+/opt/homebrew/include/boost/type_traits/add_pointer.hpp:
+
+/opt/homebrew/include/boost/type_traits/add_cv.hpp:
+
+/opt/homebrew/include/boost/type_traits/add_const.hpp:
+
+/opt/homebrew/include/boost/type_traits.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_unary_plus.hpp:
+
+/opt/homebrew/include/boost/system/system_category.hpp:
+
+/opt/homebrew/include/boost/system/generic_category.hpp:
+
+/opt/homebrew/include/boost/system/error_condition.hpp:
+
+/opt/homebrew/include/boost/system/errc.hpp:
+
+/opt/homebrew/include/boost/system/detail/throws.hpp:
+
+/opt/homebrew/include/boost/system/detail/system_category_impl.hpp:
+
+/opt/homebrew/include/boost/system/detail/system_category.hpp:
+
+/opt/homebrew/include/boost/system/detail/std_category_impl.hpp:
+
+/opt/homebrew/include/boost/system/detail/mutex.hpp:
+
+/opt/homebrew/include/boost/system/detail/is_same.hpp:
+
+/opt/homebrew/include/boost/system/detail/interop_category.hpp:
+
+/opt/homebrew/include/boost/system/detail/generic_category_message.hpp:
+
+/opt/homebrew/include/boost/system/detail/error_category_impl.hpp:
+
+/opt/homebrew/include/boost/system/detail/cerrno.hpp:
+
+/opt/homebrew/include/boost/static_string/config.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/shared_ptr.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/make_unique.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/make_shared_object.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/make_shared_array.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/make_shared.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/enable_shared_from_this.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/sp_type_traits.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/sp_noexcept.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/sp_counted_impl.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/sp_counted_base.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/shared_count.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/local_sp_deleter.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_arithmetic.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/deprecated_macros.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/allocate_shared_array.hpp:
+
+/opt/homebrew/include/boost/system/detail/append_int.hpp:
+
+/opt/homebrew/include/boost/shared_ptr.hpp:
+
+/opt/homebrew/include/boost/optional/optional_fwd.hpp:
+
+/opt/homebrew/include/boost/optional/optional.hpp:
+
+/opt/homebrew/include/boost/optional/detail/optional_trivially_copyable_base.hpp:
+
+/opt/homebrew/include/boost/optional/detail/optional_swap.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_minus.hpp:
+
+/opt/homebrew/include/boost/optional/detail/optional_hash.hpp:
+
+/opt/homebrew/include/boost/optional/detail/optional_factory_support.hpp:
+
+/opt/homebrew/include/boost/optional/bad_optional_access.hpp:
+
+/opt/homebrew/include/boost/optional.hpp:
+
+/opt/homebrew/include/boost/none.hpp:
+
+/opt/homebrew/include/boost/mp11/integral.hpp:
+
+/opt/homebrew/include/boost/mp11/integer_sequence.hpp:
+
+/opt/homebrew/include/boost/mp11/function.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_void.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_remove_if.hpp:
+
+/opt/homebrew/include/boost/type_traits/negation.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_plus.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_min_element.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_list_v.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_is_value_list.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_defer.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_count.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_copy_if.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_append.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/config.hpp:
+
+/opt/homebrew/include/boost/mp11/bind.hpp:
+
+/opt/homebrew/include/boost/move/detail/workaround.hpp:
+
+/opt/homebrew/include/boost/move/detail/to_raw_pointer.hpp:
+
+/opt/homebrew/include/boost/move/detail/std_ns_begin.hpp:
+
+/opt/homebrew/include/boost/move/detail/reverse_iterator.hpp:
+
+/opt/homebrew/include/boost/move/detail/pointer_element.hpp:
+
+/opt/homebrew/include/boost/move/detail/placement_new.hpp:
+
+/opt/homebrew/include/boost/move/detail/meta_utils_core.hpp:
+
+/opt/homebrew/include/boost/move/detail/meta_utils.hpp:
+
+/opt/homebrew/include/boost/move/detail/force_ptr.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_equal_to.hpp:
+
+/opt/homebrew/include/boost/move/detail/config_begin.hpp:
+
+/opt/homebrew/include/boost/move/core.hpp:
+
+/opt/homebrew/include/boost/make_unique.hpp:
+
+/opt/homebrew/include/boost/logic/tribool_fwd.hpp:
+
+/opt/homebrew/include/boost/io/ostream_put.hpp:
+
+/opt/homebrew/include/boost/io/detail/ostream_guard.hpp:
+
+/opt/homebrew/include/boost/intrusive/set_hook.hpp:
+
+/opt/homebrew/include/boost/intrusive/set.hpp:
+
+/opt/homebrew/include/boost/intrusive/rbtree.hpp:
+
+/opt/homebrew/include/boost/intrusive/pointer_traits.hpp:
+
+/opt/homebrew/include/boost/intrusive/pointer_rebind.hpp:
+
+/opt/homebrew/include/boost/intrusive/pointer_plus_bits.hpp:
+
+/opt/homebrew/include/boost/intrusive/pack_options.hpp:
+
+/opt/homebrew/include/boost/intrusive/link_mode.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/tree_value_compare.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/tree_node.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/simple_disposers.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/reverse_iterator.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/rbtree_node.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/mpl.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/minimal_pair_header.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/minimal_less_equal_header.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/list_iterator.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/key_nodeptr_comp.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/iiterator.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/hook_traits.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/get_value_traits.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/generic_hook.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_fundamental.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/exception_disposer.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/equal_to_value.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/empty_node_checker.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/ebo_functor_holder.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/config_end.hpp:
+
+/opt/homebrew/include/boost/throw_exception.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/bstree_algorithms_base.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/assert.hpp:
+
+/opt/homebrew/include/boost/intrusive/circular_list_algorithms.hpp:
+
+/opt/homebrew/include/boost/intrusive/bstree.hpp:
+
+/opt/homebrew/include/boost/exception/exception.hpp:
+
+/opt/homebrew/include/boost/endian/detail/static_assert.hpp:
+
+/opt/homebrew/include/boost/endian/detail/is_integral.hpp:
+
+/opt/homebrew/include/boost/endian/detail/intrinsic.hpp:
+
+/opt/homebrew/include/boost/endian/detail/endian_store.hpp:
+
+/opt/homebrew/include/boost/endian/detail/endian_reverse.hpp:
+
+/opt/homebrew/include/boost/endian/detail/endian_load.hpp:
+
+/opt/homebrew/include/boost/static_string/static_string.hpp:
+
+/opt/homebrew/include/boost/endian/conversion.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_left_shift.hpp:
+
+/opt/homebrew/include/boost/enable_shared_from_this.hpp:
+
+/opt/homebrew/include/boost/detail/workaround.hpp:
+
+/opt/homebrew/include/boost/describe/modifiers.hpp:
+
+/opt/homebrew/include/boost/describe/members.hpp:
+
+/opt/homebrew/include/boost/describe/detail/void_t.hpp:
+
+/opt/homebrew/include/boost/describe/detail/config.hpp:
+
+/opt/homebrew/include/boost/cstdint.hpp:
+
+/opt/homebrew/include/boost/core/yield_primitives.hpp:
+
+/opt/homebrew/include/boost/core/span.hpp:
+
+/opt/homebrew/include/boost/core/noinit_adaptor.hpp:
+
+/opt/homebrew/include/boost/core/launder.hpp:
+
+/opt/homebrew/include/boost/mp11/utility.hpp:
+
+/opt/homebrew/include/boost/core/invoke_swap.hpp:
+
+/opt/homebrew/include/boost/core/ignore_unused.hpp:
+
+/opt/homebrew/include/boost/core/first_scalar.hpp:
+
+/opt/homebrew/include/boost/core/exchange.hpp:
+
+/opt/homebrew/include/boost/core/empty_value.hpp:
+
+/opt/homebrew/include/boost/core/detail/string_view.hpp:
+
+/opt/homebrew/include/boost/core/detail/static_assert.hpp:
+
+/opt/homebrew/include/boost/core/detail/sp_thread_yield.hpp:
+
+/opt/homebrew/include/boost/core/detail/is_same.hpp:
+
+/opt/homebrew/include/boost/core/detail/assert.hpp:
+
+/opt/homebrew/include/boost/core/default_allocator.hpp:
+
+/opt/homebrew/include/boost/system/detail/system_category_message.hpp:
+
+/opt/homebrew/include/boost/core/allocator_access.hpp:
+
+/opt/homebrew/include/boost/core/addressof.hpp:
+
+/opt/homebrew/include/boost/container_hash/is_unordered_range.hpp:
+
+/opt/homebrew/include/boost/type_traits/add_rvalue_reference.hpp:
+
+/opt/homebrew/include/boost/container_hash/is_range.hpp:
+
+/opt/homebrew/include/boost/container_hash/is_described_class.hpp:
+
+/opt/homebrew/include/boost/container_hash/is_contiguous_range.hpp:
+
+/opt/homebrew/include/boost/container_hash/hash_is_avalanching.hpp:
+
+/opt/homebrew/include/boost/container_hash/hash_fwd.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_nothrow_move_constructible.hpp:
+
+/opt/homebrew/include/boost/container_hash/hash.hpp:
+
+/opt/homebrew/include/boost/container_hash/detail/mulx.hpp:
+
+/opt/homebrew/include/boost/container_hash/detail/hash_tuple_like.hpp:
+
+/opt/homebrew/include/boost/container_hash/detail/hash_range.hpp:
+
+/opt/homebrew/include/boost/container_hash/detail/hash_mix.hpp:
+
+/opt/homebrew/include/boost/container_hash/detail/hash_integral.hpp:
+
+/opt/homebrew/include/boost/config/helper_macros.hpp:
+
+/opt/homebrew/include/boost/config/detail/select_stdlib_config.hpp:
+
+/opt/homebrew/include/boost/config/detail/posix_features.hpp:
+
+/opt/homebrew/include/boost/config/detail/cxx_composite.hpp:
+
+/opt/homebrew/include/boost/config/compiler/clang_version.hpp:
+
+/opt/homebrew/include/boost/config.hpp:
+
+/opt/homebrew/include/boost/cerrno.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/inflate_stream.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/detail/window.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/detail/inflate_stream.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/detail/deflate_stream.ipp:
+
+/opt/homebrew/include/boost/config/detail/select_compiler_config.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/detail/bitstream.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/deflate_stream.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/teardown.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/stream_base.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/stream.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/option.hpp:
+
+/opt/homebrew/include/boost/move/detail/config_end.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/teardown.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/read.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/handshake.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/error.ipp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/close.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/utf8_checker.ipp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/type_traits.hpp:
+
+/opt/homebrew/include/boost/config/compiler/clang.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/soft_mutex.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/service.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/pmd_extension.ipp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/mask.ipp:
+
+/opt/homebrew/include/boost/intrusive/detail/iterator.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/mask.hpp:
+
+/opt/homebrew/include/boost/type_traits/rank.hpp:
+
+/opt/homebrew/include/boost/type_traits/promote.hpp:
+
+/opt/homebrew/include/boost/static_assert.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/impl_base.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/frame.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/decorator.hpp:
+
+/opt/homebrew/include/boost/beast/version.hpp:
+
+/opt/homebrew/include/boost/beast/http/write.hpp:
+
+/opt/homebrew/include/boost/beast/http/type_traits.hpp:
+
+/opt/homebrew/include/boost/beast/http/string_body_fwd.hpp:
+
+/opt/homebrew/include/boost/beast/http/string_body.hpp:
+
+/opt/homebrew/include/boost/beast/http/serializer_fwd.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/rfc6455.hpp:
+
+/opt/homebrew/include/boost/beast/http/serializer.hpp:
+
+/opt/homebrew/include/boost/beast/http/read.hpp:
+
+/opt/homebrew/include/boost/beast/http/parser_fwd.hpp:
+
+/opt/homebrew/include/boost/beast/http/parser.hpp:
+
+/opt/homebrew/include/boost/beast/http/message_fwd.hpp:
+
+/opt/homebrew/include/boost/beast/http/message.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/sp_typeinfo_.hpp:
+
+/opt/homebrew/include/boost/beast/http/impl/serializer.hpp:
+
+/opt/homebrew/include/boost/beast/http/impl/rfc7230.ipp:
+
+/opt/homebrew/include/boost/beast/http/impl/rfc7230.hpp:
+
+/opt/homebrew/include/boost/beast/http/impl/read.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_negate.hpp:
+
+/opt/homebrew/include/boost/beast/http/impl/parser.hpp:
+
+/opt/homebrew/include/boost/beast/http/impl/message.hpp:
+
+/opt/homebrew/include/boost/beast/http/impl/field.ipp:
+
+/opt/homebrew/include/boost/beast/http/impl/chunk_encode.hpp:
+
+/opt/homebrew/include/boost/beast/http/fields_fwd.hpp:
+
+/opt/homebrew/include/boost/beast/http/fields.hpp:
+
+/opt/homebrew/include/boost/beast/http/field.hpp:
+
+/opt/homebrew/include/boost/beast/http/empty_body.hpp:
+
+/opt/homebrew/include/boost/beast/http/detail/rfc7230.ipp:
+
+/opt/homebrew/include/boost/smart_ptr/bad_weak_ptr.hpp:
+
+/opt/homebrew/include/boost/beast/http/detail/basic_parser.hpp:
+
+/opt/homebrew/include/boost/beast/core/stream_traits.hpp:
+
+/opt/homebrew/include/boost/beast/core/static_string.hpp:
+
+/opt/homebrew/include/boost/beast/core/static_buffer.hpp:
+
+/opt/homebrew/include/boost/beast/core/saved_handler.hpp:
+
+/opt/homebrew/include/boost/config/pragma_message.hpp:
+
+/opt/homebrew/include/boost/beast/core/role.hpp:
+
+/opt/homebrew/include/boost/beast/websocket.hpp:
+
+/opt/homebrew/include/boost/beast/core/read_size.hpp:
+
+/opt/homebrew/include/boost/beast/core/rate_policy.hpp:
+
+/opt/homebrew/include/boost/beast/core/ostream.hpp:
+
+/opt/homebrew/include/boost/beast/core/multi_buffer.hpp:
+
+/opt/homebrew/include/boost/beast/core/make_printable.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/static_buffer.ipp:
+
+/opt/homebrew/include/boost/type_traits/has_pre_decrement.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/read_size.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/multi_buffer.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/flat_stream.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/flat_static_buffer.ipp:
+
+/opt/homebrew/include/boost/beast/core/impl/flat_static_buffer.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/zlib.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/flat_buffer.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/error.ipp:
+
+/opt/homebrew/include/boost/beast/core/impl/error.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/buffers_suffix.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/buffers_prefix.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/buffers_generator.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/buffers_adaptor.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/buffered_read_stream.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/async_base.hpp:
+
+/opt/homebrew/include/boost/beast/core/file_win32.hpp:
+
+/opt/homebrew/include/boost/beast/core/file_base.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_front.hpp:
+
+/opt/homebrew/include/boost/beast/core/file.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/variant.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/tuple.hpp:
+
+/opt/homebrew/include/boost/core/checked_delete.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/temporary_buffer.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/string.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/stream_traits.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/stream_base.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/static_const.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/sha1.ipp:
+
+/opt/homebrew/include/boost/config/platform/macos.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/sha1.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/service_base.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/read.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/pcg.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/ostream.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_new_operator.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/is_invocable.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/impl/read.hpp:
+
+/opt/homebrew/include/boost/type_traits/floating_point_promotion.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/config.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/char_buffer.hpp:
+
+/opt/homebrew/include/boost/system/detail/error_code.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/buffers_ref.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/buffers_pair.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/rfc6455.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/buffer_traits.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/buffer.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/bind_continuation.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/async_base.hpp:
+
+/opt/homebrew/include/boost/beast/core/buffers_range.hpp:
+
+/opt/homebrew/include/boost/beast/core/buffers_prefix.hpp:
+
+/opt/homebrew/include/boost/beast/core/buffers_cat.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_right_shift_assign.hpp:
+
+/opt/homebrew/include/boost/beast/core/buffers_adaptor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/variant.h:
+
+/opt/homebrew/include/boost/beast/core/buffered_read_stream.hpp:
+
+/opt/homebrew/include/boost/beast/core/basic_stream.hpp:
+
+/opt/homebrew/include/boost/asio/detail/string_view.hpp:
+
+/opt/homebrew/include/boost/asio/writable_pipe.hpp:
+
+/opt/homebrew/include/boost/asio/windows/overlapped_ptr.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/prng.hpp:
+
+/opt/homebrew/include/boost/asio/local/detail/endpoint.hpp:
+
+/opt/homebrew/include/boost/asio/windows/overlapped_handle.hpp:
+
+/opt/homebrew/include/boost/asio/windows/basic_object_handle.hpp:
+
+/opt/homebrew/include/boost/asio/version.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/error.hpp:
+
+/opt/homebrew/include/boost/asio/traits/query_free.hpp:
+
+/opt/homebrew/include/boost/asio/use_future.hpp:
+
+/opt/homebrew/include/boost/asio/use_awaitable.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/half_positive.h:
+
+/opt/homebrew/include/boost/asio/impl/buffered_read_stream.hpp:
+
+/opt/homebrew/include/boost/asio/traits/static_require_concept.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ranges:
+
+/opt/homebrew/include/boost/asio/traits/require_concept_free.hpp:
+
+/opt/homebrew/include/boost/asio/traits/query_member.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_compound.hpp:
+
+/opt/homebrew/include/boost/asio/traits/prefer_free.hpp:
+
+/opt/homebrew/include/boost/asio/this_coro.hpp:
+
+/opt/homebrew/include/boost/asio/system_executor.hpp:
+
+/opt/homebrew/include/boost/asio/system_context.hpp:
+
+/opt/homebrew/include/boost/asio/stream_file.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_copy_backward.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/istream:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_size_t.h:
+
+/opt/homebrew/include/boost/asio/static_thread_pool.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/filtering_cancellation_slot.hpp:
+
+/opt/homebrew/include/boost/asio/serial_port.hpp:
+
+/opt/homebrew/include/boost/asio/detail/array.hpp:
+
+/opt/homebrew/include/boost/asio/random_access_file.hpp:
+
+/opt/homebrew/include/boost/asio/query.hpp:
+
+/opt/homebrew/include/boost/asio/placeholders.hpp:
+
+/opt/homebrew/include/boost/asio/packaged_task.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_suseconds_t.h:
+
+/opt/homebrew/include/boost/asio/detail/deadline_timer_service.hpp:
+
+/opt/homebrew/include/boost/assert/source_location.hpp:
+
+/Users/mmartign/whisper.cpp/ggml/include/ggml-backend.h:
+
+/opt/homebrew/include/boost/asio/strand.hpp:
+
+/opt/homebrew/include/boost/asio/multiple_exceptions.hpp:
+
+/opt/homebrew/include/boost/asio/is_write_buffered.hpp:
+
+/opt/homebrew/include/boost/asio/is_executor.hpp:
+
+/opt/homebrew/include/boost/asio/is_contiguous_iterator.hpp:
+
+/opt/homebrew/include/boost/asio/read.hpp:
+
+/opt/homebrew/include/boost/asio/redirect_error.hpp:
+
+/opt/homebrew/include/boost/asio/prepend.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/base64.hpp:
+
+/opt/homebrew/include/boost/asio/ip/unicast.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/errc.h:
+
+/opt/homebrew/include/boost/asio/local/detail/impl/endpoint.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/_param.h:
+
+/opt/homebrew/include/boost/asio/ip/udp.hpp:
+
+/opt/homebrew/include/boost/asio/local/datagram_protocol.hpp:
+
+/opt/homebrew/include/boost/asio/ip/tcp.hpp:
+
+/opt/homebrew/include/boost/asio/ip/resolver_query_base.hpp:
+
+/opt/homebrew/include/boost/asio/traits/prefer_member.hpp:
+
+/opt/homebrew/include/boost/asio/ip/resolver_base.hpp:
+
+/opt/homebrew/include/boost/asio/ip/network_v4.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/strip_signature.h:
+
+/opt/homebrew/include/boost/asio/ip/impl/network_v6.ipp:
+
+/opt/homebrew/include/boost/asio/ip/impl/network_v4.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_nothrow_move_assignable.hpp:
+
+/opt/homebrew/include/boost/beast/http/impl/fields.hpp:
+
+/opt/homebrew/include/boost/asio/ip/impl/basic_endpoint.hpp:
+
+/opt/homebrew/include/boost/asio/ip/impl/address_v4.hpp:
+
+/opt/homebrew/include/boost/asio/ip/impl/address.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/ranges_uninitialized_algorithms.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/constrained_ctypes.h:
+
+/opt/homebrew/include/boost/asio/ip/impl/address.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_mutex_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_int64_t.h:
+
+/opt/homebrew/include/boost/asio/ip/detail/endpoint.hpp:
+
+/opt/homebrew/include/boost/asio/ip/basic_resolver_results.hpp:
+
+/opt/homebrew/include/boost/beast/core/flat_buffer.hpp:
+
+/opt/homebrew/include/boost/asio/ip/basic_resolver_query.hpp:
+
+/opt/homebrew/include/boost/asio/ip/basic_resolver_iterator.hpp:
+
+/opt/homebrew/include/boost/asio/ip/basic_resolver_entry.hpp:
+
+/opt/homebrew/include/boost/asio/ip/basic_resolver.hpp:
+
+/opt/homebrew/include/boost/asio/ip/bad_address_cast.hpp:
+
+/opt/homebrew/include/boost/asio/ip/address_v6_range.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/escaped_output_table.h:
+
+/opt/homebrew/include/boost/asio/ip/address_v4_range.hpp:
+
+/opt/homebrew/include/boost/asio/io_context.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_trivial_move_assign.hpp:
+
+/opt/homebrew/include/boost/asio/inline_executor.hpp:
+
+/opt/homebrew/include/boost/type_traits/enable_if.hpp:
+
+/opt/homebrew/include/boost/asio/impl/use_future.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/constructible.h:
+
+/opt/homebrew/include/boost/asio/traits/require_concept_member.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stop_token:
+
+/opt/homebrew/include/boost/asio/impl/thread_pool.ipp:
+
+/opt/homebrew/include/boost/asio/impl/system_context.ipp:
+
+/opt/homebrew/include/boost/asio/buffered_write_stream.hpp:
+
+/opt/homebrew/include/boost/asio/impl/serial_port_base.ipp:
+
+/opt/homebrew/include/boost/asio/impl/serial_port_base.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/directory_iterator.h:
+
+/opt/homebrew/include/boost/asio/impl/read_until.hpp:
+
+/opt/homebrew/include/boost/asio/impl/read_at.hpp:
+
+/opt/homebrew/include/boost/asio/impl/read.hpp:
+
+/opt/homebrew/include/boost/asio/impl/prepend.hpp:
+
+/opt/homebrew/include/boost/system/detail/error_condition.hpp:
+
+/opt/homebrew/include/boost/asio/impl/multiple_exceptions.ipp:
+
+/opt/homebrew/include/boost/asio/impl/executor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/ostream.h:
+
+/opt/homebrew/include/boost/asio/impl/execution_context.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/thread_context.ipp:
+
+/opt/homebrew/include/boost/asio/impl/error.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/uses_allocator.h:
+
+/opt/homebrew/include/boost/asio/impl/detached.hpp:
+
+/opt/homebrew/include/boost/asio/impl/deferred.hpp:
+
+/opt/homebrew/include/boost/asio/impl/connect_pipe.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_constant_evaluated.h:
+
+/opt/homebrew/include/boost/asio/impl/config.ipp:
+
+/opt/homebrew/include/boost/asio/impl/config.hpp:
+
+/opt/homebrew/include/boost/asio/impl/buffered_write_stream.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/ping.hpp:
+
+/opt/homebrew/include/boost/asio/impl/any_io_executor.ipp:
+
+/opt/homebrew/include/boost/asio/executor.hpp:
+
+/opt/homebrew/include/boost/asio/high_resolution_timer.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/any_of.h:
+
+/opt/homebrew/include/boost/asio/generic/basic_endpoint.hpp:
+
+/opt/homebrew/include/boost/asio/generic/seq_packet_protocol.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/typeindex:
+
+/opt/homebrew/include/boost/asio/execution/occupancy.hpp:
+
+/opt/homebrew/include/boost/asio/generic/raw_protocol.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/empty.h:
+
+/opt/homebrew/include/boost/asio/generic/detail/impl/endpoint.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_min.h:
+
+/opt/homebrew/include/boost/asio/file_base.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/allocator.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/global_new_delete.h:
+
+/opt/homebrew/include/boost/asio/executor_work_guard.hpp:
+
+/opt/homebrew/include/boost/asio/detail/throw_exception.hpp:
+
+/opt/homebrew/include/boost/asio/execution/outstanding_work.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__condition_variable/condition_variable.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/unique_copy.h:
+
+/opt/homebrew/include/boost/asio/execution/inline_exception_handling.hpp:
+
+/opt/homebrew/include/boost/asio/execution/context.hpp:
+
+/opt/homebrew/include/boost/asio/steady_timer.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_pod.h:
+
+/opt/homebrew/include/boost/asio/execution/blocking.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/errno.h:
+
+/opt/homebrew/include/boost/asio/ip/address_v6.hpp:
+
+/opt/homebrew/include/boost/asio/execution/bad_executor.hpp:
+
+/opt/homebrew/include/boost/asio/execution/allocator.hpp:
+
+/opt/homebrew/include/boost/asio/execution.hpp:
+
+/opt/homebrew/include/boost/asio/disposition.hpp:
+
+/opt/homebrew/include/boost/type_traits/is_pointer.hpp:
+
+/opt/homebrew/include/boost/asio/dispatch.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_in_result.h:
+
+/opt/homebrew/include/boost/asio/detail/wrapped_handler.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/workaround.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_stable_sort.h:
+
+/opt/homebrew/include/boost/asio/detail/wait_handler.hpp:
+
+/opt/homebrew/include/boost/asio/detail/type_traits.hpp:
+
+/opt/homebrew/include/boost/endian/detail/order.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/copy_options.h:
+
+/opt/homebrew/include/boost/asio/detail/tss_ptr.hpp:
+
+/opt/homebrew/include/boost/asio/detail/timer_scheduler_fwd.hpp:
+
+/opt/homebrew/include/boost/asio/execution/relationship.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_partition_copy.h:
+
+/opt/homebrew/include/boost/asio/detail/timer_scheduler.hpp:
+
+/opt/homebrew/include/boost/beast/core/buffer_traits.hpp:
+
+/opt/homebrew/include/boost/asio/posix/basic_descriptor.hpp:
+
+/opt/homebrew/include/boost/asio/detail/timer_queue_set.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstddef:
+
+/opt/homebrew/include/boost/asio/detail/timed_cancel_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_o_sync.h:
+
+/opt/homebrew/include/boost/asio/detail/thread.hpp:
+
+/opt/homebrew/include/boost/asio/detail/socket_ops.hpp:
+
+/opt/homebrew/include/boost/asio/detail/socket_holder.hpp:
+
+/opt/homebrew/include/boost/asio/detail/signal_set_service.hpp:
+
+/opt/homebrew/include/boost/asio/detail/scheduler_operation.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uintmax_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_permutation.h:
+
+/opt/homebrew/include/boost/asio/detail/scheduler.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_mismatch.h:
+
+/opt/homebrew/include/boost/asio/detail/resolver_service_base.hpp:
+
+/opt/homebrew/include/boost/asio/detail/resolve_query_op.hpp:
+
+/opt/homebrew/include/boost/asio/detail/regex_fwd.hpp:
+
+/opt/homebrew/include/boost/asio/detail/reactive_socket_service.hpp:
+
+/opt/homebrew/include/boost/asio/detail/reactive_socket_recvmsg_op.hpp:
+
+/opt/homebrew/include/boost/asio/detail/reactive_socket_recvfrom_op.hpp:
+
+/opt/homebrew/include/boost/asio/detail/thread_info_base.hpp:
+
+/opt/homebrew/include/boost/asio/detail/recycling_allocator.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/invoke.h:
+
+/opt/homebrew/include/boost/asio/detail/reactive_socket_connect_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netinet6/in6.h:
+
+/opt/homebrew/include/boost/asio/detail/reactive_descriptor_service.hpp:
+
+/opt/homebrew/include/boost/asio/detail/posix_signal_blocker.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mutex/mutex.h:
+
+/opt/homebrew/include/boost/asio/detail/posix_serial_port_service.hpp:
+
+/opt/homebrew/include/boost/intrusive/bstree_algorithms.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/extended_grapheme_cluster_table.h:
+
+/opt/homebrew/include/boost/asio/detail/posix_event.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/generate.h:
+
+/opt/homebrew/include/boost/asio/detail/pipe_select_interrupter.hpp:
+
+/opt/homebrew/include/boost/asio/detail/limits.hpp:
+
+/opt/homebrew/include/boost/asio/detail/operation.hpp:
+
+/opt/homebrew/include/boost/asio/detail/noncopyable.hpp:
+
+/opt/homebrew/include/boost/asio/execution/invocable_archetype.hpp:
+
+/opt/homebrew/include/boost/asio/detail/mutex.hpp:
+
+/opt/homebrew/include/boost/asio/detail/kqueue_reactor.hpp:
+
+/opt/homebrew/include/boost/asio/ip/address.hpp:
+
+/opt/homebrew/include/boost/asio/detail/is_executor.hpp:
+
+/opt/homebrew/include/boost/asio/basic_datagram_socket.hpp:
+
+/opt/homebrew/include/boost/asio/detail/is_buffer_sequence.hpp:
+
+/opt/homebrew/include/boost/asio/detail/initiate_post.hpp:
+
+/opt/homebrew/include/boost/asio/detail/initiate_dispatch.hpp:
+
+/opt/homebrew/include/boost/asio/detail/initiate_defer.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/strand_service.ipp:
+
+/opt/homebrew/include/boost/beast/websocket/detail/pmd_extension.hpp:
+
+/opt/homebrew/include/boost/beast/core.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/construct_at.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/strand_executor_service.ipp:
+
+/opt/homebrew/include/boost/asio/detail/impl/socket_ops.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/exceptions.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/service_registry.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/array_initializer.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/scheduler.ipp:
+
+/opt/homebrew/include/boost/asio/detail/resolve_endpoint_op.hpp:
+
+/opt/homebrew/include/boost/asio/io_context_strand.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/resolver_service_base.ipp:
+
+/opt/homebrew/include/boost/asio/detail/impl/posix_serial_port_service.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/copysign.h:
+
+/opt/homebrew/include/boost/asio/prefer.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/posix_mutex.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/iter_move.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/availability.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/null_event.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_select.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/kqueue_reactor.ipp:
+
+/opt/homebrew/include/boost/asio/detail/impl/kqueue_reactor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/sample.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/count_if.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_null.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/descriptor_ops.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/auto_ptr.h:
+
+/opt/homebrew/include/boost/asio/posix/basic_stream_descriptor.hpp:
+
+/opt/homebrew/include/boost/asio/detail/handler_type_requirements.hpp:
+
+/opt/homebrew/include/boost/asio/detail/handler_tracking.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/forward.h:
+
+/opt/homebrew/include/boost/asio/traits/execute_member.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/pipe_select_interrupter.ipp:
+
+/opt/homebrew/include/boost/asio/detail/handler_alloc_helpers.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/weak_order.h:
+
+/opt/homebrew/include/boost/asio/detail/global.hpp:
+
+/opt/homebrew/include/boost/asio/detail/fenced_block.hpp:
+
+/opt/homebrew/include/boost/asio/detail/chrono.hpp:
+
+/opt/homebrew/include/boost/asio/detail/event.hpp:
+
+/opt/homebrew/include/boost/asio/detail/descriptor_read_op.hpp:
+
+/opt/homebrew/include/boost/asio/signal_set.hpp:
+
+/opt/homebrew/include/boost/asio/thread_pool.hpp:
+
+/opt/homebrew/include/boost/asio/detail/date_time_fwd.hpp:
+
+/opt/homebrew/include/boost/intrusive/bs_set_hook.hpp:
+
+/opt/homebrew/include/boost/asio/detail/cstddef.hpp:
+
+/opt/homebrew/include/boost/asio/detail/consuming_buffers.hpp:
+
+/opt/homebrew/include/boost/asio/detail/conditionally_enabled_mutex.hpp:
+
+/opt/homebrew/include/boost/asio/detail/composed_work.hpp:
+
+/opt/homebrew/include/boost/asio/detail/signal_blocker.hpp:
+
+/opt/homebrew/include/boost/asio/detail/completion_payload.hpp:
+
+/opt/homebrew/include/boost/asio/detail/completion_message.hpp:
+
+/opt/homebrew/include/boost/asio/detail/buffer_sequence_adapter.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_isset.h:
+
+/opt/homebrew/include/boost/asio/detail/select_interrupter.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg_va_arg.h:
+
+/opt/homebrew/include/boost/asio/detail/base_from_completion_cond.hpp:
+
+/opt/homebrew/include/boost/asio/basic_socket_iostream.hpp:
+
+/opt/homebrew/include/boost/asio/detail/assert.hpp:
+
+/opt/homebrew/include/boost/asio/detached.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstdint:
+
+/opt/homebrew/include/boost/asio/config.hpp:
+
+/opt/homebrew/include/boost/asio/compose.hpp:
+
+/opt/homebrew/include/boost/asio/completion_condition.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_trivial_copy.hpp:
+
+/opt/homebrew/include/boost/asio/ip/address_v6_iterator.hpp:
+
+/opt/homebrew/include/boost/asio/cancellation_state.hpp:
+
+/opt/homebrew/include/boost/asio/cancellation_signal.hpp:
+
+/opt/homebrew/include/boost/asio/cancel_at.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/throw_error.ipp:
+
+/opt/homebrew/include/boost/asio/buffers_iterator.hpp:
+
+/opt/homebrew/include/boost/asio/buffered_read_stream.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/destruct_n.h:
+
+/opt/homebrew/include/boost/asio/buffer_registration.hpp:
+
+/opt/homebrew/include/boost/asio/buffer.hpp:
+
+/opt/homebrew/include/boost/asio/bind_immediate_executor.hpp:
+
+/opt/homebrew/include/boost/asio/bind_executor.hpp:
+
+/opt/homebrew/include/boost/asio/bind_cancellation_slot.hpp:
+
+/opt/homebrew/include/boost/asio/impl/awaitable.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/uio.h:
+
+/opt/homebrew/include/boost/asio/bind_allocator.hpp:
+
+/opt/homebrew/include/boost/asio/basic_socket_acceptor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/priority_tag.h:
+
+/opt/homebrew/include/boost/asio/basic_socket.hpp:
+
+/opt/homebrew/include/boost/asio/detail/reactor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/three_way_comp_ref_type.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory_resource/polymorphic_allocator.h:
+
+/opt/homebrew/include/boost/asio/basic_serial_port.hpp:
+
+/opt/homebrew/include/boost/asio/detail/completion_handler.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/inplace_merge.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_clr.h:
+
+/opt/homebrew/include/boost/asio/basic_readable_pipe.hpp:
+
+/opt/homebrew/include/boost/type_traits/type_identity.hpp:
+
+/opt/homebrew/include/boost/asio/basic_raw_socket.hpp:
+
+/opt/homebrew/include/boost/asio/associator.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_posix_availability.h:
+
+/opt/homebrew/include/boost/asio/is_read_buffered.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/nat.h:
+
+/opt/homebrew/include/boost/asio/associated_executor.hpp:
+
+/opt/homebrew/include/boost/asio/associated_cancellation_slot.hpp:
+
+/opt/homebrew/include/boost/asio/any_io_executor.hpp:
+
+/opt/homebrew/include/boost/asio/any_completion_executor.hpp:
+
+/opt/homebrew/include/boost/asio.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_multiplies_assign.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/pstl.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/source_location:
+
+/Users/mmartign/whisper.cpp/include/whisper.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stdint.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stddef.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_heap.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/container_compatible_range.h:
+
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stdbool.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stdarg.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/directory_entry.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_symbol_aliasing.h:
+
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/ptrcheck.h:
+
+/opt/homebrew/include/boost/asio/detail/completion_payload_handler.hpp:
+
+/opt/homebrew/include/boost/asio/impl/connect_pipe.ipp:
+
+/opt/homebrew/include/boost/asio/detail/config.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/limits.h:
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_size_t.h:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_rsize_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_ptrdiff_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_integral.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_nullptr_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_null.h:
 
+/opt/homebrew/include/boost/beast/core/tcp_stream.hpp:
+
+/opt/homebrew/include/boost/asio/detail/non_const_lvalue.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_header_macro.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg_va_list.h:
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg_va_arg.h:
+/opt/homebrew/include/boost/asio/detail/future.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/ordering.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg___va_copy.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/segmented_iterator.h:
+
+/opt/homebrew/include/boost/asio/detail/handler_work.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_wctype.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_wchar.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_time.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_string.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/wchar.h:
 
@@ -1103,29 +3684,117 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/wait.h:
 
+/opt/homebrew/include/boost/intrusive/detail/value_functors.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/destroying_delete_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/unistd.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/filesystem_error.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/un.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/predicate.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/is_pointer_in_range.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ttycom.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/syslimits.h:
 
+/opt/homebrew/include/boost/beast/http/impl/error.ipp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/stdio.h:
+
+/opt/homebrew/include/boost/asio/posix/stream_descriptor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/endian.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/zoned_time.h:
 
 /Users/mmartign/whisper.cpp/ggml/include/ggml-cpu.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/signal.h:
 
+/opt/homebrew/include/boost/optional/detail/optional_utility.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/pstl.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/select.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/parser_std_format_spec.h:
+
+/opt/homebrew/include/boost/assert.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/resource.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_arg.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/operations.h:
+
+/opt/homebrew/include/boost/asio/basic_stream_file.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/search_n.h:
+
+/opt/homebrew/include/boost/asio/detail/reactive_socket_sendto_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ioctl.h:
+
+/opt/homebrew/include/boost/system/detail/errc.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/filio.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_types.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/event.h:
+
+/opt/homebrew/include/boost/beast/core/detail/bind_handler.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_lexicographical_compare.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/local_info.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_string.h:
+
+/opt/homebrew/include/boost/type_traits/is_integral.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/signal.h:
+
+/opt/homebrew/include/boost/asio/detail/bind_handler.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/appleapiopts.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/reactive_socket_service_base.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_wint_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_va_list.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_uuid_t.h:
+
+/opt/homebrew/include/boost/beast/core/impl/saved_handler.ipp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_useconds_t.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mbstate_t.h:
+
+/opt/homebrew/include/boost/asio/impl/write.hpp:
+
+/opt/homebrew/include/boost/asio/detail/chrono_time_traits.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/saturation_arithmetic.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_uintptr_t.h:
+
+/opt/homebrew/include/boost/logic/tribool.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_uid_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_ucontext.h:
+
+/opt/homebrew/include/boost/type_traits/copy_reference.hpp:
+
+/opt/homebrew/include/boost/type_traits/alignment_of.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_short.h:
 
@@ -1133,37 +3802,101 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_int16_t.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/weak_result_type.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_int.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_char.h:
 
+/opt/homebrew/include/boost/type_traits/has_not_equal_to.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_prev_permutation.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/posix_thread.ipp:
+
+/opt/homebrew/include/boost/type_traits/is_unscoped_enum.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_timeval64.h:
+
+/opt/homebrew/include/boost/move/detail/addressof.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_time_t.h:
+
+/opt/homebrew/include/boost/asio/socket_base.hpp:
+
+/opt/homebrew/include/boost/asio/detail/strand_service.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_size_t.h:
 
+/opt/homebrew/include/boost/type_traits/has_divides_assign.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_offsetof.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_sigaltstack.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_max_align_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_seek_set.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_s_ifmt.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale.h:
+
+/opt/homebrew/include/boost/asio/ip/impl/network_v6.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_rune_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/allocate.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_rsize_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_null.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_contains.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/contention_t.h:
+
+/opt/homebrew/include/boost/asio/basic_waitable_timer.hpp:
+
+/opt/homebrew/include/boost/asio/handler_continuation_hook.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/runetype.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_mode_t.h:
 
+/opt/homebrew/include/boost/asio/execution/blocking_adaptation.hpp:
+
+/opt/homebrew/include/boost/asio/co_composed.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_mach_port_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/path.h:
+
+/opt/homebrew/include/boost/asio/detail/memory.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_key_t.h:
 
+/opt/homebrew/include/boost/describe/detail/cx_streq.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_iovec_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/mersenne_twister_engine.h:
+
+/opt/homebrew/include/boost/asio/execution/mapping.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_int8_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_int64_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdio.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_int16_t.h:
 
+/opt/homebrew/include/boost/beast/websocket/detail/prng.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/mem_fn.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_ino_t.h:
+
+/opt/homebrew/include/boost/type_traits/detail/is_member_function_pointer_cxx_11.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/kill_dependency.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_in_port_t.h:
 
@@ -1171,27 +3904,51 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fsfilcnt_t.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/assume_aligned.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fsblkcnt_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_gid_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_time.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_zero.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__debug_utils/strict_weak_ordering_check.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_filesec_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_setsize.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_isset.h:
+/opt/homebrew/include/boost/asio/immediate.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_bit_and.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/monthday.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_def.h:
 
+/opt/homebrew/include/boost/beast/http/impl/status.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/vector.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_copy.h:
 
+/opt/homebrew/include/boost/beast/http/verb.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_errno_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/perfect_forward.h:
+
+/opt/homebrew/include/boost/asio/coroutine.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_dev_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_ct_rune_t.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/time.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_clock_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/unreachable_sentinel.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/concepts.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_blksize_t.h:
 
@@ -1199,51 +3956,97 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_symbol_aliasing.h:
+/opt/homebrew/include/boost/asio/inline_or_executor.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_types.h:
+/opt/homebrew/include/boost/asio/detail/timer_queue_base.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/common_with.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/discard_block_engine.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_once_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_mutex_t.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_condattr_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/mem_fun_ref.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_cond_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_attr_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_off_t.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/__endian.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/string.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_volatile.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_id_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/stdint.h:
 
+/opt/homebrew/include/boost/type_traits/is_floating_point.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/tuple:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/stddef.h:
+
+/opt/homebrew/include/boost/asio/detail/initiation_base.hpp:
+
+/opt/homebrew/include/boost/asio/local/seq_packet_protocol.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/signal.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uint32_t.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sched.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/runetype.h:
+/opt/homebrew/include/boost/system/api_config.hpp:
+
+/opt/homebrew/include/boost/asio/execution/executor.hpp:
+
+/opt/homebrew/include/boost/asio/traits/query_static_constexpr_member.hpp:
+
+/opt/homebrew/include/boost/asio/detail/reactive_socket_send_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_stdlib.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread/sched.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread/pthread_impl.h:
 
+/opt/homebrew/include/boost/mp11/set.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/nl_types.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_off_t.h:
+
+/opt/homebrew/include/boost/asio/require.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/__endian.h:
+
+/opt/homebrew/include/boost/asio/associated_allocator.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/poll.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netinet/tcp.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/malloc/_malloc_type.h:
 
+/opt/homebrew/include/boost/beast/core/impl/basic_stream.hpp:
+
+/opt/homebrew/include/boost/asio/impl/cancel_after.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/malloc/_malloc.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__locale_dir/pad_and_output.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/types.h:
 
+/opt/homebrew/include/boost/type_traits/declval.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/signal.h:
+
+/opt/homebrew/include/boost/type_traits/remove_cv_ref.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/auto_cast.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/_types.h:
 
@@ -1253,75 +4056,159 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/libkern/arm/_OSByteOrder.h:
 
+/opt/homebrew/include/boost/asio/ip/network_v6.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/stdio.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/libkern/_OSByteOrder.h:
 
+/opt/homebrew/include/boost/core/detail/sp_thread_pause.hpp:
+
+/opt/homebrew/include/boost/asio/detail/io_object_impl.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/access.h:
+
+/opt/homebrew/include/boost/asio/basic_streambuf_fwd.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/gethostuuid.h:
+
+/opt/homebrew/include/boost/asio/detail/buffered_stream_storage.hpp:
+
+/opt/homebrew/include/boost/beast/core/flat_stream.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/fcntl.h:
+
+/opt/homebrew/include/boost/asio/execution/prefer_only.hpp:
+
+/opt/homebrew/include/boost/asio/detail/null_event.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/errno.h:
+
+/opt/homebrew/include/boost/asio/detail/impl/strand_service.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/vector:
 
+/opt/homebrew/include/boost/type_traits/detail/has_binary_operator.hpp:
+
+/opt/homebrew/include/boost/system/system_error.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/variant:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/sortable.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/utility:
 
+/opt/homebrew/include/boost/asio/impl/system_context.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/unordered_map:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/sockio.h:
+
+/opt/homebrew/include/boost/asio/impl/write_at.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/type_traits:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/system_error:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/syncstream:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/string.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_gid_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_zero.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdlib.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdio.h:
+/opt/homebrew/include/boost/beast/http/rfc7230.hpp:
+
+/opt/homebrew/include/boost/asio/read_until.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stddef.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_string.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdbool.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/sstream:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/shared_mutex:
+
+/opt/homebrew/include/boost/asio/detail/service_registry.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ratio:
 
+/opt/homebrew/include/boost/beast/websocket/impl/write.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/random:
+
+/opt/homebrew/include/boost/asio/detail/impl/handler_tracking.ipp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/print:
+
+/opt/homebrew/include/boost/beast/core/impl/static_buffer.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/swap.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ostream:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/file_status.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/optional:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/numbers:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_wchar_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/new:
 
+/opt/homebrew/include/boost/asio/detail/resolver_thread_pool.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/mutex:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/memory_resource:
+
+/opt/homebrew/include/boost/asio/impl/redirect_error.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/istream_iterator.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/memory:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_make_heap.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/math.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/locale:
 
+/opt/homebrew/include/boost/asio/detail/handler_cont_helpers.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/latch:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/iterator:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/istream:
+/opt/homebrew/include/boost/beast/core/impl/file_posix.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ios:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_pid_t.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/math.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/iomanip:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_key_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/initializer_list:
+
+/opt/homebrew/include/boost/core/enable_if.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/functional:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/fstream:
 
+/opt/homebrew/include/boost/beast/core/file_posix.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/format:
 
+/opt/homebrew/include/boost/move/detail/std_ns_end.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/directory_options.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/filesystem:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/parser_std_format_spec.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_int32_t.h:
 
@@ -1329,53 +4216,93 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/errno.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/deque:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cwchar:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/tuple_element.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_ssize_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ctime:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/comp_ref_type.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstring:
+
+/opt/homebrew/include/boost/move/detail/type_traits.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstdio:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstdint:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstddef:
+/opt/homebrew/include/boost/asio/impl/executor.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/malloc/_ptrcheck.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/clamp.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstdarg:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/csignal:
 
+/opt/homebrew/include/boost/beast/http/impl/fields.ipp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/condition_variable:
+
+/opt/homebrew/include/boost/asio/ip/icmp.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/concepts:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_swappable.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/complex:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_specialization.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/compare:
+
+/opt/homebrew/include/boost/asio/detail/scoped_lock.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cmath:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/limits:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_sorted_until.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/clocale:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/climits:
 
+/opt/homebrew/include/boost/intrusive/detail/algo_type.hpp:
+
+/opt/homebrew/include/boost/asio/redirect_disposition.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/_mcontext.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/queue.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/chrono:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/charconv:
 
+/opt/homebrew/include/boost/beast/core/bind_handler.hpp:
+
+/opt/homebrew/include/boost/asio/detail/timer_queue.hpp:
+
+/opt/homebrew/include/boost/intrusive/options.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_find_if.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cerrno:
+
+/opt/homebrew/include/boost/core/pointer_traits.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cctype:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/deque:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cassert:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/bit:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/barrier:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/atomic:
 
@@ -1383,11 +4310,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__verbose_abort:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_remove_copy_if.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/vector_bool.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/vector.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_integral.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/pmr.h:
+
+/opt/homebrew/include/boost/asio/detail/push_options.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/this_thread.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/erase.h:
 
@@ -1399,93 +4332,157 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/swap.h:
 
+/opt/homebrew/include/boost/asio/detail/resolve_op.hpp:
+
+/opt/homebrew/include/boost/asio/impl/use_awaitable.hpp:
+
+/opt/homebrew/include/boost/system/is_error_condition_enum.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/ranges_operations.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/mach/machine/_structs.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/scope_guard.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/private_constructor_tag.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/concepts.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/priority_tag.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/private_constructor_tag.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread.h:
 
+/opt/homebrew/include/boost/type_traits/is_complete.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/remove.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/pair.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_standard_layout.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/termios.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/move.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/no_destroy.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/is_pointer_in_range.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/queue:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/is_valid_range.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/integer_sequence.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/prev_permutation.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/in_place.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/exception_guard.h:
+/opt/homebrew/include/boost/asio/post.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/forward_like.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_extent.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/empty.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/element_count.h:
 
+/opt/homebrew/include/boost/asio/detail/impl/resolver_thread_pool.ipp:
+
+/opt/homebrew/include/boost/asio/traits/static_query.hpp:
+
+/opt/homebrew/include/boost/asio/impl/execution_context.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/ctype.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_integral.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/declval.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_integer.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/ranges_uninitialized_algorithms.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/as_const.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__undef_macros:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_result.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/underlying_type.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_for_each.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/strip_signature.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/AvailabilityInternal.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__config:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/result_of.h:
+/opt/homebrew/include/boost/asio/is_applicable_property.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_volatile.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/convert_to_integral.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/cmp.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__undef_macros:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/void_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/unwrap_ref.h:
+
+/opt/homebrew/include/boost/type_traits/remove_const.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netinet/in.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_pointer.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/stable_partition.h:
+
+/opt/homebrew/include/boost/asio/basic_writable_pipe.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/integral_constant.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/cdefs.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_error.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_cvref.h:
+
+/opt/homebrew/include/boost/asio/ip/v6_only.hpp:
+
+/opt/homebrew/include/boost/asio/impl/cancellation_signal.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_const_ref.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/calendar.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_const.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/tuple:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_o_dsync.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_all_extents.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_set_intersection.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_output.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/rank.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/negation.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/nat.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/maybe_const.h:
+/opt/homebrew/include/boost/type_traits/is_nothrow_swappable.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/make_unsigned.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_for_each_n.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/make_signed.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/make_32_64_or_128_bit.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/type_identity.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_floating_point.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/make_const_lvalue_ref.h:
+
+/Users/mmartign/whisper.cpp/ggml/include/ggml.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/convert_to_tm.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_valid_expansion.h:
+
+/opt/homebrew/include/boost/asio/windows/random_access_handle.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_unsigned_integer.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_union.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/forward.h:
+/opt/homebrew/include/boost/asio/detail/scoped_ptr.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/static_string.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/assert.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/stable_sort.h:
+
+/opt/homebrew/include/boost/asio/basic_socket_streambuf.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/net/if_var.h:
+
+/opt/homebrew/include/boost/type_traits/is_const.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_trivially_destructible.h:
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_wchar_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/netdb.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_trivially_copyable.h:
 
@@ -1495,21 +4492,23 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_referenceable.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_callable.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_found_result.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_primary_template.h:
+/opt/homebrew/include/boost/asio/consign.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_polymorphic.h:
 
+/opt/homebrew/include/boost/type_traits/has_minus_assign.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/semaphore:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_pointer.h:
+
+/opt/homebrew/include/boost/asio/detail/reactive_wait_op.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/is_always_lock_free.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_pod.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_object.h:
+
+/opt/homebrew/include/boost/type_traits/has_trivial_destructor.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_heap.h:
 
@@ -1519,9 +4518,13 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/ctype.h:
 
+/opt/homebrew/include/boost/io/detail/buffer_fill.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_nothrow_assignable.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_member_pointer.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/byte.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_signed_integer.h:
 
@@ -1531,11 +4534,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find_if_not.h:
 
+/opt/homebrew/include/boost/beast/core/buffers_suffix.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/year_month.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_implicitly_default_constructible.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_function.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_stdlib.h:
+/opt/homebrew/include/boost/asio/detail/signal_handler.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/transform.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_floating_point.h:
 
@@ -1543,9 +4552,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_constructible.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_constant_evaluated.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/support.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_bounded_array.h:
+
+/opt/homebrew/include/boost/mp11/detail/mp_is_list.hpp:
+
+/opt/homebrew/include/boost/asio/ip/impl/address_v6.hpp:
+
+/opt/homebrew/include/boost/asio/impl/consign.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/spinlock.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_mbstate_t.h:
 
@@ -1553,23 +4570,39 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_array.h:
 
+/opt/homebrew/include/boost/optional/detail/optional_reference_spec.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/net/if.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_arithmetic.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/contention_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/file_time_type.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_allocator.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/move.h:
+
+/opt/homebrew/include/boost/asio/detail/blocking_executor_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_standard_layout.h:
+
+/opt/homebrew/include/boost/asio/local/connect_pair.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_aggregate.h:
+
+/opt/homebrew/include/boost/asio/recycling_allocator.hpp:
+
+/opt/homebrew/include/boost/system/detail/enable_if.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_abstract.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/concepts.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/invoke.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/extent.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_intptr_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/arithmetic.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/enable_if.h:
 
@@ -1577,19 +4610,25 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/decay.h:
 
+/opt/homebrew/include/boost/asio/uses_executor.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/convertible_to.h:
+
+/opt/homebrew/include/boost/beast/websocket/detail/service.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/datasizeof.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_sigset_t.h:
+/opt/homebrew/include/boost/asio/require_concept.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_any_of.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/discrete_distribution.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_cv.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/exchange.h:
+
+/opt/homebrew/include/boost/smart_ptr/detail/sp_counted_base_std_atomic.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/class_or_enum.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/exchange.h:
+/opt/homebrew/include/boost/intrusive/detail/parent_from_member.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/permutable.h:
 
@@ -1599,25 +4638,43 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/copy_cvref.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_symmetric_difference.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/alignment_of.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/void_t.h:
+/opt/homebrew/include/boost/beast/zlib/impl/error.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/has_virtual_destructor.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/knuth_b.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/add_pointer.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/pointer_to_binary_function.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/___wctype.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/common_type.h:
 
+/opt/homebrew/include/boost/asio/buffered_write_stream_fwd.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/add_lvalue_reference.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/remainder.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/ignore.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/find_index.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/this_thread.h:
+/opt/homebrew/include/boost/beast/core/detail/flat_stream.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/sift_down.h:
+
+/opt/homebrew/include/boost/asio/cancellation_type.hpp:
+
+/opt/homebrew/include/boost/beast/core/async_base.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/remove_copy_if.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/support/pthread.h:
 
@@ -1627,57 +4684,151 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Users/mmartign/Speech-to-Knowledge/transcribe_audio.cpp:
 
+/opt/homebrew/include/boost/core/detail/sp_thread_sleep.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/error_condition.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__string/constexpr_c_functions.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/stop_state.h:
+/opt/homebrew/include/boost/beast/http/detail/chunk_encode.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_prev_permutation.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/stop_state.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/stop_source.h:
 
+/opt/homebrew/include/boost/asio/detail/signal_op.hpp:
+
+/opt/homebrew/include/boost/beast/core/detect_ssl.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/stop_callback.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/cmp.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/availability.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/subrange.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__locale_dir/support/bsd_like.h:
 
+/opt/homebrew/include/boost/beast/core/detail/varint.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/size.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_union.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/ref_view.h:
 
+/opt/homebrew/include/boost/type_traits/has_bit_or_assign.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/movable_box.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/fisher_f_distribution.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/enable_view.h:
 
+/opt/homebrew/include/boost/asio/detail/concurrency_hint.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/enable_borrowed_range.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/data.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_swappable.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_suseconds_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/piecewise_constant_distribution.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/concepts.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/access.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/is_valid.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/uniform_real_distribution.h:
+
+/opt/homebrew/include/boost/asio/basic_file.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/subtract_with_carry_engine.h:
+
+/opt/homebrew/include/boost/asio/detail/reactive_socket_recv_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/seed_seq.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/for_each.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/random_device.h:
+
+/Users/mmartign/whisper.cpp/ggml/include/ggml-alloc.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/binomial_distribution.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/poisson_distribution.h:
+
+/opt/homebrew/include/boost/smart_ptr/detail/local_counted_base.hpp:
+
+/opt/homebrew/include/boost/asio/detail/executor_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_pid_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/math.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/iomanip:
+
+/opt/homebrew/include/boost/type_traits/has_bit_xor_assign.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/normal_distribution.h:
+
+/opt/homebrew/include/boost/type_traits/is_signed.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/equal_range.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__string/extern_template_lists.h:
+
+/opt/homebrew/include/boost/beast/core/impl/saved_handler.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/negative_binomial_distribution.h:
+
+/opt/homebrew/include/boost/asio/detail/utility.hpp:
+
+/opt/homebrew/include/boost/asio/connect.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/can_extract_key.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__debug_utils/strict_weak_ordering_check.h:
+/opt/homebrew/include/boost/type_traits/is_function.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/log2.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/maybe_const.h:
+
+/opt/homebrew/include/boost/none_t.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/linear_congruential_engine.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/gamma_distribution.h:
+
+/opt/homebrew/include/boost/asio/ip/address_v4.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/extreme_value_distribution.h:
+
+/opt/homebrew/include/boost/asio/windows/basic_random_access_handle.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uint16_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/reverse.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/clamp_to_integral.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/cauchy_distribution.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/result_of.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/AvailabilityInternal.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/atomic_init.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/bernoulli_distribution.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_base_10.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/transform_reduce.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/transform_exclusive_scan.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/pstl.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/lower_bound.h:
+
+/opt/homebrew/include/boost/asio/traits/static_require.hpp:
+
+/opt/homebrew/include/boost/asio/execution_context.hpp:
+
+/opt/homebrew/include/boost/intrusive/detail/node_cloner_disposer.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/remove_copy.h:
 
@@ -1689,6 +4840,8 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/iota.h:
 
+/opt/homebrew/include/boost/type_traits/has_dereference.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/inner_product.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/add_cv_quals.h:
@@ -1697,15 +4850,29 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/accumulate.h:
 
+/opt/homebrew/include/boost/beast/zlib/error.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/nothrow_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_null_pointer.h:
 
+/opt/homebrew/include/boost/asio/detail/dependent_type.hpp:
+
+/opt/homebrew/include/boost/beast/http/detail/type_traits.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_assignable.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_intmax_t.h:
+
+/opt/homebrew/include/boost/asio/impl/cancel_at.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/space_info.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__split_buffer:
+
+/opt/homebrew/include/boost/asio/impl/any_completion_executor.ipp:
+
+/opt/homebrew/include/boost/asio/registered_buffer.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/launder.h:
 
@@ -1713,19 +4880,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/unordered_set:
 
+/opt/homebrew/include/boost/beast/core/buffers_to_string.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/fill.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/global_typed_new_delete.h:
 
+/opt/homebrew/include/boost/smart_ptr/weak_ptr.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/comp.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/saturation_arithmetic.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/global_new_delete.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/destroying_delete_t.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/no_destroy.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/chi_squared_distribution.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/align_val_t.h:
 
@@ -1733,25 +4898,35 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mutex/unique_lock.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/ostream_iterator.h:
+
+/opt/homebrew/include/boost/asio/unyield.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mutex/once_flag.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mutex/lock_guard.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/errno.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_strings.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory_resource/polymorphic_allocator.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_nth_element.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/reduce.h:
 
+/opt/homebrew/include/boost/beast/http/impl/error.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_trivially_lexicographically_comparable.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_pointer.h:
+/opt/homebrew/include/boost/smart_ptr/detail/spinlock_pool.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/uses_allocator.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/weibull_distribution.h:
+
+/opt/homebrew/include/boost/type_traits/has_modulus_assign.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_less.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/map:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_pointer.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/uninitialized_algorithms.h:
 
@@ -1759,9 +4934,11 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/temporary_buffer.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/unwrap_ref.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_volatile.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_endian.h:
+
+/opt/homebrew/include/boost/asio/windows/basic_overlapped_handle.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_core_convertible.h:
 
@@ -1769,13 +4946,27 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/swap_allocator.h:
 
+/opt/homebrew/include/boost/type_traits/is_convertible.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/inverse_trigonometric_functions.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/disjunction.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/nullptr_t.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/raw_storage_iterator.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/as_const.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_integer.h:
+
+/opt/homebrew/include/boost/asio/append.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/hh_mm_ss.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/out_ptr.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/allocator_traits.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/unary_negate.h:
 
@@ -1783,33 +4974,39 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_timeval.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/destruct_n.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/construct_at.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/concepts.h:
+/opt/homebrew/include/boost/asio/detail/reactive_socket_accept_op.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/compressed_pair.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/auto_ptr.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/promote.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_partial_sort.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/array_cookie.h:
 
+/opt/homebrew/include/boost/intrusive/detail/algorithm.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/allocator_destructor.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/min_max.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/data.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/AvailabilityInternalLegacy.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__node_handle:
+
+/opt/homebrew/include/boost/asio/detail/wait_op.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/hyperbolic_functions.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/allocator_arg_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/min_max_result.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/allocation_guard.h:
+/opt/homebrew/include/boost/config/workaround.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/allocation_guard.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/day.h:
 
@@ -1825,39 +5022,43 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/addressof.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_bounds.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/tuple_types.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mbstate_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_bounds.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/traits.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_const_ref.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/container_adaptor.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/variant.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_compound.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/special_functions.h:
 
+/opt/homebrew/include/boost/mp11/version.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partial_sort_copy.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/rounding_functions.h:
 
+/opt/homebrew/include/boost/beast/websocket/detail/utf8_checker.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/tables.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/error_code.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/remainder.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/local_info.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/compare_three_way.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/logarithms.h:
 
+/opt/homebrew/include/boost/mp11/detail/mp_fold.hpp:
+
+/opt/homebrew/include/boost/asio/traits/equality_comparable.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find_segment_if.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/inverse_hyperbolic_functions.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/hypot.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/hyperbolic_functions.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/memory.h:
 
@@ -1869,25 +5070,43 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/locale.h:
 
+/opt/homebrew/include/boost/intrusive/detail/node_holder.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/exponential_functions.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__locale_dir/support/apple.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/comparison.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/roots.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/atomic_flag.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/unreachable_sentinel.h:
+/opt/homebrew/include/boost/type_traits/add_lvalue_reference.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/tuple_size.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/static_bounded_iter.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/type_list.h:
+
+/opt/homebrew/include/boost/asio/read_at.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_tuple.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/size.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/endian.h:
+
+/opt/homebrew/include/boost/asio/execution/impl/bad_executor.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/nth_element.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_search.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/empty.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/throw_system_error.h:
 
@@ -1897,21 +5116,23 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/projected.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/tuple.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/ostream_iterator.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/next.h:
+
+/opt/homebrew/include/boost/asio/traits/require_member.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/move_iterator.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/roots.h:
+/opt/homebrew/include/boost/system/detail/config.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/copysign.h:
+/opt/homebrew/include/boost/asio/windows/object_handle.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/mergeable.h:
 
+/opt/homebrew/include/boost/beast/core/detail/base64.ipp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_trivially_constructible.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/copy.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_void.h:
 
@@ -1919,31 +5140,59 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread/qos.h:
+/opt/homebrew/include/boost/asio/detail/posix_global.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/iter_move.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/pthread/qos.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/istreambuf_iterator.h:
 
+/opt/homebrew/include/boost/asio/ip/impl/address_v6.ipp:
+
+/opt/homebrew/include/boost/beast/http/empty_body_fwd.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/exponential_distribution.h:
+
+/opt/homebrew/include/boost/asio/cancel_after.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_scalar.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/allocator.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/istream_iterator.h:
+/opt/homebrew/include/boost/asio/detail/reactive_socket_service_base.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/includes.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/exclusive_scan.h:
 
+/opt/homebrew/include/boost/beast/websocket/error.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_max_element.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/front_insert_iterator.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/empty.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/poll.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/data.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/mem_fun_ref.h:
+/opt/homebrew/include/boost/system/detail/snprintf.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/common_iterator.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_endian.h:
+/opt/homebrew/include/boost/asio/serial_port_base.hpp:
+
+/opt/homebrew/include/boost/asio/detail/posix_mutex.hpp:
+
+/opt/homebrew/include/boost/asio/buffered_stream.hpp:
+
+/opt/homebrew/include/boost/asio/async_result.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/function.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/atomic_unique_lock.h:
+
+/opt/homebrew/include/boost/beast/http/impl/write.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__locale:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/replace_copy.h:
 
@@ -1951,61 +5200,111 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/aliasing_iterator.h:
 
+/opt/homebrew/include/boost/asio/basic_streambuf.hpp:
+
+/opt/homebrew/include/boost/core/data.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/system_error.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/fcntl.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/generate_n.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_sa_family_t.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/advance.h:
 
+/opt/homebrew/include/boost/endian/detail/integral_by_size.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/literals.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/reference_wrapper.h:
+
+/opt/homebrew/include/boost/beast/websocket/detail/hybi13.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/access.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/reverse_iterator.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_out_result.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/to_underlying.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__hash_table:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/geometric_distribution.h:
+
+/opt/homebrew/include/boost/beast/http/detail/rfc7230.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/trigonometric_functions.h:
 
+/opt/homebrew/include/boost/beast/http/status.hpp:
+
+/opt/homebrew/include/boost/asio/basic_io_object.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/vector.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/tuple.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_execution_policy.h:
+
+/opt/homebrew/include/boost/make_shared.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/net/net_kev.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_to_n_result.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/string_view.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/ranlux.h:
+
+/opt/homebrew/include/boost/asio/detail/array_fwd.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/language.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/stack.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/queue.h:
+/opt/homebrew/include/boost/asio/detail/throw_error.hpp:
 
-/opt/local/include/portaudio.h:
+/opt/homebrew/include/boost/intrusive/list.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/pair.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/memory_order.h:
 
+/opt/homebrew/include/boost/endian/detail/is_trivially_copyable.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/ostream.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/___wctype.h:
+/opt/homebrew/include/boost/asio/detail/pop_options.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/istream.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/ios.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/queue:
+/opt/homebrew/include/boost/beast/core/impl/file_stdio.ipp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/is_valid_range.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/system_error.h:
+/opt/homebrew/include/boost/asio/generic/datagram_protocol.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/bind_front.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/__xlocale.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/new_handler.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/partial_order.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_binary_search.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ostream/basic_ostream.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/filesystem_error.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_binary_search.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/format.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/deque.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_sort.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/complex.h:
 
@@ -2019,13 +5318,9 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/uniform_random_bit_generator_adaptor.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/exception.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/array.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/make_const_lvalue_ref.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/equal_range.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__string/extern_template_lists.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_abort.h:
 
@@ -2033,39 +5328,51 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/copy_move_common.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/weak_result_type.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/unary_function.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/conjunction.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_lower_bound.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/aligned_storage.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/forward_list:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/ranges_operations.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/operations.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/inout_ptr.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/perfect_forward.h:
+/opt/homebrew/include/boost/intrusive/detail/function_detector.hpp:
+
+/opt/homebrew/include/boost/asio/posix/descriptor_base.hpp:
+
+/opt/homebrew/include/boost/asio/detail/cstdint.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/perms.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/not_fn.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/mismatch.h:
 
+/opt/homebrew/include/boost/beast/http/impl/basic_parser.ipp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/invoke.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/operations.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/pointer_traits.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_permutation.h:
+/opt/homebrew/include/boost/asio/system_timer.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/ranges_construct_at.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/hash.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/common_reference.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/function.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/rel_ops.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/default_searcher.h:
+
+/opt/homebrew/include/boost/beast/http/impl/basic_parser.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_stable_partition.h:
 
@@ -2073,17 +5380,23 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/binder2nd.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/array:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__assertion_handler:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_convertible.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/aligned_storage.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/insert_iterator.h:
+
+/opt/homebrew/include/boost/type_traits/is_complex.hpp:
+
+/opt/homebrew/include/boost/smart_ptr/detail/yield_k.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_rwlock_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/binder1st.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/forward_like.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_param.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_sorted_until.h:
 
@@ -2097,15 +5410,25 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/range_default_formatter.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_find_if.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_class.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/type_identity.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_move_backward.h:
+
+/opt/homebrew/include/boost/asio/basic_stream_socket.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/prev.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/parser_std_format_spec.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/wctype.h:
+
+/opt/homebrew/include/boost/asio/detail/std_fenced_block.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_remove_copy.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_string.h:
+
+/opt/homebrew/include/boost/type_traits/is_volatile.hpp:
+
+/opt/homebrew/include/boost/beast/core/detail/impl/temporary_buffer.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/abs.h:
 
@@ -2113,81 +5436,93 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/utc_clock.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_integral.h:
+/opt/homebrew/include/boost/asio/impl/io_context.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_floating_point.h:
 
+/opt/homebrew/include/boost/intrusive/rbtree_algorithms.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cstdlib:
+
+/opt/homebrew/include/boost/beast/core/impl/string.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_intersection.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/socket.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/intrusive_list_view.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_char.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/kill_dependency.h:
+/opt/homebrew/include/boost/asio/impl/awaitable.ipp:
+
+/opt/homebrew/include/boost/asio/detail/impl/buffer_sequence_adapter.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_parse_context.h:
 
+/opt/homebrew/include/boost/asio/composed.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mutex/tag_types.h:
+
+/opt/homebrew/include/boost/core/alloc_construct.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_functions.h:
 
+/opt/homebrew/include/boost/asio/detail/posix_static_mutex.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/bit_reference.h:
+
+/opt/homebrew/include/boost/bind/std_placeholders.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/piecewise_construct.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_error.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_context.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_args.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_set_symmetric_difference.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_base_10.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/buffer.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_arg_store.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/binary_negate.h:
+/opt/homebrew/include/boost/asio/detail/socket_option.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/perms.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/binary_negate.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/path_iterator.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/unwrap_range.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/path.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/operations.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__string/char_traits.h:
 
+/opt/homebrew/include/boost/asio/defer.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/different_from.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/min.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/boolean_testable.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__locale_dir/locale_base_api.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/ordering.h:
+/opt/homebrew/include/boost/asio/windows/basic_stream_handle.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/file_time_type.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_union.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/rotate.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/year_month_day.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/directory_iterator.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/strong_order.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_permutation.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/types.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/directory_entry.h:
+/opt/homebrew/include/boost/asio/detail/scheduler_thread_info.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/convert_to_tm.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_string.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/for_each_n.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/from_chars_integral.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__exception/operations.h:
 
@@ -2195,25 +5530,29 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg___gnuc_va_list.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/new_handler.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/generate_n.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_fill.h:
+
+/opt/homebrew/include/boost/asio/impl/connect.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/fstream.h:
 
+/opt/homebrew/include/boost/mp11/algorithm.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__exception/exception_ptr.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/pstl.h:
+/opt/homebrew/include/boost/asio/detail/call_stack.hpp:
+
+/opt/homebrew/include/boost/asio/detail/executor_function.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__exception/exception.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/auto_cast.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/container_traits.h:
 
+/opt/homebrew/include/boost/asio/impl/co_spawn.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/default_sentinel.h:
+
+/opt/homebrew/include/boost/system/detail/error_category.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__debug_utils/sanitizers.h:
 
@@ -2221,23 +5560,29 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/perm_options.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/default_random_engine.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/pointer_to_unary_function.h:
+
+/opt/homebrew/include/boost/intrusive/detail/config_begin.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/is_eq.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/same_as.h:
 
+/opt/homebrew/include/boost/intrusive/detail/is_stateful_value_traits.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find_end.h:
+
+/opt/homebrew/include/boost/beast/core/error.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/platform.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_partition_point.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/language.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partial_sort_copy.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/compiler.h:
+
+/opt/homebrew/include/boost/asio/basic_random_access_file.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/indic_conjunct_break_table.h:
 
@@ -2245,49 +5590,61 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__configuration/abi.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/reverse.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/assume_aligned.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/for_each.h:
+/opt/homebrew/include/boost/asio/any_completion_handler.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__config_site:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/semiregular.h:
 
+/opt/homebrew/include/boost/beast/core/detail/buffers_range_adaptor.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uint8_t.h:
+
+/opt/homebrew/include/boost/asio/detail/keyword_tss_ptr.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/u8path.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_posix_vdisable.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/generate_canonical.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/search.h:
+
+/opt/homebrew/include/boost/beast/websocket/impl/stream_impl.hpp:
+
+/opt/homebrew/include/boost/beast/core/string.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_wctrans_t.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/swap_ranges.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/convert_to_timespec.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/predicate.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/sort_heap.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/equality_comparable.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/wchar.h:
+/opt/homebrew/include/boost/type_traits/is_member_pointer.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/tuple_element.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/wchar.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/destructible.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/transform.h:
+/opt/homebrew/include/boost/type_traits/is_list_constructible.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/derived_from.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_scalar.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/escaped_output_table.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/common_with.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_shuffle.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/range_formatter.h:
 
+/opt/homebrew/include/boost/asio/buffered_read_stream_fwd.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/min_element.h:
+
+/opt/homebrew/include/boost/type_traits/is_base_of.hpp:
+
+/opt/homebrew/include/boost/config/detail/suffix.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_search_n.h:
 
@@ -2295,13 +5652,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/is_transparent.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/next_permutation.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/queue.h:
+
+/opt/homebrew/include/boost/intrusive/parent_from_member.hpp:
+
+/opt/homebrew/include/boost/beast/zlib/detail/deflate_stream.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdexcept:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/three_way_comparable.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uint16_t.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/type_list.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/shuffle.h:
 
@@ -2311,11 +5672,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/copyable.h:
 
+/opt/homebrew/include/boost/asio/basic_signal_set.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/compare_weak_order_fallback.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/is_seed_sequence.h:
+
+/opt/homebrew/include/boost/asio/local/stream_protocol.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/indirectly_comparable.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/constructible.h:
+/opt/homebrew/include/boost/intrusive/detail/default_header_holder.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/compare_three_way_result.h:
 
@@ -2323,17 +5690,23 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_copy_n.h:
 
+/opt/homebrew/include/boost/system/error_code.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/compare_partial_order_fallback.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_integral.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/error_category.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/exception.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_find_end.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/common_comparison_category.h:
+
+/opt/homebrew/include/boost/move/detail/iterator_traits.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/stream_fwd.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/independent_bits_engine.h:
+
+/opt/homebrew/include/boost/asio/detail/posix_thread.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/ptrdiff_t.h:
 
@@ -2341,31 +5714,53 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__exception/terminate.h:
 
+/opt/homebrew/include/boost/type_traits/is_assignable.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_unique_copy.h:
+
+/opt/homebrew/include/boost/asio/detail/descriptor_ops.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/year.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/trivial_awaitables.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/subrange.h:
+
+/opt/homebrew/include/boost/asio/wait_traits.hpp:
+
+/opt/homebrew/include/boost/asio/detail/conditionally_enabled_event.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/string:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/unwrap_iter.h:
 
+/opt/homebrew/include/boost/intrusive/detail/uncast.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_set.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/steady_clock.h:
 
+/opt/homebrew/include/boost/beast/core/string_type.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/time_point.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/parser_std_format_spec.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_unsigned.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tree:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/sstream.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/monthday.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stack:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/container_compatible_range.h:
+/opt/homebrew/include/boost/asio/detail/thread_group.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/bit_floor.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/month_weekday.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/conditional.h:
+
+/opt/homebrew/include/boost/asio/basic_seq_packet_socket.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/formatter.h:
 
@@ -2379,6 +5774,8 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/duration.h:
 
+/opt/homebrew/include/boost/asio/detail/thread_context.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_nothrow_constructible.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_sort_heap.h:
@@ -2387,23 +5784,27 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_limits.h:
 
+/opt/homebrew/include/boost/asio/connect_pipe.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/countl.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_integral.h:
+/opt/homebrew/include/boost/asio/ip/multicast.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/integral_constant.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/intrusive_shared_ptr.h:
+
+/opt/homebrew/include/boost/asio/ip/impl/network_v4.ipp:
+
+/opt/homebrew/include/boost/beast/core/file_stdio.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/functional.h:
+
+/opt/homebrew/include/boost/asio/error.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg_va_copy.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/literals.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_generate_n.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_floating_point.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/mem_fn.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/tables.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/exception_guard.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter.h:
 
@@ -2411,23 +5812,29 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/bit_cast.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partition_copy.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/chars_format.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/totally_ordered.h:
+
+/opt/homebrew/include/boost/type_traits/has_trivial_assign.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/system_clock.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit_reference:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/wctype.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/rotate.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/placement_new_delete.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/uniform_int_distribution.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/iosfwd:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/popcount.h:
+
+/opt/homebrew/include/boost/beast/core/detail/chacha.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/minmax.h:
 
@@ -2437,29 +5844,45 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_ctermid.h:
 
+/opt/homebrew/include/boost/asio/detail/impl/posix_event.ipp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/blsr.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/bit_log2.h:
 
+/opt/homebrew/include/boost/system/detail/std_category.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/unique_temporary_buffer.h:
+
+/opt/homebrew/include/boost/type_traits/is_reference.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/to_gcc_order.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/file_status.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/in_place.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/pop_heap.h:
 
+/opt/homebrew/include/boost/type_traits/is_polymorphic.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars_result.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__std_mbstate_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/statically_widen.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_callable.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/equal.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_primary_template.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_found_result.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/lexicographical_compare.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/atomic_sync.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/replace_if.h:
+/opt/homebrew/include/boost/intrusive/detail/tree_iterator.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_lower_bound.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/replace_if.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/atomic_ref.h:
 
@@ -2471,57 +5894,57 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/back_insert_iterator.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/aliases.h:
+/opt/homebrew/include/boost/type_traits/is_final.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_specialization.h:
+/opt/homebrew/include/boost/asio/detail/impl/reactive_descriptor_service.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/aliases.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_merge.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/upper_bound.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/unique_copy.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_fd_clr.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/movable.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/stable_sort.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/lexicographical_compare_three_way.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/all_of.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/replace_copy_if.h:
+/opt/homebrew/include/boost/beast/websocket/detail/hybi13.ipp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/sort_heap.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/replace_copy_if.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/transform_inclusive_scan.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find_first_of.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/swap_ranges.h:
+/opt/homebrew/include/boost/asio/detail/op_queue.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/shared_ptr.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/machine/endian.h:
+/opt/homebrew/include/boost/describe/bases.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_reverse_copy.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_fill_n.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/qos.h:
+/opt/homebrew/include/boost/asio/awaitable.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_key_t.h:
+/opt/homebrew/include/boost/is_placeholder.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/qos.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/sort.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_min_element.h:
 
+/opt/homebrew/include/boost/asio/write_at.hpp:
+
+/opt/homebrew/include/boost/move/detail/launder.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/invocable.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/segmented_iterator.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/extended_grapheme_cluster_table.h:
+/opt/homebrew/include/boost/asio/as_tuple.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/simd_utils.h:
 
@@ -2529,27 +5952,31 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_enum.h:
 
+/opt/homebrew/include/boost/asio/impl/append.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/shift_left.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/empty.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_copy_if.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/concepts.h:
+/opt/homebrew/include/boost/asio/detail/winsock_init.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stdint.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_partition_copy.h:
+/opt/homebrew/include/boost/asio/local/basic_endpoint.hpp:
+
+/opt/homebrew/include/boost/asio/detail/scheduler_task.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types.h:
 
+/opt/homebrew/include/boost/asio/ip/detail/impl/endpoint.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/make_32_64_or_128_bit.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_for_each_n.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_caddr_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_symmetric_difference.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_intersection.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/count_if.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/pointer_traits.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/adjacent_difference.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/max_align_t.h:
 
@@ -2563,29 +5990,31 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/copy_backward.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/sortable.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_move.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/sample.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_transform.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/enable_insertable.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/nullptr_t.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/generate.h:
+/opt/homebrew/include/boost/asio/windows/stream_handle.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/unique_ptr.h:
+
+/opt/homebrew/include/boost/asio/execution/any_executor.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_logical_not.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_always_bitcastable.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/radix_sort.h:
 
+/opt/homebrew/include/boost/beast/zlib/detail/ranges.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/stat.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/to_chars.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/minmax_element.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/replace.h:
+
+/opt/homebrew/include/boost/asio/streambuf.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_count.h:
 
@@ -2597,35 +6026,63 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/remove_if.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_partition.h:
+/opt/homebrew/include/boost/asio/ip/basic_endpoint.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partition.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/sstream:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_arg.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/lognormal_distribution.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/relation.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/enable_insertable.h:
+
+/opt/homebrew/include/boost/mp11/detail/mp_list.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_transform.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/coroutine_handle.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uint64_t.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/AvailabilityVersions.h:
+
+/opt/homebrew/include/boost/optional/detail/optional_aligned_storage.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_swap_ranges.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_stable_sort.h:
+/opt/homebrew/include/boost/asio/detail/socket_types.hpp:
+
+/opt/homebrew/include/boost/optional/detail/optional_config.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/ostreambuf_iterator.h:
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_max_align_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_difference.h:
+
+/opt/homebrew/include/boost/asio/detail/static_mutex.hpp:
+
+/opt/homebrew/include/boost/mp11/detail/mp_map_find.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_sorted.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_sort.h:
+/opt/homebrew/include/boost/beast/core/flat_static_buffer.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_replace_copy.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_shuffle.h:
+/opt/homebrew/include/boost/asio/impl/redirect_disposition.hpp:
+
+/opt/homebrew/include/boost/beast/core/impl/buffers_cat.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_set_union.h:
+
+/opt/homebrew/include/boost/asio/yield.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_char_like_type.h:
 
+/opt/homebrew/include/boost/intrusive/detail/math.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_set_difference.h:
+
+/opt/homebrew/include/boost/beast/http/impl/verb.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/string_view:
 
@@ -2633,27 +6090,25 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/error_functions.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/half_positive.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_reverse.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/__xlocale.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_equal_range.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/iter_swap.h:
 
+/opt/homebrew/include/boost/asio/detail/buffer_resize_guard.hpp:
+
+/opt/homebrew/include/boost/asio/ip/host_name.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/streambuf:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_replace_if.h:
 
+/opt/homebrew/include/boost/asio/detail/resolver_service.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_push_heap.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_remove_if.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_remove_copy_if.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/directory_options.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/aligned_union.h:
 
@@ -2671,9 +6126,9 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/detected_or.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/iter_swap.h:
+/opt/homebrew/include/boost/beast/websocket/impl/accept.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/remove.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/iter_swap.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_nlink_t.h:
 
@@ -2681,55 +6136,55 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/poll_with_backoff.h:
 
+/opt/homebrew/include/boost/beast/core/detail/remap_post_to_defer.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_next_permutation.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/atomic_init.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/add_rvalue_reference.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/any:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/iterator_operations.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_minmax_element.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_min.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/bind_back.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/ranges_construct_at.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/___wctype.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/bit_floor.h:
+/opt/homebrew/include/boost/config/stdlib/libcpp.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_static_assert.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/distance.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_upper_bound.h:
 
+/opt/homebrew/include/boost/beast/core/span.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_wctype_t.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_class.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_remove_copy.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_make_heap.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/typeinfo:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/month.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_find_first_of.h:
+/opt/homebrew/include/boost/beast/http/error.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_sorted_until.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_find_first_of.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/jthread.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/Availability.h:
+
+/opt/homebrew/include/boost/asio/detail/base_from_cancellation_state.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/numeric:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/bit_ceil.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_inplace_merge.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find_if.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/string.h:
 
@@ -2739,31 +6194,45 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/reverse_copy.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/streambuf.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/size_t.h:
+
+/opt/homebrew/include/boost/intrusive/detail/size_holder.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/swappable.h:
 
+/opt/homebrew/include/boost/optional/detail/optional_relops.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/fill_n.h:
+
+/opt/homebrew/include/boost/intrusive/detail/list_node.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_bool.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/temp_value.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/statically_widen.h:
+/opt/homebrew/include/boost/asio/detail/impl/signal_set_service.ipp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/negation.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/rank.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_set_intersection.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__thread/id.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_replace_copy_if.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_rotate_copy.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_reference.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/intrusive_shared_ptr.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find_if.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/stdlib.h:
 
+/opt/homebrew/include/boost/type_traits/is_default_constructible.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_includes.h:
+
+/opt/homebrew/include/boost/beast/core/buffers_generator.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_equal.h:
 
@@ -2771,79 +6240,95 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_ctype.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uint32_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ttydefaults.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/three_way_comp_ref_type.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/student_t_distribution.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/modulo.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/span:
+
+/opt/homebrew/include/boost/asio/detail/impl/strand_executor_service.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_logical_and.hpp:
+
+/opt/homebrew/include/boost/beast/websocket/impl/stream.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_nl_item.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/bit_width.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_copy_if.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/set_difference.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_extent.h:
-
-/Users/mmartign/whisper.cpp/ggml/include/ggml.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_copy_backward.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_contains.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/common_reference_with.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_generate.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_pointer.h:
+/opt/homebrew/include/boost/asio/ip/address_v4_iterator.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/gcd_lcm.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/prev_permutation.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/move_sentinel.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/noop_coroutine_handle.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/from_chars_integral.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_lexicographical_compare.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/exceptions.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partition_copy.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_heap_until.h:
+/opt/homebrew/include/boost/type_traits/is_union.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/iterator.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__compare/weak_order.h:
+/opt/homebrew/include/boost/mp11/detail/mp_value.hpp:
+
+/opt/homebrew/include/boost/asio/detail/impl/service_registry.ipp:
+
+/opt/homebrew/include/boost/asio/detail/impl/timer_queue_set.ipp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_u_int8_t.h:
 
+/opt/homebrew/include/boost/endian/detail/is_scoped_enum.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partition_point.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_move_backward.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_types.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_set_union.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__coroutine/coroutine_traits.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/gcd_lcm.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/make_projected.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/move_sentinel.h:
+
+/opt/homebrew/include/boost/asio/associated_immediate_executor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_heap_until.h:
+
+/opt/homebrew/include/boost/asio/detail/object_pool.hpp:
+
+/opt/homebrew/include/boost/asio/buffered_stream_fwd.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/max_element.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/AvailabilityInternalLegacy.h:
+/opt/homebrew/include/boost/smart_ptr/detail/sp_convertible.hpp:
+
+/opt/homebrew/include/boost/beast/http/chunk_encode.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/fence.h:
 
+/opt/homebrew/include/boost/asio/detail/reactive_null_buffers_op.hpp:
+
+/opt/homebrew/include/boost/asio/generic/stream_protocol.hpp:
+
+/opt/homebrew/include/boost/move/adl_move_swap.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_partition.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partition.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/partial_sort.h:
+
+/opt/homebrew/include/boost/intrusive/list_hook.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_fun_result.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__concepts/arithmetic.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/nth_element.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/is_valid.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/copy_options.h:
+/opt/homebrew/include/boost/asio/detail/functional.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/none_of.h:
 
@@ -2851,29 +6336,17 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_unbounded_array.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__mutex/mutex.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_posix_availability.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/max.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/allocator_traits.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/promote.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_unique.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/clamp.h:
+/opt/homebrew/include/boost/asio/ip/impl/address_v4.ipp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__assertion_handler:
+/opt/homebrew/include/boost/beast/http/detail/basic_parsed_list.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_none_of.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uint64_t.h:
-
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stdarg_header_macro.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/includes.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/support/c11.h:
 
@@ -2881,39 +6354,43 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_wchar_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/next_permutation.h:
+/opt/homebrew/include/boost/beast/http/basic_parser.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/min.h:
+/opt/homebrew/include/boost/asio/readable_pipe.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/from_chars_floating_point.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_socklen_t.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/__wctype.h:
+/opt/homebrew/include/boost/beast/zlib/impl/error.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/move_backward.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/has_single_bit.h:
 
-/Users/mmartign/whisper.cpp/ggml/include/ggml-backend.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ios/fpos.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__condition_variable/condition_variable.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_stdlib.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/merge.h:
+/opt/homebrew/include/boost/asio/generic/detail/endpoint.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/adjacent_difference.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/adjacent_find.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/array:
+/opt/homebrew/include/boost/beast/zlib/detail/inflate_stream.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/make_heap.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/lazy.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/stack:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/swap.h:
+/opt/homebrew/include/boost/asio/co_spawn.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_fundamental.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__numeric/partial_sum.h:
 
+/opt/homebrew/include/boost/asio/impl/as_tuple.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/memory_resource.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_max.h:
+
+/opt/homebrew/include/boost/asio/ip/detail/socket_option.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/copy_n.h:
 
@@ -2923,91 +6400,51 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_sample.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_reference.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/exception:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/remove_copy_if.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_printf.h:
+
+/opt/homebrew/include/boost/beast/core/detail/type_traits.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_partitioned.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_heap_until.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/to_underlying.h:
+/opt/homebrew/include/boost/asio/traits/require_free.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_heap.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/inverse_trigonometric_functions.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/conditional.h:
+/opt/homebrew/include/boost/container_hash/is_tuple_like.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/year_month_weekday.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/inplace_merge.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_for_each.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/find_segment_if.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/minmax_element.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/any_of.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/lower_bound.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_ctype.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_wctype.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/concepts.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__utility/convert_to_integral.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__new/allocate.h:
+/opt/homebrew/include/boost/asio/detail/strand_executor_service.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/rotate_copy.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/copy.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory_resource/memory_resource.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_out_result.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_is_partitioned.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__assert:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/ctype.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__memory/uses_allocator_construction.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_in_out_result.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/types.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/ostream.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/calendar.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_output.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/zoned_time.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_reference_wrapper.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_permutation.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_trivially_assignable.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/countr.h:
+/opt/homebrew/include/boost/type_traits/copy_cv.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_trivial.h:
 
+/opt/homebrew/include/boost/asio/posix/descriptor.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/countr.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__stop_token/stop_token.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/sift_down.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/search_n.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/bitset:
 
@@ -3015,146 +6452,180 @@ CMakeFiles/transcribe_audio.dir/transcribe_audio.cpp.o: /Users/mmartign/Speech-t
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/for_each_segment.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/types.h:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/cwctype:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/functional.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/buffer.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__cstddef/byte.h:
+/opt/homebrew/include/boost/type_traits/integral_constant.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/in_in_result.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_set_symmetric_difference.h:
+
+/opt/homebrew/include/boost/asio/write.hpp:
+
+/opt/homebrew/include/boost/intrusive/intrusive_fwd.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/erase_if_container.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/support.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/coroutine:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_endian.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/equal.h:
+/opt/homebrew/include/boost/type_traits/detail/is_function_cxx_11.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__atomic/check_memory_order.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_final.h:
+/opt/homebrew/include/boost/system/is_error_code_enum.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_string.h:
+/opt/homebrew/include/boost/asio/ip/impl/host_name.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_final.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/from_range.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__bit/has_single_bit.h:
+/opt/homebrew/include/boost/asio/detail/reactor_op.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ios/fpos.h:
+/opt/homebrew/include/boost/asio/detail/atomic_count.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_stdlib.h:
+/opt/homebrew/include/boost/asio/execution/context_as.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/adjacent_find.h:
+/opt/homebrew/include/boost/asio/deferred.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__locale:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/file_type.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/make_heap.h:
+/opt/homebrew/include/boost/asio/detail/work_dispatcher.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/binary_function.h:
+
+/opt/homebrew/include/boost/intrusive/detail/std_fwd.hpp:
+
+/opt/homebrew/include/boost/config/detail/select_platform_config.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_args.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arpa/inet.h:
+
+/opt/homebrew/include/boost/move/utility_core.hpp:
+
+/opt/homebrew/include/boost/asio/impl/system_executor.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_rotate.h:
 
+/opt/homebrew/include/boost/asio/signal_set_base.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/is_sorted.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/uniform_int_distribution.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_sigset_t.h:
+
+/opt/homebrew/include/boost/beast/http/detail/basic_parser.ipp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/remove_cv.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_any_of.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_remove.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/signal.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/make_signed.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/piecewise_linear_distribution.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_find_if_not.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/endian.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/stable_partition.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_equality_comparable.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_replace_copy_if.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_types/_timeval32.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/count.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_stdio.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/_pthread/_pthread_t.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/year_month.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_types.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__tuple/tuple_types.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ranges/empty.h:
+/opt/homebrew/include/boost/asio/default_completion_token.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_locale_t.h:
 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__random/shuffle_order_engine.h:
+
+/opt/homebrew/include/boost/system/error_category.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/identity.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__system_error/errc.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/underlying_type.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/comp_ref_type.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/concepts.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__vector/comparison.h:
+/opt/homebrew/include/boost/beast/core/detail/clamp.hpp:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_max_element.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/xlocale/_ctype.h:
+
+/opt/homebrew/include/boost/mp11/detail/mp_with_index.hpp:
+
+/opt/homebrew/include/boost/config/user.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_wctype.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/dependent_type.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__chrono/sys_info.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_intmax_t.h:
+/opt/homebrew/include/boost/mp11/detail/mp_rename.hpp:
+
+/opt/homebrew/include/boost/asio/detail/io_control.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/ioccom.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__math/fma.h:
 
+/opt/homebrew/include/boost/beast/core/detail/win32_unicode_path.hpp:
+
+/opt/homebrew/include/boost/asio/impl/io_context.hpp:
+
+/opt/homebrew/include/boost/type_traits/has_divides.hpp:
+
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/version:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__fwd/streambuf.h:
+/opt/homebrew/include/boost/type_traits/is_lvalue_reference.hpp:
+
+/opt/homebrew/include/boost/mp11/list.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_time.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/push_heap.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_arg_store.h:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/counted_iterator.h:
+
+/opt/homebrew/include/boost/system/detail/generic_category.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_minmax.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/formatter_bool.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_mismatch.h:
+/opt/homebrew/include/boost/asio/detail/descriptor_write_op.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_wchar.h:
+
+/opt/homebrew/include/boost/smart_ptr/detail/sp_disable_deprecated.hpp:
+
+/opt/homebrew/include/boost/asio/impl/thread_pool.hpp:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_copy.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/move_backward.h:
+
+/opt/local/include/portaudio.h:
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/__wctype.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/arm/_mcontext.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/alloca.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/ranges_copy.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/sys/termios.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__locale_dir/pad_and_output.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/make_projected.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__filesystem/file_type.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__functional/binary_function.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/is_unsigned.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__format/format_string.h:
+/opt/homebrew/include/boost/type_traits/is_stateless.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__type_traits/copy_cv.h:
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_offsetof.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__charconv/from_chars_floating_point.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__ostream/basic_ostream.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/merge.h:
 
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/c++/v1/__algorithm/rotate.h:
-
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_types/_uintmax_t.h:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_assert.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/usr/include/_locale_posix2008.h:

@@ -27,24 +27,41 @@ target_include_directories(analyze_text PRIVATE
 
 # Link against libcurl (prefer config if available, fallback to -lcurl)
 find_package(CURL QUIET)
+find_package(nlohmann_json CONFIG QUIET)
+
+function(target_link_curl target_name)
+  if(CURL_FOUND)
+    target_link_libraries(${target_name} PRIVATE CURL::libcurl)
+  else()
+    message(STATUS "CURL package not found; falling back to plain '-lcurl'")
+    if(EXISTS "${CURL_ROOT}/include")
+      target_include_directories(${target_name} PRIVATE "${CURL_ROOT}/include")
+    endif()
+    if(EXISTS "${CURL_ROOT}/lib")
+      target_link_directories(${target_name} PRIVATE "${CURL_ROOT}/lib")
+    endif()
+    target_link_libraries(${target_name} PRIVATE curl)
+  endif()
+endfunction()
+
+function(target_link_nlohmann_json target_name)
+  if(TARGET nlohmann_json::nlohmann_json)
+    target_link_libraries(${target_name} PRIVATE nlohmann_json::nlohmann_json)
+  else()
+    set(NLOHMANN_JSON_INCLUDE "" CACHE PATH "nlohmann/json include dir")
+    if(NLOHMANN_JSON_INCLUDE)
+      target_include_directories(${target_name} PRIVATE "${NLOHMANN_JSON_INCLUDE}")
+    endif()
+  endif()
+endfunction()
+
 if(CURL_FOUND)
-  target_link_libraries(analyze_text PRIVATE CURL::libcurl)
-else()
-  message(STATUS "CURL package not found; falling back to plain '-lcurl'")
-  if(EXISTS "${CURL_ROOT}/include")
-    target_include_directories(analyze_text PRIVATE "${CURL_ROOT}/include")
-  endif()
-  if(EXISTS "${CURL_ROOT}/lib")
-    target_link_directories(analyze_text PRIVATE "${CURL_ROOT}/lib")
-  endif()
-  target_link_libraries(analyze_text PRIVATE curl)
+  message(STATUS "Using CURL package: ${CURL_VERSION_STRING}")
 endif()
+target_link_curl(analyze_text)
 
 # ===== transcribe_audio.exe =====
 add_executable(transcribe_audio transcribe_audio.cpp)
-
-# ===== server_transcribe_audio.exe =====
-add_executable(server_transcribe_audio server_transcribe_audio.cpp)
 
 # Cache variables let you adjust paths from cmake -D...=...
 set(PORTAUDIO_INCLUDE "/opt/local/include" CACHE PATH "PortAudio include dir")
@@ -59,44 +76,34 @@ target_include_directories(transcribe_audio PRIVATE
     "${WHISPER_INCLUDE}"
     "${GGML_INCLUDE}"
 )
-target_include_directories(server_transcribe_audio PRIVATE
-    "${PORTAUDIO_INCLUDE}"
-    "${WHISPER_INCLUDE}"
-    "${GGML_INCLUDE}"
-)
-
 # Link exactly the dylibs you used in the Makefile
 target_link_libraries(transcribe_audio PRIVATE
     "${PORTAUDIO_LIB}"
     "${WHISPER_LIB}"
 )
-target_link_libraries(server_transcribe_audio PRIVATE
-    "${PORTAUDIO_LIB}"
-    "${WHISPER_LIB}"
-)
 
-# server_transcribe_audio also needs Boost.System + pthread.
+# transcribe_audio embeds the WebSocket server and needs Boost.System + pthread.
 find_package(Boost CONFIG QUIET COMPONENTS system)
 if(NOT Boost_FOUND)
   find_package(Boost QUIET)
 endif()
 find_package(Threads QUIET)
 if(Boost_FOUND)
-  target_include_directories(server_transcribe_audio PRIVATE ${Boost_INCLUDE_DIRS})
+  target_include_directories(transcribe_audio PRIVATE ${Boost_INCLUDE_DIRS})
 endif()
 if(TARGET Boost::system)
-  target_link_libraries(server_transcribe_audio PRIVATE Boost::system)
+  target_link_libraries(transcribe_audio PRIVATE Boost::system)
 elseif(Boost_SYSTEM_LIBRARY)
-  target_link_libraries(server_transcribe_audio PRIVATE ${Boost_SYSTEM_LIBRARY})
+  target_link_libraries(transcribe_audio PRIVATE ${Boost_SYSTEM_LIBRARY})
 elseif(Boost_FOUND)
-  message(STATUS "Boost::system not found; building server_transcribe_audio without explicit boost_system link")
+  message(STATUS "Boost::system not found; building transcribe_audio without explicit boost_system link")
 else()
   message(STATUS "Boost not found via CMake; ensure Boost headers are in compiler include paths")
 endif()
 if(Threads_FOUND)
-  target_link_libraries(server_transcribe_audio PRIVATE Threads::Threads)
+  target_link_libraries(transcribe_audio PRIVATE Threads::Threads)
 else()
-  target_link_libraries(server_transcribe_audio PRIVATE pthread)
+  target_link_libraries(transcribe_audio PRIVATE pthread)
 endif()
 
 # Match your -rpath /usr/local/lib
@@ -104,47 +111,15 @@ endif()
 set_target_properties(transcribe_audio PROPERTIES
     BUILD_RPATH "/usr/local/lib"
 )
-set_target_properties(server_transcribe_audio PROPERTIES
-    BUILD_RPATH "/usr/local/lib"
-)
 
 # ===== (optional) tidy outputs =====
 # Place binaries in build/bin/
 set_target_properties(analyze_text   PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set_target_properties(transcribe_audio PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-set_target_properties(server_transcribe_audio PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-
-# ===== data_aggregator_analyzer.exe =====
-add_executable(data_aggregator_analyzer data_aggregator_analyzer.cpp)
-target_include_directories(data_aggregator_analyzer PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../openai-cpp/include/openai
-)
-if(CURL_FOUND)
-  target_link_libraries(data_aggregator_analyzer PRIVATE CURL::libcurl)
-else()
-  if(EXISTS "${CURL_ROOT}/include")
-    target_include_directories(data_aggregator_analyzer PRIVATE "${CURL_ROOT}/include")
-  endif()
-  if(EXISTS "${CURL_ROOT}/lib")
-    target_link_directories(data_aggregator_analyzer PRIVATE "${CURL_ROOT}/lib")
-  endif()
-  target_link_libraries(data_aggregator_analyzer PRIVATE curl)
-endif()
-set_target_properties(data_aggregator_analyzer PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 # ===== deterministic_fhir_mapper.exe =====
 add_executable(deterministic_fhir_mapper deterministic_fhir_mapper.cpp)
-if(CURL_FOUND)
-  target_link_libraries(deterministic_fhir_mapper PRIVATE CURL::libcurl)
-else()
-  if(EXISTS "${CURL_ROOT}/include")
-    target_include_directories(deterministic_fhir_mapper PRIVATE "${CURL_ROOT}/include")
-  endif()
-  if(EXISTS "${CURL_ROOT}/lib")
-    target_link_directories(deterministic_fhir_mapper PRIVATE "${CURL_ROOT}/lib")
-  endif()
-  target_link_libraries(deterministic_fhir_mapper PRIVATE curl)
-endif()
+target_link_curl(deterministic_fhir_mapper)
+target_link_nlohmann_json(deterministic_fhir_mapper)
 set_target_properties(deterministic_fhir_mapper PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
