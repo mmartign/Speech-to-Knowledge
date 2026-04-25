@@ -53,6 +53,7 @@
 //   "format": "pcm_s16le",
 //   "language": "en",
 //   "frameMs": 100,
+//   "timestamp": true,
 //   "source": "maui-mobile"
 // }
 //
@@ -1140,6 +1141,79 @@ int extract_json_int_field(const std::string& json, const std::string& field, in
     }
 }
 
+std::string ascii_lower_copy(std::string s) {
+    for (char& c : s) {
+        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    }
+    return s;
+}
+
+std::string trim_ascii_whitespace(std::string s) {
+    const auto not_space = [](unsigned char c) { return !std::isspace(c); };
+    const auto first = std::find_if(s.begin(), s.end(), not_space);
+    if (first == s.end()) {
+        return {};
+    }
+    const auto last = std::find_if(s.rbegin(), s.rend(), not_space).base();
+    return std::string(first, last);
+}
+
+bool json_value_delimiter(char c) {
+    return c == ',' || c == '}' || c == ']' || std::isspace(static_cast<unsigned char>(c));
+}
+
+bool extract_json_bool_field(const std::string& json, const std::string& field, bool fallback) {
+    const std::string key = std::string("\"") + field + "\"";
+    const size_t pos = json.find(key);
+    if (pos == std::string::npos) {
+        return fallback;
+    }
+    size_t value_pos = skip_json_whitespace(json, pos + key.size());
+    if (value_pos >= json.size() || json[value_pos] != ':') {
+        return fallback;
+    }
+    value_pos = skip_json_whitespace(json, value_pos + 1);
+    if (value_pos >= json.size()) {
+        return fallback;
+    }
+
+    if (json[value_pos] == '"') {
+        auto parsed = parse_json_quoted_string(json, value_pos);
+        if (!parsed.has_value()) {
+            return fallback;
+        }
+        const std::string value = ascii_lower_copy(trim_ascii_whitespace(*parsed));
+        if (value == "true" || value == "1" || value == "on" || value == "yes") {
+            return true;
+        }
+        if (value == "false" || value == "0" || value == "off" || value == "no") {
+            return false;
+        }
+        return fallback;
+    }
+
+    const size_t remaining = json.size() - value_pos;
+    if (remaining >= 4 &&
+        json.compare(value_pos, 4, "true") == 0 &&
+        (value_pos + 4 == json.size() || json_value_delimiter(json[value_pos + 4]))) {
+        return true;
+    }
+    if (remaining >= 5 &&
+        json.compare(value_pos, 5, "false") == 0 &&
+        (value_pos + 5 == json.size() || json_value_delimiter(json[value_pos + 5]))) {
+        return false;
+    }
+    if (json[value_pos] == '1' &&
+        (value_pos + 1 == json.size() || json_value_delimiter(json[value_pos + 1]))) {
+        return true;
+    }
+    if (json[value_pos] == '0' &&
+        (value_pos + 1 == json.size() || json_value_delimiter(json[value_pos + 1]))) {
+        return false;
+    }
+    return fallback;
+}
+
 bool json_message_type_is(const std::string& json, const char* expected) {
     return extract_json_string_field(json, "type") == expected;
 }
@@ -1158,6 +1232,7 @@ public:
         size_t target_frame_samples = Constants::MIN_AUDIO_SAMPLES;
         std::vector<int16_t> pending_samples;
         bool started = false;
+        bool include_timestamps = false;
     };
 
     using AudioCallback = std::function<void(const std::vector<int16_t>&, const std::string& session_id)>;
@@ -1166,6 +1241,7 @@ public:
                        int port,
                        bool send_transcripts,
                        int idle_timeout_seconds,
+                       bool include_transcript_timestamps,
                        double record_timeout_seconds = 2.0)
         : bind_address_(std::move(bind_address)),
           port_(port),
@@ -1173,6 +1249,7 @@ public:
           idle_timeout_seconds_(idle_timeout_seconds > 0
                                     ? idle_timeout_seconds
                                     : Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT),
+          include_transcript_timestamps_(include_transcript_timestamps),
           record_timeout_seconds_(record_timeout_seconds > 0.0 ? record_timeout_seconds : 2.0) {
     }
 
@@ -1241,7 +1318,7 @@ public:
 
     void send_transcript_to_session(const std::string& session_id,
                                     const std::string& text,
-                                    const std::string& timestamp) {
+                                    const std::optional<std::string>& timestamp) {
         if (!send_transcripts_ || session_id.empty()) {
             return;
         }
@@ -1259,12 +1336,20 @@ public:
             return;
         }
 
-        const std::string payload =
+        std::string payload =
             std::string("{\"type\":\"transcript\",\"sessionId\":\"") +
             json_escape(session_id) +
-            "\",\"timestamp\":\"" +
-            json_escape(timestamp) +
-            "\",\"text\":\"" +
+            "\"";
+        const bool include_timestamp = timestamp.has_value() &&
+            (include_transcript_timestamps_ || session->ctx.include_timestamps);
+        if (include_timestamp) {
+            payload +=
+                std::string(",\"timestamp\":\"") +
+                json_escape(*timestamp) +
+                "\"";
+        }
+        payload +=
+            std::string(",\"text\":\"") +
             json_escape(text) +
             "\"}";
 
@@ -1510,6 +1595,9 @@ private:
             session->ctx.bits_per_sample = extract_json_int_field(msg, "bitsPerSample", 16);
             session->ctx.format = extract_json_string_field(msg, "format");
             session->ctx.frame_ms = extract_json_int_field(msg, "frameMs", Constants::MIN_AUDIO_LENGTH_MS);
+            session->ctx.include_timestamps =
+                extract_json_bool_field(msg, "timestamp",
+                    extract_json_bool_field(msg, "timestamps", false));
             if (session->ctx.frame_ms < Constants::MIN_AUDIO_LENGTH_MS) {
                 session->ctx.frame_ms = Constants::MIN_AUDIO_LENGTH_MS;
             }
@@ -1700,6 +1788,7 @@ private:
     int port_;
     bool send_transcripts_ = true;
     int idle_timeout_seconds_ = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
+    bool include_transcript_timestamps_ = false;
     double record_timeout_seconds_ = 2.0;
     AudioCallback callback_;
     std::atomic<bool> running_{false};
@@ -1870,11 +1959,11 @@ Args parse_arguments(int argc, char* argv[]) {
                 << " --phrase_timeout <float>          Silence duration to end a phrase in seconds. Default: 3.0\n"
                 << " --language <lang>                 Whisper language code. Default: en\n"
                 << " --pipe                            Enable pipe mode for continuous streaming\n"
-                << " --timestamp                       Print timestamps in pipe mode\n"
+                << " --timestamp                       Print timestamps in pipe mode and all WebSocket transcripts\n"
                 << " --whisper_model_path <path>       REQUIRED: Path to the ggml Whisper model\n"
                 << " --list_microphones                List available microphones and exit\n"
                 << " --audio_file <path>               Transcribe a media file. Audio is extracted via ffmpeg if needed\n"
-                << " --predefined_start_time \"YYYY-mm-dd HH:MM:SS\" Override transcript start time for --audio_file mode\n"
+                << " --predefined_start_time \"YYYY-mm-dd HH:MM:SS\" Override transcript start time for all input sources\n"
                 << " --verbose                         Print adaptive threshold changes and diagnostics\n"
                 << " --input_source <mode>             microphone | file | websocket. Default: microphone\n"
                 << " --websocket_server                Enable WebSocket PCM audio server\n"
@@ -2422,6 +2511,15 @@ int main(int argc, char* argv[]) {
             list_and_exit();
         }
 
+        const auto live_transcript_start_time =
+            args.has_predefined_start_time ? args.predefined_start_time : application_start_time;
+        auto live_transcript_timestamp_for =
+            [&](const std::chrono::system_clock::time_point& captured_at) {
+                return live_transcript_start_time +
+                       std::chrono::duration_cast<std::chrono::system_clock::duration>(
+                           captured_at - application_start_time);
+            };
+
         if (args.input_source == "file") {
             // Batch mode: deterministic chunking over already available media.
             WhisperModel audio_model(args.whisper_model_path);
@@ -2525,6 +2623,7 @@ int main(int argc, char* argv[]) {
                 args.websocket_port,
                 args.websocket_send_transcripts,
                 args.websocket_idle_timeout,
+                args.timestamp,
                 args.record_timeout);
 
             auto websocket_callback = [&](const std::vector<int16_t>& audio_chunk,
@@ -2588,9 +2687,11 @@ int main(int argc, char* argv[]) {
                         std::cerr << "Transcription error: " << e.what() << std::endl;
                     }
                     if (!text.empty() && !is_whisper_noise_token(text)) {
+                        const auto transcript_timestamp =
+                            live_transcript_timestamp_for(it->submitted);
                         if (args.pipe) {
                             if (args.timestamp) {
-                                std::cout << format_datetime(it->submitted)
+                                std::cout << format_datetime(transcript_timestamp)
                                           << " " << text << std::endl;
                             } else {
                                 std::cout << text << std::endl;
@@ -2614,7 +2715,7 @@ int main(int argc, char* argv[]) {
                             websocket_server->send_transcript_to_session(
                                 it->session_id,
                                 text,
-                                format_datetime(it->submitted));
+                                std::optional<std::string>(format_datetime(transcript_timestamp)));
                         }
                     }
                     it = pending.erase(it);
