@@ -7,16 +7,16 @@
 We're excited to share a new step in our research at Spazio IT, where we're exploring real-time audio-to-knowledge pipelines using cutting-edge AI technologies — all running on a single, high-performance machine. Here's a snapshot of what we're building:
 
 🎙️ **Live Audio Ingestion**
-Using Whisper, we convert real-time system audio (e.g., a microphone stream) into continuous text — no audio recordings needed.
+Using Whisper, we convert real-time system audio (e.g., a microphone stream) into continuous text — no audio recordings needed. The C++ implementation supports three input modes: **local microphone** (via PortAudio), **audio files** (WAV, PCM, or any ffmpeg-decodable format), and **remote WebSocket clients** streaming PCM16LE or float32 audio.
 
 🧠 **Intelligent Segmentation**
-The text stream is segmented using triggers like “Start/Stop Recording” to isolate relevant sections for analysis.
+The text stream is segmented using configurable voice triggers (e.g., "Start/Stop Recording") to isolate relevant sections for analysis. The recorder uses an adaptive energy-based VAD with configurable hangover chunks, pre-roll buffering (to preserve consonant onsets), and EMA-based noise floor tracking.
 
 🔍 **Generative AI Processing**
-Each segmented block is analyzed by a generative AI system to understand context and content.
+Each segmented block is analyzed by a generative AI system (configurable via `config.ini`, connected through an OpenAI-compatible endpoint) to understand context and content. The system supports optional knowledge base augmentation, web search, and produces concise spoken summaries via a configurable TTS command.
 
 🏥 **Medical Data Extraction in FHIR**
-An AI model (currently MedGemma-1.5:4b) extracts structured medical data in FHIR format — enabling interoperability and downstream use.
+An AI model (currently MedGemma-1.5:4b) extracts structured medical data in FHIR format — enabling interoperability and downstream use. Extracted bundles are automatically post-processed by the **deterministic FHIR mapper**, which normalizes terminology, repairs codes, and validates resources.
 
 📚 **Treatment Protocols as Knowledge Bases**
 Reference protocols are indexed into an OpenWebUI vector database, allowing them to be queried alongside live speech-derived data.
@@ -78,7 +78,7 @@ While individual components of Spazio IT's pipeline exist in the market, **the *
 5.  **Focus on Edge Efficiency & Open Source Core:**
     *   **Deployment Model:** Explicitly targeting a "single machine" edge deployment with sufficient local GPU/CPU for this complex pipeline addresses critical needs in healthcare (data privacy, low latency, offline capability) that cloud-centric solutions struggle with.
     *   **Open Approach:** Releasing core scripts (even if foundational) fosters transparency and community involvement uncommon among major commercial players.
-  
+
 6.   **Bidirectional voice interaction:**
      *   **Full bidirectional voice interaction**: SI-Listener can now provide immediate spoken feedback in addition to receiving voice commands. This feature transforms the system from a passive listener into an active conversational partner. Users can receive confirmations, clarifications, operational guidance, and contextual responses, all generated in real time and without relying on cloud services.
 
@@ -105,33 +105,213 @@ This C++ rewrite significantly enhances real-time transcription performance over
 ⚡ **Real-Time Optimization**
 + 3.2x faster audio pipeline
 + 40% lower memory usage
-+ 15ms median latency (vs 210ms in Python
++ 15ms median latency (vs 210ms in Python)
+
+## Architecture Overview
+
+The pipeline is composed of three compiled executables:
+
+```
+[Audio Source] → transcribe_audio.exe → [Text Stream] → analyze_text.exe → [FHIR Bundle] → deterministic_fhir_mapper.exe → [Normalized Output]
+```
+
+---
+
+## `transcribe_audio.exe` — Real-Time Speech-to-Text
+
+Performs continuous audio capture and transcription using [whisper.cpp](https://github.com/ggerganov/whisper.cpp).
+
+**Input sources** (selected via `--input_source`):
+
+| Mode | Description |
+|---|---|
+| `microphone` | Live capture via PortAudio with ambient noise calibration |
+| `file` | Batch transcription of WAV, raw PCM, or any ffmpeg-decodable media |
+| `websocket` | Remote PCM16LE or float32 audio streamed over WebSocket (Boost.Beast) |
+
+**Key features:**
+
+- **Adaptive energy VAD** — EMA-based noise floor tracking with configurable hangover chunks (`--adaptive_hangover_chunks`) and pre-roll buffering (`--vad_pre_roll`) to avoid clipping speech onsets.
+- **WebSocket server** — Accepts multi-session PCM streams. Clients send a JSON start frame (with `sampleRate`, `channels`, `format`, `language`, `frameMs`, `timestamp`, `sessionId`) followed by binary audio frames. The server sends back `{"type":"transcript", ...}` JSON frames per session.
+- **Supported WebSocket audio formats** — `pcm_s16le` (default) and `pcm_f32le`. Multi-channel audio is downmixed to mono; non-16 kHz audio is resampled via linear interpolation.
+- **File metadata timestamps** — When transcribing files, the start timestamp is resolved in priority order: `--predefined_start_time` CLI flag → encoded `start_time_realtime` (ffprobe) → `creation_time` metadata tag → application start time.
+- **Noise token suppression** — Whisper tokens such as `[BLANK_AUDIO]`, `[ Silence]`, and `(silence)` are automatically filtered from output.
+- **Pipe and timestamp modes** — `--pipe` emits one transcript line per phrase; `--timestamp` prefixes each line with `[YYYY-MM-DD HH:MM:SS]`.
+
+**Key CLI flags:**
+
+```
+--whisper_model_path <path>       REQUIRED: path to ggml Whisper model file
+--input_source <mode>             microphone | file | websocket  (default: microphone)
+--energy_threshold <int>          manual VAD energy threshold (default: auto-calibrate)
+--adaptive_energy                 enable EMA-based adaptive threshold
+--adaptive_hangover_chunks <int>  silence chunks before noise floor update (default: 1)
+--vad_pre_roll <float>            seconds of pre-speech audio to retain (default: 0.30)
+--record_timeout <float>          max audio chunk duration in seconds (default: 2.0)
+--phrase_timeout <float>          silence duration to end a phrase (default: 3.0)
+--language <lang>                 Whisper language code (default: en)
+--pipe                            enable pipe mode for downstream processing
+--timestamp                       prefix transcripts with wall-clock timestamps
+--audio_file <path>               media file to transcribe (requires --input_source file)
+--predefined_start_time "YYYY-mm-dd HH:MM:SS"  override transcript origin time
+--websocket_bind <ip>             WebSocket bind address (default: 0.0.0.0)
+--websocket_port <port>           WebSocket port (default: 8080)
+--websocket_idle_timeout <sec>    idle socket timeout in seconds (default: 30)
+--websocket_send_transcripts      push transcript JSON back to WebSocket clients
+--list_microphones                enumerate PortAudio input devices and exit
+--verbose                         print VAD diagnostics and Whisper segment scores
+```
+
+---
+
+## `analyze_text.exe` — AI Contextual Analysis and FHIR Extraction
+
+Reads a continuous transcript stream from stdin, monitors configurable voice triggers, and submits captured segments to an OpenAI-compatible LLM endpoint for structured medical analysis.
+
+**Configuration** is loaded from `./config.ini` at startup. Required keys:
+
+| Section | Key | Description |
+|---|---|---|
+| `openai` | `base_url` | OpenAI-compatible API base URL (e.g., an OpenWebUI instance) |
+| `openai` | `api_key` | API key |
+| `openai` | `model_name` | Model identifier (e.g., `medgemma-1.5:4b`) |
+| `prompts` | `prompt` | System prompt for full analysis |
+| `prompts` | `temp_prompt` | System prompt for mid-session temporary checks |
+| `triggers` | `start` | Voice phrase that begins recording (case-insensitive) |
+| `triggers` | `stop` | Voice phrase that ends recording and triggers analysis |
+| `triggers` | `temp_check` | Voice phrase that triggers an interim analysis snapshot |
+| `tts` | `command` | Shell command used for spoken output (e.g., `espeak`) |
+
+Optional keys:
+
+| Section | Key | Description |
+|---|---|---|
+| `analysis` | `knowledge_base_ids` | OpenWebUI knowledge base ID(s) for RAG augmentation |
+| `deterministic_mapper` | `network_enabled` | Enable live terminology lookups (default: `true`) |
+| `deterministic_mapper` | `cache_dir` | Terminology cache directory (default: `./terminology_cache`) |
+| `deterministic_mapper` | `cache_ttl_days` | Cache TTL in days (default: `7`) |
+| `deterministic_mapper` | `loinc_user` / `loinc_pass` | LOINC FHIR credentials (optional, free registration) |
+| `deterministic_mapper` | `timeout_seconds` | HTTP timeout for terminology lookups (default: `10`) |
+
+**Workflow:**
+
+1. Reads transcript lines from stdin (piped from `transcribe_audio.exe`).
+2. Detects trigger phrases to start/stop recording or request a temporary analysis snapshot.
+3. On stop, submits collected text to the LLM using the configured prompt and optionally augments with knowledge base content.
+4. Strips internal model reasoning tags (`<unused…>`) from the response before output.
+5. Detects any FHIR Bundle in the LLM response and automatically invokes `deterministic_fhir_mapper.exe` to normalize it.
+6. Generates a concise 3-sentence spoken summary via a second LLM call, then vocalizes it using the configured TTS command.
+7. Writes full results (model used, endpoint, prompt, raw response, summary) to a timestamped file (`results_analysis<N>.txt`).
+8. Temporary analysis snapshots are saved to `tmp_results_analysis<N>.<M>.txt` and spoken aloud without stopping the active recording session.
+
+---
+
+## `deterministic_fhir_mapper.exe` — FHIR Normalization and Terminology Validation
+
+A standalone post-processor that takes an LLM-generated FHIR Bundle and produces a normalized, transaction-ready output. It is automatically invoked by `analyze_text.exe` but can also be run independently.
+
+**Features:**
+
+- **Live terminology lookups** via:
+  - [LOINC FHIR R4](https://fhir.loinc.org) — code display verification and text-to-code search
+  - [NLM RxNorm REST API](https://rxnav.nlm.nih.gov) — drug name to RxNorm CUI mapping (no auth required)
+  - [NLM SNOMED CT FHIR Server](https://cts.nlm.nih.gov/fhir) — SNOMED display verification
+- **Disk-based JSON cache** — terminology results are cached with a configurable TTL (default: 7 days) to minimize latency and support offline use after initial population.
+- **Graceful offline fallback** — hardcoded overrides cover the most common vital-sign LOINC codes (heart rate, blood pressure, SpO₂, temperature, weight, height, BMI) so the pipeline remains functional without network access.
+- **Blood pressure panel synthesis** — pairs generic systolic/diastolic Observations sharing the same subject and timestamp into a single LOINC `85354-9` panel resource.
+- **MedicationRequest → MedicationAdministration conversion** — converts intent-style medication requests into completed administration records matching the SI-Listener profile.
+- **Resource routing** — resources are categorized into `acceptedBundle` (transaction-ready, normalized) or `rejectedBundle` (profile violations or detected uncertainty requiring manual review).
+- **Provenance generation** — each accepted resource is paired with a `Provenance` resource recording the mapper version, LLM model, and terminology services used.
+- **OperationOutcome diagnostics** — all normalization decisions, warnings, and errors are emitted as structured issues alongside the output bundle.
+
+**Output structure:**
+
+```json
+{
+  "acceptedBundle": { ... },   // transaction-ready normalized resources
+  "rejectedBundle": { ... },   // resources requiring manual review
+  "issues": [ ... ],           // per-resource diagnostic entries
+  "outcome": { ... },          // FHIR OperationOutcome summary
+  "meta": {
+    "terminologyNetworkUsed": true,
+    "mapperVersion": "2.0.0"
+  }
+}
+```
+
+**Normalization rules applied:**
+
+| Resource type | Normalization applied |
+|---|---|
+| `Patient` | Removes placeholder `birthDate` values (e.g., "unknown") |
+| `Observation` | Verifies/repairs LOINC codes via live lookup; infers code from display text and unit heuristics; normalizes UCUM units |
+| `Procedure` | Validates SNOMED CT display text; warns on suspicious coding system use |
+| `MedicationRequest` | Converts to `MedicationAdministration`; enriches with RxNorm CUI |
+
+**Build dependencies:**
+
+- [libcurl](https://curl.se/libcurl/) (`curl/curl.h`)
+- [nlohmann/json](https://github.com/nlohmann/json)
+
+---
 
 ## Build Chain (CMake)
-
-The CMake build now includes the deterministic FHIR post-processor:
-
-1. `transcribe_audio.exe` for real-time speech-to-text.
-2. `analyze_text.exe` for AI contextual analysis and extraction.
-3. `deterministic_fhir_mapper.exe` for deterministic normalization/repair of extracted FHIR resources.
-
-Build:
 
 ```bash
 cmake -S . -B build
 cmake --build build -j
 ```
 
-Run deterministic mapper:
+This produces three executables:
+
+1. `transcribe_audio.exe` — real-time speech-to-text
+2. `analyze_text.exe` — AI contextual analysis and FHIR extraction
+3. `deterministic_fhir_mapper.exe` — deterministic FHIR normalization
+
+**Additional build dependencies for `transcribe_audio.exe`:**
+
+- [PortAudio](http://www.portaudio.com/)
+- [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (`whisper.h`)
+- [Boost.Beast / Boost.Asio](https://www.boost.org/) (WebSocket support)
+
+**Additional build dependencies for `analyze_text.exe`:**
+
+- [openai-cpp](https://github.com/olrea/openai-cpp) (`openai.hpp`) with [nlohmann/json](https://github.com/nlohmann/json)
+
+---
+
+## Typical Usage
 
 ```bash
-./build/deterministic_fhir_mapper.exe input_bundle.json output_bundle.json
+# Microphone mode — pipe transcript into analyzer
+./build/transcribe_audio.exe \
+    --whisper_model_path ./models/ggml-base.en.bin \
+    --pipe --timestamp --adaptive_energy \
+  | ./build/analyze_text.exe
+
+# File transcription
+./build/transcribe_audio.exe \
+    --whisper_model_path ./models/ggml-base.en.bin \
+    --input_source file --audio_file recording.mp4 \
+    --pipe --timestamp
+
+# WebSocket server (e.g., for mobile clients)
+./build/transcribe_audio.exe \
+    --whisper_model_path ./models/ggml-base.en.bin \
+    --input_source websocket \
+    --websocket_port 8080 --websocket_send_transcripts
+
+# Run deterministic mapper standalone
+./build/deterministic_fhir_mapper.exe input_bundle.json output_bundle.json \
+    --model-name medgemma-1.5:4b \
+    --cache-dir ./terminology_cache --cache-ttl-days 7
+
+# Offline mapper (no network calls)
+./build/deterministic_fhir_mapper.exe input_bundle.json output_bundle.json \
+    --model-name medgemma-1.5:4b --no-network
 ```
 
-The mapper emits:
-- `acceptedBundle` (transaction-ready normalized resources)
-- `rejectedBundle` (resources requiring manual review)
-- `issues` and `outcome` (traceable QA diagnostics)
+---
 
 📄 **License**
 This project is released under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later).
@@ -143,7 +323,7 @@ See the [LICENSE](LICENSE) file for the full text.
 - Website: https://spazioit.com/pages_en/sol_inf_en/si-listener  
 - GitHub: https://github.com/mmartign/Speech-to-Knowledge
 
-- ------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 ## 🏢 About Spazio IT
 
@@ -154,14 +334,12 @@ Italy
 
 https://spazioit.com
 
-Part of the **OR-Edge Project** --- AI-powered solutions for medical
-edge environments.
+Part of the **OR-Edge Project** — AI-powered solutions for medical edge environments.
 
 ------------------------------------------------------------------------
 
 ## ⚠ Disclaimer
 
 This software is provided **without warranty**.\
-It is intended for research, validation, and controlled medical IT
-environments.\
+It is intended for research, validation, and controlled medical IT environments.\
 It does not replace certified medical decision systems.
