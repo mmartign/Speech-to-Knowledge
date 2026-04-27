@@ -28,9 +28,6 @@ The full pipeline runs on a single machine — which could be an industrial PC e
 Initial scripts for the core functionality (marked in cyan in the architecture) are available here:
 🔗 [github.com/mmartign/Speech-to-Knowledge](https://github.com/mmartign/Speech-to-Knowledge)
 
-🔬 **Early Stage**
-This is a foundational, research-focused step. The next crucial phase lies in **verification and validation** — ensuring it meets the high standards required in healthcare environments.
-
 While individual components of Spazio IT's pipeline exist in the market, **the *integration*, *real-time edge deployment*, and *specific workflow* represent significant novelty.** Here's a breakdown:
 
 **Existing Solutions & Similarities:**
