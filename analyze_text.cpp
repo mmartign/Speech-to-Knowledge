@@ -64,6 +64,165 @@ std::atomic<int> temp_counter_value{0};
 std::atomic<int> active_analyses{0};
 std::mutex tts_mutex;
 std::once_flag openai_init_flag;
+bool check_fhir = false;
+
+// ── Language / i18n ──────────────────────────────────────────────────────────
+
+enum class Lang { EN, IT, FR };
+static Lang g_lang = Lang::EN;
+
+enum MsgKey {
+    MSG_UNABLE_TO_OPEN_CONFIG = 0,
+    MSG_MISSING_REQUIRED_CONFIG,
+    MSG_KB_NOT_SET,
+    MSG_ERR_OPEN_RESULTS,
+    MSG_WARN_NO_TEXT_PREFIX,
+    MSG_WARN_NO_TEXT_SUFFIX,
+    MSG_ERR_ANALYSIS_FAILED_PREFIX,
+    MSG_ERR_ANALYSIS_FAILED_MIDDLE,
+    MSG_WARN_SUMMARY_NO_TEXT_PREFIX,
+    MSG_WARN_SUMMARY_NO_TEXT_SUFFIX,
+    MSG_ERR_SUMMARY_FAILED_PREFIX,
+    MSG_ERR_SUMMARY_FAILED_MIDDLE,
+    MSG_ERR_WRITE_RESULTS_PREFIX,
+    MSG_ERR_WRITE_RESULTS_SUFFIX,
+    MSG_ERR_WRITE_HEADER,
+    MSG_FAILED_LOAD_CONFIG,
+    MSG_LISTENING,
+    MSG_ANALYSIS_STARTED_PREFIX,
+    MSG_ANALYSIS_STARTED_SUFFIX,
+    MSG_ANALYSIS_FINISHED_SUFFIX,
+    MSG_TEMP_ANALYSIS_STARTED_PREFIX,
+    MSG_TEMP_ANALYSIS_FINISHED_PREFIX,
+    MSG_RECORDING_ALREADY_STARTED,
+    MSG_RECORDING_STARTED,
+    MSG_NO_RECORDING_RUNNING,
+    MSG_RECORDING_STOPPED,
+    MSG_ANOTHER_ANALYSIS_RUNNING,
+    MSG_TEMP_CHECK_REQUESTED,
+    MSG_COUNT
+};
+
+// Columns: EN=0, IT=1, FR=2
+static const char* MESSAGES[MSG_COUNT][3] = {
+    /* MSG_UNABLE_TO_OPEN_CONFIG */
+    {"Unable to open config file: ",
+     "Impossibile aprire il file di configurazione: ",
+     "Impossible d'ouvrir le fichier de configuration : "},
+    /* MSG_MISSING_REQUIRED_CONFIG */
+    {"Missing required config values:",
+     "Valori di configurazione richiesti mancanti:",
+     "Valeurs de configuration requises manquantes :"},
+    /* MSG_KB_NOT_SET */
+    {"Warning: analysis.knowledge_base_ids is not set; knowledge base lookups will be skipped.\n",
+     "Attenzione: analysis.knowledge_base_ids non è impostato; le ricerche nella knowledge base verranno saltate.\n",
+     "Avertissement : analysis.knowledge_base_ids n'est pas défini ; les recherches dans la base de connaissances seront ignorées.\n"},
+    /* MSG_ERR_OPEN_RESULTS */
+    {"[ERROR] Unable to open results file: ",
+     "[ERRORE] Impossibile aprire il file dei risultati: ",
+     "[ERREUR] Impossible d'ouvrir le fichier de résultats : "},
+    /* MSG_WARN_NO_TEXT_PREFIX */
+    {"[WARN] Analysis[",
+     "[AVVISO] Analisi[",
+     "[AVERT] Analyse["},
+    /* MSG_WARN_NO_TEXT_SUFFIX */
+    {"] returned no text content; see results file.\n",
+     "] non ha restituito contenuto testuale; vedere il file dei risultati.\n",
+     "] n'a retourné aucun contenu textuel ; voir le fichier de résultats.\n"},
+    /* MSG_ERR_ANALYSIS_FAILED_PREFIX */
+    {"[ERROR] Analysis[",
+     "[ERRORE] Analisi[",
+     "[ERREUR] Analyse["},
+    /* MSG_ERR_ANALYSIS_FAILED_MIDDLE */
+    {"] failed: ",
+     "] fallita: ",
+     "] échouée : "},
+    /* MSG_WARN_SUMMARY_NO_TEXT_PREFIX */
+    {"[WARN] Summary generation returned no text for Analysis[",
+     "[AVVISO] La generazione del riepilogo non ha restituito testo per Analisi[",
+     "[AVERT] La génération du résumé n'a retourné aucun texte pour Analyse["},
+    /* MSG_WARN_SUMMARY_NO_TEXT_SUFFIX */
+    {"]; see results file.\n",
+     "]; vedere il file dei risultati.\n",
+     "] ; voir le fichier de résultats.\n"},
+    /* MSG_ERR_SUMMARY_FAILED_PREFIX */
+    {"[ERROR] Summary generation failed for Analysis[",
+     "[ERRORE] Generazione del riepilogo fallita per Analisi[",
+     "[ERREUR] Génération du résumé échouée pour Analyse["},
+    /* MSG_ERR_SUMMARY_FAILED_MIDDLE */
+    {"]: ",
+     "]: ",
+     "] : "},
+    /* MSG_ERR_WRITE_RESULTS_PREFIX */
+    {"[ERROR] Writing to results file failed for Analysis[",
+     "[ERRORE] Scrittura nel file dei risultati fallita per Analisi[",
+     "[ERREUR] Échec d'écriture dans le fichier de résultats pour Analyse["},
+    /* MSG_ERR_WRITE_RESULTS_SUFFIX */
+    {"]\n", "]\n", "]\n"},
+    /* MSG_ERR_WRITE_HEADER */
+    {"[ERROR] Failed to write analysis header to ",
+     "[ERRORE] Impossibile scrivere l'intestazione dell'analisi in ",
+     "[ERREUR] Impossible d'écrire l'en-tête d'analyse dans "},
+    /* MSG_FAILED_LOAD_CONFIG */
+    {"Failed to load config.ini\n",
+     "Impossibile caricare config.ini\n",
+     "Impossible de charger config.ini\n"},
+    /* MSG_LISTENING */
+    {"Listening for input...\n",
+     "In ascolto per l'input...\n",
+     "En attente d'entrée...\n"},
+    /* MSG_ANALYSIS_STARTED_PREFIX */
+    {"Analysis of Recording[",
+     "Analisi della Registrazione[",
+     "Analyse de l'Enregistrement["},
+    /* MSG_ANALYSIS_STARTED_SUFFIX */
+    {"] Started ------------------->>>\n",
+     "] Avviata ------------------->>>\n",
+     "] Démarrée ------------------->>>\n"},
+    /* MSG_ANALYSIS_FINISHED_SUFFIX */
+    {"] Finished ------------------->>>\n",
+     "] Completata ------------------->>>\n",
+     "] Terminée ------------------->>>\n"},
+    /* MSG_TEMP_ANALYSIS_STARTED_PREFIX */
+    {"Temporary_Analysis of Recording[",
+     "Analisi_Temporanea della Registrazione[",
+     "Analyse_Temporaire de l'Enregistrement["},
+    /* MSG_TEMP_ANALYSIS_FINISHED_PREFIX */
+    {"Temporary Analysis of Recording[",
+     "Analisi Temporanea della Registrazione[",
+     "Analyse Temporaire de l'Enregistrement["},
+    /* MSG_RECORDING_ALREADY_STARTED */
+    {"Recording has already been started ------------------->>>\n",
+     "La registrazione è già stata avviata ------------------->>>\n",
+     "L'enregistrement a déjà été démarré ------------------->>>\n"},
+    /* MSG_RECORDING_STARTED */
+    {"Recording started ------------------->>>\n",
+     "Registrazione avviata ------------------->>>\n",
+     "Enregistrement démarré ------------------->>>\n"},
+    /* MSG_NO_RECORDING_RUNNING */
+    {"No recording is currently running ------------------->>>\n",
+     "Nessuna registrazione è in corso ------------------->>>\n",
+     "Aucun enregistrement n'est en cours ------------------->>>\n"},
+    /* MSG_RECORDING_STOPPED */
+    {"Recording stopped ------------------->>>\n",
+     "Registrazione fermata ------------------->>>\n",
+     "Enregistrement arrêté ------------------->>>\n"},
+    /* MSG_ANOTHER_ANALYSIS_RUNNING */
+    {"Another analysis is running; this one will start once it finishes ------------------->>>\n",
+     "Un'altra analisi è in corso; questa inizierà al termine ------------------->>>\n",
+     "Une autre analyse est en cours ; celle-ci démarrera une fois terminée ------------------->>>\n"},
+    /* MSG_TEMP_CHECK_REQUESTED */
+    {"Temporary check requested ------------------->>>\n",
+     "Controllo temporaneo richiesto ------------------->>>\n",
+     "Vérification temporaire demandée ------------------->>>\n"},
+};
+
+static const char* tr(MsgKey key) {
+    const int idx = (g_lang == Lang::IT) ? 1 : (g_lang == Lang::FR) ? 2 : 0;
+    return MESSAGES[key][idx];
+}
+
+// ── End i18n ─────────────────────────────────────────────────────────────────
 
 std::string escape_for_single_quotes(const std::string& text);
 
@@ -459,7 +618,7 @@ void speak_text(const std::string& text) {
         return;
     }
 
-    trimmed = "Announciator: " + trimmed;
+    trimmed = "SI-Assistant: " + trimmed;
 
     const std::string escaped = escape_for_single_quotes(trimmed);
     const std::string cmd = TTS_COMMAND + " '" + escaped + "' >/dev/null 2>&1 &";
@@ -519,7 +678,7 @@ std::map<std::string, std::string> parse_ini(const std::string& filename) {
 bool load_config(const std::string& path) {
     std::ifstream file_check(path);
     if (!file_check.is_open()) {
-        say_error("Unable to open config file: " + path + "\n");
+        say_error(tr(MSG_UNABLE_TO_OPEN_CONFIG) + path + "\n");
         return false;
     }
     file_check.close();
@@ -584,7 +743,7 @@ bool load_config(const std::string& path) {
 
     if (!missing_keys.empty()) {
         std::ostringstream oss;
-        oss << "Missing required config values:";
+        oss << tr(MSG_MISSING_REQUIRED_CONFIG);
         for (const auto& key : missing_keys) {
             oss << ' ' << key;
         }
@@ -598,7 +757,7 @@ bool load_config(const std::string& path) {
     std::transform(TRIGGER_TEMP_CHECK.begin(), TRIGGER_TEMP_CHECK.end(), TRIGGER_TEMP_CHECK.begin(), ::tolower);
 
     if (KNOWLEDGE_BASE_IDS.empty()) {
-        say_error("Warning: analysis.knowledge_base_ids is not set; knowledge base lookups will be skipped.\n");
+        say_error(tr(MSG_KB_NOT_SET));
     }
 
     return true;
@@ -672,13 +831,13 @@ void analyze_text(const std::string& text) {
     AnalysisSession session(analysis_mutex, active_analyses);
     const int analysis_id = ++counter_value;
     temp_counter_value = 0; // Reset temp counter for each main analysis
-    say_info("Analysis of Recording[" + std::to_string(analysis_id) + "] Started ------------------->>>\n");
+    say_info(tr(MSG_ANALYSIS_STARTED_PREFIX) + std::to_string(analysis_id) + tr(MSG_ANALYSIS_STARTED_SUFFIX));
 
     const std::string filename = "results_analysis" + std::to_string(analysis_id) + ".txt";
     std::ofstream file(filename);
     if (!file.is_open()) {
-        say_error("[ERROR] Unable to open results file: " + filename + "\n");
-        say_info("Analysis of Recording[" + std::to_string(analysis_id) + "] Finished ------------------->>>\n");
+        say_error(tr(MSG_ERR_OPEN_RESULTS) + filename + "\n");
+        say_info(tr(MSG_ANALYSIS_STARTED_PREFIX) + std::to_string(analysis_id) + tr(MSG_ANALYSIS_FINISHED_SUFFIX));
         return;
     }
 
@@ -687,7 +846,7 @@ void analyze_text(const std::string& text) {
     file << "Prompt: " << PROMPT << "\n" << text << "\n";
 
     if (!file) {
-        say_error("[ERROR] Failed to write analysis header to " + filename + "\n");
+        say_error(tr(MSG_ERR_WRITE_HEADER) + filename + "\n");
     }
 
     std::string response_string;
@@ -713,20 +872,23 @@ void analyze_text(const std::string& text) {
         }
 
         auto chat = openai::chat().create(body);
-        // Strip model-internal tags, then run deterministic FHIR post-processing.
+        // Strip model-internal tags, then optionally run deterministic FHIR post-processing.
         response_string = strip_internal_reasoning_tags(extract_message_content(chat));
-        response_string = revise_fhir_bundle_in_response(response_string, std::to_string(analysis_id), file);
+        if (check_fhir) {
+            response_string = revise_fhir_bundle_in_response(response_string, std::to_string(analysis_id), file);
+        }
         if (response_string.empty()) {
             file << "\n[WARN] No textual content found in primary response. Full payload:\n"
                  << chat.dump(2) << "\n";
-            say_error(std::string{"[WARN] Analysis["} + std::to_string(analysis_id) +
-                      "] returned no text content; see results file.\n");
+            say_error(std::string{tr(MSG_WARN_NO_TEXT_PREFIX)} + std::to_string(analysis_id) +
+                      tr(MSG_WARN_NO_TEXT_SUFFIX));
         }
 
         file << "\n\nFull response received:\n" << response_string << "\n";
     } catch (const std::exception& e) {
         file << "\n[ERROR] Analysis[" << analysis_id << "] failed: " << e.what() << "\n";
-        say_error(std::string{"[ERROR] Analysis["} + std::to_string(analysis_id) + "] failed: " + e.what() + "\n");
+        say_error(std::string{tr(MSG_ERR_ANALYSIS_FAILED_PREFIX)} + std::to_string(analysis_id) +
+                  tr(MSG_ERR_ANALYSIS_FAILED_MIDDLE) + e.what() + "\n");
     }
 
     if (!response_string.empty()) {
@@ -747,37 +909,38 @@ void analyze_text(const std::string& text) {
             if (summary_string.empty()) {
                 file << "\n[WARN] No textual summary returned. Full payload:\n"
                      << summary_chat.dump(2) << "\n";
-                say_error(std::string{"[WARN] Summary generation returned no text for Analysis["} +
-                          std::to_string(analysis_id) + "]; see results file.\n");
+                say_error(std::string{tr(MSG_WARN_SUMMARY_NO_TEXT_PREFIX)} + std::to_string(analysis_id) +
+                          tr(MSG_WARN_SUMMARY_NO_TEXT_SUFFIX));
             }
 
             file << "\nShort summary of response:\n" << summary_string << "\n";
             speak_text("Analysis[" + std::to_string(analysis_id) + "] completed. Summary: " + summary_string);
         } catch (const std::exception& e) {
             file << "\n[ERROR] Summary generation failed: " << e.what() << "\n";
-            say_error(std::string{"[ERROR] Summary generation failed for Analysis["} + std::to_string(analysis_id) + "]: " + e.what() + "\n");
+            say_error(std::string{tr(MSG_ERR_SUMMARY_FAILED_PREFIX)} + std::to_string(analysis_id) +
+                      tr(MSG_ERR_SUMMARY_FAILED_MIDDLE) + e.what() + "\n");
         }
     }
 
     if (!file) {
-        say_error("[ERROR] Writing to results file failed for Analysis[" + std::to_string(analysis_id) + "]\n");
+        say_error(tr(MSG_ERR_WRITE_RESULTS_PREFIX) + std::to_string(analysis_id) + tr(MSG_ERR_WRITE_RESULTS_SUFFIX));
     }
 
-    say_info("Analysis of Recording[" + std::to_string(analysis_id) + "] Finished ------------------->>>\n");
+    say_info(tr(MSG_ANALYSIS_STARTED_PREFIX) + std::to_string(analysis_id) + tr(MSG_ANALYSIS_FINISHED_SUFFIX));
 }
 
 void temp_analyze_text(const std::string& text) {
     AnalysisSession session(analysis_mutex, active_analyses);
     const int analysis_id = ++temp_counter_value;
     // Use compound id (<main>.<temp>) so temp files sort with their parent analysis.
-    const std::string analysis_id_str = std::to_string(counter_value + 1) + "." + std::to_string(analysis_id); 
-    say_info("Temporary_Analysis of Recording[" + analysis_id_str + "] Started ------------------->>>\n");
+    const std::string analysis_id_str = std::to_string(counter_value + 1) + "." + std::to_string(analysis_id);
+    say_info(tr(MSG_TEMP_ANALYSIS_STARTED_PREFIX) + analysis_id_str + tr(MSG_ANALYSIS_STARTED_SUFFIX));
 
     const std::string filename = "tmp_results_analysis" + analysis_id_str + ".txt";
     std::ofstream file(filename);
     if (!file.is_open()) {
-        say_error("[ERROR] Unable to open results file: " + filename + "\n");
-        say_info("Temporary Analysis of Recording[" + analysis_id_str + "] Finished ------------------->>>\n");
+        say_error(tr(MSG_ERR_OPEN_RESULTS) + filename + "\n");
+        say_info(tr(MSG_TEMP_ANALYSIS_FINISHED_PREFIX) + analysis_id_str + tr(MSG_ANALYSIS_FINISHED_SUFFIX));
         return;
     }
 
@@ -786,7 +949,7 @@ void temp_analyze_text(const std::string& text) {
     file << "Prompt: " << TEMP_PROMPT << "\n" << text << "\n";
 
     if (!file) {
-        say_error("[ERROR] Failed to write analysis header to " + filename + "\n");
+        say_error(tr(MSG_ERR_WRITE_HEADER) + filename + "\n");
     }
 
     std::string response_string;
@@ -812,36 +975,105 @@ void temp_analyze_text(const std::string& text) {
 
         auto chat = openai::chat().create(body);
         response_string = strip_internal_reasoning_tags(extract_message_content(chat));
-        response_string = revise_fhir_bundle_in_response(response_string, "tmp_" + analysis_id_str, file);
+        if (check_fhir) {
+            response_string = revise_fhir_bundle_in_response(response_string, "tmp_" + analysis_id_str, file);
+        }
         if (response_string.empty()) {
             file << "\n[WARN] No textual content found in temporary response. Full payload:\n"
                  << chat.dump(2) << "\n";
-            say_error(std::string{"[WARN] Analysis["} + analysis_id_str +
-                      "] returned no text content; see results file.\n");
+            say_error(std::string{tr(MSG_WARN_NO_TEXT_PREFIX)} + analysis_id_str +
+                      tr(MSG_WARN_NO_TEXT_SUFFIX));
         }
 
         file << "\n\nTemporary response received:\n" << response_string << "\n";
         speak_text("Temporary Analysis[" + analysis_id_str + "] completed. Response: " + response_string);
     } catch (const std::exception& e) {
         file << "\n[ERROR] Analysis[" << analysis_id_str << "] failed: " << e.what() << "\n";
-        say_error(std::string{"[ERROR] Analysis["} + analysis_id_str + "] failed: " + e.what() + "\n");
+        say_error(std::string{tr(MSG_ERR_ANALYSIS_FAILED_PREFIX)} + analysis_id_str +
+                  tr(MSG_ERR_ANALYSIS_FAILED_MIDDLE) + e.what() + "\n");
     }
 
     if (!file) {
-        say_error("[ERROR] Writing to results file failed for Analysis[" + analysis_id_str + "]\n");
+        say_error(tr(MSG_ERR_WRITE_RESULTS_PREFIX) + analysis_id_str + tr(MSG_ERR_WRITE_RESULTS_SUFFIX));
     }
 
-    say_info("Temporary Analysis of Recording[" + analysis_id_str + "] Finished ------------------->>>\n");
+    say_info(tr(MSG_TEMP_ANALYSIS_FINISHED_PREFIX) + analysis_id_str + tr(MSG_ANALYSIS_FINISHED_SUFFIX));
+}
+
+static void print_help(const char* prog) {
+    std::cout <<
+        "Usage: " << prog << " [OPTIONS]\n"
+        "\n"
+        "Listens on standard input for trigger words, collects spoken text between\n"
+        "start/stop triggers, and sends it to a configured AI model for analysis.\n"
+        "Results are written to numbered files (results_analysis<N>.txt).\n"
+        "\n"
+        "Options:\n"
+        "  --help                  Show this help message and exit.\n"
+        "  --check_fhir            After each analysis, detect and post-process any\n"
+        "                          FHIR Bundle found in the model response using the\n"
+        "                          deterministic_fhir_mapper tool.\n"
+        "  --language <lang>       Set the UI language for console messages.\n"
+        "                          Supported values: en (default), it, fr.\n"
+        "\n"
+        "Configuration:\n"
+        "  The program reads ./config.ini on startup. The following sections and\n"
+        "  keys are required:\n"
+        "    [openai]   base_url, api_key, model_name\n"
+        "    [prompts]  prompt, temp_prompt\n"
+        "    [triggers] start, stop, temp_check\n"
+        "    [tts]      command\n"
+        "  Optional keys:\n"
+        "    [analysis]             knowledge_base_ids\n"
+        "    [deterministic_mapper] network_enabled, cache_dir, cache_ttl_days,\n"
+        "                           loinc_user, loinc_pass, timeout_seconds\n"
+        "\n"
+        "Trigger words (configured in config.ini):\n"
+        "  start      Begin collecting transcribed speech.\n"
+        "  stop       Stop collecting and send text to AI for full analysis.\n"
+        "  temp_check Perform a temporary analysis on a snapshot of collected text\n"
+        "             without stopping the recording.\n"
+        "\n"
+        "Exit status:\n"
+        "  0  Normal exit (EOF on stdin).\n"
+        "  1  Configuration error or invalid argument.\n";
 }
 
 // Main loop
-int main() {
+int main(int argc, char* argv[]) {
+    for (int i = 1; i < argc; ++i) {
+        const std::string arg(argv[i]);
+        if (arg == "--help" || arg == "-h") {
+            print_help(argv[0]);
+            return 0;
+        } else if (arg == "--check_fhir") {
+            check_fhir = true;
+        } else if (arg == "--language") {
+            if (i + 1 >= argc) {
+                std::cerr << "Error: --language requires an argument. Supported: en, it, fr\n";
+                return 1;
+            }
+            const std::string lang(argv[++i]);
+            if (lang == "it") {
+                g_lang = Lang::IT;
+            } else if (lang == "fr") {
+                g_lang = Lang::FR;
+            } else if (lang != "en") {
+                std::cerr << "Error: unknown language '" << lang << "'. Supported: en, it, fr\n";
+                return 1;
+            }
+        } else {
+            std::cerr << "Error: unknown option '" << arg << "'. Use --help for usage information.\n";
+            return 1;
+        }
+    }
+
     if (!load_config("./config.ini")) {
-        say_error("Failed to load config.ini\n");
+        say_error(tr(MSG_FAILED_LOAD_CONFIG));
         return 1;
     }
 
-    say_info("Listening for input...\n");
+    say_info(tr(MSG_LISTENING));
 
     std::string line;
     std::string collected_text;
@@ -859,9 +1091,9 @@ int main() {
 
         if (line_contains_start) {
             if (collect_text) {
-                say_info("Recording has already been started ------------------->>>\n");
+                say_info(tr(MSG_RECORDING_ALREADY_STARTED));
             } else {
-                say_info("Recording started ------------------->>>\n");
+                say_info(tr(MSG_RECORDING_STARTED));
                 collected_text.clear();
                 collect_text = true;
             }
@@ -869,14 +1101,14 @@ int main() {
 
         if (line_contains_stop) {
             if (!collect_text) {
-                say_info("No recording is currently running ------------------->>>\n");
+                say_info(tr(MSG_NO_RECORDING_RUNNING));
             } else {
-                say_info("Recording stopped ------------------->>>\n");
+                say_info(tr(MSG_RECORDING_STOPPED));
                 std::string text_to_analyze = collected_text;
                 collected_text.clear();
                 collect_text = false;
                 if (active_analyses.load() > 0) {
-                    say_info("Another analysis is running; this one will start once it finishes ------------------->>>\n");
+                    say_info(tr(MSG_ANOTHER_ANALYSIS_RUNNING));
                 }
                 std::thread(analyze_text, std::move(text_to_analyze)).detach();
             }
@@ -884,11 +1116,11 @@ int main() {
 
         if (line_contains_temp_check) {
             if (!collect_text) {
-                say_info("No recording is currently running ------------------->>>\n");
+                say_info(tr(MSG_NO_RECORDING_RUNNING));
             } else {
-                say_info("Temporary check requested ------------------->>>\n");
+                say_info(tr(MSG_TEMP_CHECK_REQUESTED));
                 if (active_analyses.load() > 0) {
-                    say_info("Another analysis is running; this one will start once it finishes ------------------->>>\n");
+                    say_info(tr(MSG_ANOTHER_ANALYSIS_RUNNING));
                 }
                 std::string snapshot = collected_text;
                 // Temp analysis runs on a snapshot while recording continues.

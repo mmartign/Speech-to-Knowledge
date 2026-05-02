@@ -2393,11 +2393,46 @@ std::string trim(const std::string& str) {
 // Whisper emits these tokens when it detects no speech; suppress them so they
 // are never written to the transcript or forwarded to WebSocket clients.
 bool is_whisper_noise_token(const std::string& text) {
-    static const std::vector<std::string> kNoiseTokens = {
-        "[BLANK_AUDIO]", "[ Silence]", "[silence]", "(silence)"
+    // Exact-match bracket/paren pseudo-tokens.
+    static const std::vector<std::string> kExactTokens = {
+        "[BLANK_AUDIO]", "[ Silence]", "[silence]", "(silence)",
+        "[Music]", "[ Music]", "(Music)", "(music)", "[music]",
+        "[Applause]", "[ Applause]", "(Applause)",
+        "[MUSIC]", "[APPLAUSE]",
     };
-    for (const auto& tok : kNoiseTokens) {
+    for (const auto& tok : kExactTokens) {
         if (text == tok) {
+            return true;
+        }
+    }
+
+    // Normalize: lowercase + strip trailing punctuation/whitespace, then check
+    // against known hallucination phrases that Whisper emits on silence/noise.
+    std::string norm = text;
+    while (!norm.empty() &&
+           (std::ispunct(static_cast<unsigned char>(norm.back())) ||
+            std::isspace(static_cast<unsigned char>(norm.back())))) {
+        norm.pop_back();
+    }
+    std::transform(norm.begin(), norm.end(), norm.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    static const std::vector<std::string> kHallucinationPhrases = {
+        "thank you",
+        "thanks for watching",
+        "thank you for watching",
+        "thank you very much",
+        "thank you so much",
+        "thanks for listening",
+        "thank you for listening",
+        "thanks",
+        "you",                  // single-token noise on some models
+        "bye",
+        "bye bye",
+        "goodbye",
+    };
+    for (const auto& phrase : kHallucinationPhrases) {
+        if (norm == phrase) {
             return true;
         }
     }
