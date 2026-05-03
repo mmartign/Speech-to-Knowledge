@@ -75,6 +75,7 @@
 #include <exception>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <future>
 #include <iomanip>
 #include <iostream>
@@ -123,8 +124,10 @@ namespace Constants {
     constexpr double AMBIENT_NOISE_DURATION_SECONDS = 3.0;
     constexpr double ENERGY_THRESHOLD_MULTIPLIER = 2.5;
     constexpr double ADAPTIVE_NOISE_ALPHA = 0.05;
-    constexpr double ADAPTIVE_UPDATE_MAX_RMS_FRACTION = 0.20;
+    constexpr double ADAPTIVE_UPDATE_MAX_RMS_FRACTION = 0.80;
     constexpr double ADAPTIVE_THRESHOLD_STEP_FRACTION = 0.05;
+    constexpr double ADAPTIVE_THRESHOLD_MAX_BASE_MULTIPLIER = 4.0;
+    constexpr int DEFAULT_ENERGY_THRESHOLD = 1000;
     constexpr int ADAPTIVE_THRESHOLD_MIN = 200;
     constexpr int ADAPTIVE_HANGOVER_CHUNKS = 1;
     constexpr double ADAPTIVE_ONSET_TRIGGER_RATIO = 0.85;
@@ -269,6 +272,316 @@ struct Args {
     int websocket_idle_timeout = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
 };
 
+class EnergyVadProcessor {
+public:
+    using OutputCallback = std::function<void(const std::vector<int16_t>&, int energy_threshold)>;
+
+    void configure(int sample_rate, double record_timeout, double phrase_timeout) {
+        if (sample_rate <= 0 || record_timeout <= 0.0 || phrase_timeout <= 0.0) {
+            throw AudioException("Invalid VAD parameters: sample rate and timeouts must be positive");
+        }
+        std::lock_guard<std::mutex> lock(vad_mutex_);
+        sample_rate_ = sample_rate;
+        record_timeout_ = record_timeout;
+        phrase_timeout_ = phrase_timeout;
+        recompute_limits_locked();
+        clear_processing_state_locked();
+    }
+
+    void setEnergyThreshold(int threshold) {
+        set_energy_threshold(threshold, true);
+    }
+
+    int getEnergyThreshold() const {
+        return energy_threshold_.load(std::memory_order_relaxed);
+    }
+
+    void setAdaptiveEnergyEnabled(bool enabled) {
+        adaptive_energy_enabled_.store(enabled, std::memory_order_release);
+        if (!enabled) {
+            silence_floor_initialized_.store(false, std::memory_order_release);
+            return;
+        }
+        double estimate = static_cast<double>(getEnergyThreshold()) /
+                          Constants::ENERGY_THRESHOLD_MULTIPLIER;
+        if (estimate <= 0.0) {
+            estimate = static_cast<double>(Constants::ADAPTIVE_THRESHOLD_MIN) /
+                       Constants::ENERGY_THRESHOLD_MULTIPLIER;
+        }
+        primeNoiseFloorEstimate(estimate);
+    }
+
+    bool adaptiveEnergyEnabled() const {
+        return adaptive_energy_enabled_.load(std::memory_order_acquire);
+    }
+
+    void setVadPreRollSeconds(double seconds) {
+        if (seconds < 0.0) {
+            seconds = 0.0;
+        }
+        vad_pre_roll_seconds_.store(seconds, std::memory_order_relaxed);
+        std::lock_guard<std::mutex> lock(vad_mutex_);
+        recompute_limits_locked();
+        trim_pre_roll_locked();
+    }
+
+    void setAdaptiveHangoverChunks(int chunks) {
+        adaptive_hangover_chunks_.store(std::max(1, chunks), std::memory_order_relaxed);
+    }
+
+    void setVerbose(bool verbose) {
+        verbose_.store(verbose, std::memory_order_release);
+    }
+
+    void processChunk(const std::vector<int16_t>& current_chunk,
+                      const OutputCallback& callback) {
+        if (current_chunk.empty()) {
+            return;
+        }
+
+        const double sum_squares = calculate_audio_energy(current_chunk.data(), current_chunk.size());
+        const double threshold_squared =
+            static_cast<double>(energy_threshold_squared_.load(std::memory_order_relaxed));
+        const bool adaptive_enabled = adaptive_energy_enabled_.load(std::memory_order_relaxed);
+        bool should_update_adaptive = false;
+        std::vector<int16_t> completed;
+
+        {
+            std::lock_guard<std::mutex> lock(vad_mutex_);
+            const bool speech_active = !vad_buffer_.empty();
+            double speech_trigger = threshold_squared;
+            if (adaptive_enabled && !speech_active) {
+                // When idle, slightly lower onset threshold to reduce missed speech starts.
+                const double ratio = Constants::ADAPTIVE_ONSET_TRIGGER_RATIO;
+                speech_trigger *= (ratio * ratio);
+            }
+
+            const bool is_speech = sum_squares > (speech_trigger * current_chunk.size());
+            if (is_speech) {
+                if (vad_buffer_.empty() && !pre_roll_chunks_.empty()) {
+                    // Pre-roll preserves consonant onsets just before energy crosses threshold.
+                    for (const auto& pre : pre_roll_chunks_) {
+                        vad_buffer_.insert(vad_buffer_.end(), pre.begin(), pre.end());
+                    }
+                    pre_roll_chunks_.clear();
+                }
+                consecutive_silence_chunks_ = 0;
+                consecutive_silence_for_adaptation_ = 0;
+                vad_buffer_.insert(vad_buffer_.end(), current_chunk.begin(), current_chunk.end());
+            } else if (!vad_buffer_.empty()) {
+                ++consecutive_silence_chunks_;
+                ++consecutive_silence_for_adaptation_;
+                vad_buffer_.insert(vad_buffer_.end(), current_chunk.begin(), current_chunk.end());
+            } else {
+                if (max_pre_roll_chunks_ > 0) {
+                    pre_roll_chunks_.push_back(current_chunk);
+                    trim_pre_roll_locked();
+                }
+                ++consecutive_silence_for_adaptation_;
+            }
+
+            if (!is_speech) {
+                const int hangover_chunks = adaptive_hangover_chunks_.load(std::memory_order_relaxed);
+                // Delay adaptive updates slightly after speech to avoid contaminating noise floor.
+                should_update_adaptive = vad_buffer_.empty() ||
+                                         consecutive_silence_for_adaptation_ >=
+                                             static_cast<size_t>(hangover_chunks);
+            }
+
+            const bool flush = !vad_buffer_.empty() &&
+                               (vad_buffer_.size() >= max_buffer_samples_ ||
+                                consecutive_silence_chunks_ >= max_silence_chunks_);
+            if (flush) {
+                completed = std::move(vad_buffer_);
+                vad_buffer_.clear();
+                consecutive_silence_chunks_ = 0;
+                consecutive_silence_for_adaptation_ = 0;
+            }
+        }
+
+        if (should_update_adaptive) {
+            update_adaptive_threshold(sum_squares, current_chunk.size());
+        }
+        if (!completed.empty() && callback) {
+            callback(completed, getEnergyThreshold());
+        }
+    }
+
+    void flush(const OutputCallback& callback) {
+        std::vector<int16_t> completed;
+        {
+            std::lock_guard<std::mutex> lock(vad_mutex_);
+            if (vad_buffer_.empty()) {
+                pre_roll_chunks_.clear();
+                consecutive_silence_chunks_ = 0;
+                consecutive_silence_for_adaptation_ = 0;
+                return;
+            }
+            completed = std::move(vad_buffer_);
+            clear_processing_state_locked();
+        }
+        if (!completed.empty() && callback) {
+            callback(completed, getEnergyThreshold());
+        }
+    }
+
+    void primeNoiseFloorEstimate(double rms) {
+        if (rms <= 0.0) {
+            return;
+        }
+        silence_rms_ema_.store(rms, std::memory_order_release);
+        silence_floor_initialized_.store(true, std::memory_order_release);
+    }
+
+    void clearProcessingState() {
+        std::lock_guard<std::mutex> lock(vad_mutex_);
+        clear_processing_state_locked();
+    }
+
+private:
+    static double calculate_audio_energy(const int16_t* data, size_t count) {
+        double sum_squares = 0.0;
+        for (size_t i = 0; i < count; ++i) {
+            const double s = static_cast<double>(data[i]);
+            sum_squares += s * s;
+        }
+        return sum_squares;
+    }
+
+    void set_energy_threshold(int threshold, bool update_base) {
+        threshold = std::max(threshold, 1);
+        if (update_base) {
+            base_energy_threshold_.store(threshold, std::memory_order_relaxed);
+            base_threshold_initialized_.store(true, std::memory_order_release);
+        } else {
+            bool expected = false;
+            if (base_threshold_initialized_.compare_exchange_strong(expected,
+                                                                    true,
+                                                                    std::memory_order_acq_rel,
+                                                                    std::memory_order_acquire)) {
+                base_energy_threshold_.store(threshold, std::memory_order_relaxed);
+            }
+        }
+        energy_threshold_.store(threshold, std::memory_order_relaxed);
+        energy_threshold_squared_.store(static_cast<int64_t>(threshold) * static_cast<int64_t>(threshold),
+                                        std::memory_order_relaxed);
+    }
+
+    int baseEnergyThreshold() const {
+        if (!base_threshold_initialized_.load(std::memory_order_acquire)) {
+            return getEnergyThreshold();
+        }
+        return base_energy_threshold_.load(std::memory_order_relaxed);
+    }
+
+    void update_adaptive_threshold(double sum_squares, size_t sample_count) {
+        if (!adaptive_energy_enabled_.load(std::memory_order_relaxed) || sample_count == 0) {
+            return;
+        }
+        const double rms = std::sqrt(sum_squares / static_cast<double>(sample_count));
+        if (rms <= 0.0) {
+            return;
+        }
+        const int current = getEnergyThreshold();
+        const double max_rms_for_noise_update =
+            static_cast<double>(current) * Constants::ADAPTIVE_UPDATE_MAX_RMS_FRACTION;
+        if (rms > max_rms_for_noise_update) {
+            // Loud non-speech frames are likely transients: do not treat them as background noise.
+            return;
+        }
+        if (!silence_floor_initialized_.load(std::memory_order_acquire)) {
+            silence_rms_ema_.store(rms, std::memory_order_release);
+            silence_floor_initialized_.store(true, std::memory_order_release);
+            return;
+        }
+        const double prev = silence_rms_ema_.load(std::memory_order_relaxed);
+        const double updated = (1.0 - Constants::ADAPTIVE_NOISE_ALPHA) * prev +
+                               Constants::ADAPTIVE_NOISE_ALPHA * rms;
+        silence_rms_ema_.store(updated, std::memory_order_release);
+        double desired = updated * Constants::ENERGY_THRESHOLD_MULTIPLIER;
+        desired = std::max(desired, static_cast<double>(Constants::ADAPTIVE_THRESHOLD_MIN));
+
+        const int base = std::max(baseEnergyThreshold(), Constants::ADAPTIVE_THRESHOLD_MIN);
+        const double max_allowed =
+            std::min(32767.0,
+                     static_cast<double>(base) *
+                         Constants::ADAPTIVE_THRESHOLD_MAX_BASE_MULTIPLIER);
+        desired = std::min(desired, max_allowed);
+
+        int target = static_cast<int>(std::lround(desired));
+        int max_step = std::max(5,
+                                static_cast<int>(std::lround(current *
+                                                             Constants::ADAPTIVE_THRESHOLD_STEP_FRACTION)));
+        // Step clamping keeps threshold transitions smooth and prevents oscillation.
+        max_step = std::max(max_step, 1);
+        if (target > current + max_step) {
+            target = current + max_step;
+        } else if (target < current - max_step) {
+            target = current - max_step;
+        }
+        if (target != current) {
+            set_energy_threshold(target, false);
+            if (verbose_.load(std::memory_order_acquire)) {
+                std::cout << "[Adaptive VAD] RMS=" << std::fixed << std::setprecision(1) << rms
+                          << " EMA=" << updated
+                          << " threshold -> " << target << std::endl;
+            }
+        }
+    }
+
+    void recompute_limits_locked() {
+        max_buffer_samples_ = std::max<size_t>(
+            Constants::MIN_AUDIO_SAMPLES,
+            static_cast<size_t>(std::ceil(static_cast<double>(sample_rate_) * record_timeout_)));
+        max_silence_chunks_ = std::max<size_t>(
+            1,
+            static_cast<size_t>(std::ceil(phrase_timeout_ * static_cast<double>(sample_rate_) /
+                                          static_cast<double>(Constants::FRAMES_PER_BUFFER))));
+        const double pre_roll_seconds = vad_pre_roll_seconds_.load(std::memory_order_relaxed);
+        max_pre_roll_chunks_ = pre_roll_seconds <= 0.0
+            ? 0
+            : static_cast<size_t>(std::ceil(pre_roll_seconds * static_cast<double>(sample_rate_) /
+                                            static_cast<double>(Constants::FRAMES_PER_BUFFER)));
+    }
+
+    void trim_pre_roll_locked() {
+        while (pre_roll_chunks_.size() > max_pre_roll_chunks_) {
+            pre_roll_chunks_.pop_front();
+        }
+    }
+
+    void clear_processing_state_locked() {
+        vad_buffer_.clear();
+        pre_roll_chunks_.clear();
+        consecutive_silence_chunks_ = 0;
+        consecutive_silence_for_adaptation_ = 0;
+    }
+
+    std::atomic<int> energy_threshold_{Constants::DEFAULT_ENERGY_THRESHOLD};
+    std::atomic<int64_t> energy_threshold_squared_{
+        static_cast<int64_t>(Constants::DEFAULT_ENERGY_THRESHOLD) *
+        static_cast<int64_t>(Constants::DEFAULT_ENERGY_THRESHOLD)};
+    std::atomic<int> base_energy_threshold_{Constants::DEFAULT_ENERGY_THRESHOLD};
+    std::atomic<bool> base_threshold_initialized_{false};
+    std::atomic<bool> adaptive_energy_enabled_{false};
+    std::atomic<double> vad_pre_roll_seconds_{Constants::VAD_PRE_ROLL_SECONDS};
+    std::atomic<double> silence_rms_ema_{0.0};
+    std::atomic<bool> silence_floor_initialized_{false};
+    std::atomic<int> adaptive_hangover_chunks_{Constants::ADAPTIVE_HANGOVER_CHUNKS};
+    std::atomic<bool> verbose_{false};
+    std::mutex vad_mutex_;
+    std::vector<int16_t> vad_buffer_;
+    std::deque<std::vector<int16_t>> pre_roll_chunks_;
+    size_t consecutive_silence_chunks_ = 0;
+    size_t consecutive_silence_for_adaptation_ = 0;
+    int sample_rate_ = Constants::SAMPLE_RATE;
+    double record_timeout_ = 2.0;
+    double phrase_timeout_ = 3.0;
+    size_t max_buffer_samples_ = static_cast<size_t>(Constants::SAMPLE_RATE * 2.0);
+    size_t max_silence_chunks_ = 1;
+    size_t max_pre_roll_chunks_ = 1;
+};
+
 class AudioRecorder {
 public:
     virtual ~AudioRecorder() = default;
@@ -305,11 +618,11 @@ public:
     }
 
     void setAdaptiveHangoverChunks(int chunks) override {
-        adaptive_hangover_chunks_.store(std::max(1, chunks), std::memory_order_relaxed);
+        vad_.setAdaptiveHangoverChunks(chunks);
     }
 
     void setVerbose(bool v) override {
-        verbose_ = v;
+        vad_.setVerbose(v);
     }
 
     bool startRecording(std::function<void(const std::vector<int16_t>&)> callback,
@@ -329,17 +642,10 @@ public:
         sample_rate_ = sample_rate;
         record_timeout_ = record_timeout;
         phrase_timeout_ = phrase_timeout;
-        max_buffer_samples_ = static_cast<size_t>(std::ceil(sample_rate_ * record_timeout_));
-        max_silence_chunks_ = static_cast<size_t>(
-            std::ceil(phrase_timeout_ * sample_rate_ / static_cast<double>(Constants::FRAMES_PER_BUFFER)));
-        max_pre_roll_chunks_ = std::max<size_t>(
-            1,
-            static_cast<size_t>(std::ceil(
-                vad_pre_roll_seconds_.load(std::memory_order_relaxed) * sample_rate_ /
-                static_cast<double>(Constants::FRAMES_PER_BUFFER))));
+        vad_.configure(sample_rate_, record_timeout_, phrase_timeout_);
         // Runtime limits are computed once per start() so hot callbacks stay lightweight.
 
-        clear_processing_state();
+        vad_.clearProcessingState();
         reset_ring();
         dropped_callback_chunks_.store(0, std::memory_order_relaxed);
 
@@ -403,7 +709,7 @@ public:
             worker_thread_.join();
         }
         if (was_active) {
-            clear_processing_state();
+            vad_.clearProcessingState();
             reset_ring();
         }
     }
@@ -465,54 +771,26 @@ public:
         const long double rms = std::sqrt(sum_squares / static_cast<long double>(collected.size()));
         const int threshold = static_cast<int>(std::llround(rms * Constants::ENERGY_THRESHOLD_MULTIPLIER));
         setEnergyThreshold(std::max(threshold, Constants::ADAPTIVE_THRESHOLD_MIN));
-        if (adaptive_energy_enabled_.load(std::memory_order_relaxed)) {
-            prime_noise_floor_estimate(static_cast<double>(rms));
+        if (vad_.adaptiveEnergyEnabled()) {
+            vad_.primeNoiseFloorEstimate(static_cast<double>(rms));
         }
         std::cout << "Adjusted energy threshold to: " << getEnergyThreshold() << std::endl;
     }
 
     void setEnergyThreshold(int threshold) override {
-        threshold = std::max(threshold, 1);
-        bool expected = false;
-        if (base_threshold_initialized_.compare_exchange_strong(expected,
-                                                                true,
-                                                                std::memory_order_acq_rel,
-                                                                std::memory_order_acquire)) {
-            base_energy_threshold_.store(threshold, std::memory_order_relaxed);
-        }
-        energy_threshold_.store(threshold, std::memory_order_relaxed);
-        energy_threshold_squared_.store(static_cast<int64_t>(threshold) * static_cast<int64_t>(threshold),
-                                        std::memory_order_relaxed);
+        vad_.setEnergyThreshold(threshold);
     }
 
     int getEnergyThreshold() const override {
-        return energy_threshold_.load(std::memory_order_relaxed);
+        return vad_.getEnergyThreshold();
     }
 
     void setAdaptiveEnergyEnabled(bool enabled) override {
-        adaptive_energy_enabled_.store(enabled, std::memory_order_release);
-        if (!enabled) {
-            silence_floor_initialized_.store(false, std::memory_order_release);
-            return;
-        }
-        double estimate = static_cast<double>(getEnergyThreshold()) /
-                          Constants::ENERGY_THRESHOLD_MULTIPLIER;
-        if (estimate <= 0.0) {
-            estimate = static_cast<double>(Constants::ADAPTIVE_THRESHOLD_MIN) /
-                       Constants::ENERGY_THRESHOLD_MULTIPLIER;
-        }
-        prime_noise_floor_estimate(estimate);
+        vad_.setAdaptiveEnergyEnabled(enabled);
     }
 
     void setVadPreRollSeconds(double seconds) override {
-        if (seconds < 0.0) {
-            seconds = 0.0;
-        }
-        vad_pre_roll_seconds_.store(seconds, std::memory_order_relaxed);
-        max_pre_roll_chunks_ = std::max<size_t>(
-            1,
-            static_cast<size_t>(std::ceil(
-                seconds * sample_rate_ / static_cast<double>(Constants::FRAMES_PER_BUFFER))));
+        vad_.setVadPreRollSeconds(seconds);
     }
 
 private:
@@ -619,144 +897,10 @@ private:
             return;
         }
 
-        const double sum_squares = calculate_audio_energy(current_chunk.data(), current_chunk.size());
-        const double threshold_squared =
-            static_cast<double>(energy_threshold_squared_.load(std::memory_order_relaxed));
-        const bool adaptive_enabled = adaptive_energy_enabled_.load(std::memory_order_relaxed);
-        bool is_speech = false;
-        bool should_update_adaptive = false;
-        std::vector<int16_t> completed;
-
-        {
-            std::lock_guard<std::mutex> lock(vad_mutex_);
-            const bool speech_active = !vad_buffer_.empty();
-            double speech_trigger = threshold_squared;
-            if (adaptive_enabled && !speech_active) {
-                // When idle, slightly lower onset threshold to reduce missed speech starts.
-                const double ratio = Constants::ADAPTIVE_ONSET_TRIGGER_RATIO;
-                speech_trigger *= (ratio * ratio);
-            }
-            is_speech = sum_squares > (speech_trigger * current_chunk.size());
-            if (is_speech) {
-                if (vad_buffer_.empty() && !pre_roll_chunks_.empty()) {
-                    // Pre-roll preserves consonant onsets just before energy crosses threshold.
-                    for (const auto& pre : pre_roll_chunks_) {
-                        vad_buffer_.insert(vad_buffer_.end(), pre.begin(), pre.end());
-                    }
-                    pre_roll_chunks_.clear();
-                }
-                consecutive_silence_chunks_ = 0;
-                consecutive_silence_for_adaptation_ = 0;
-                vad_buffer_.insert(vad_buffer_.end(), current_chunk.begin(), current_chunk.end());
-            } else if (!vad_buffer_.empty()) {
-                ++consecutive_silence_chunks_;
-                ++consecutive_silence_for_adaptation_;
-                vad_buffer_.insert(vad_buffer_.end(), current_chunk.begin(), current_chunk.end());
-            } else {
-                pre_roll_chunks_.push_back(current_chunk);
-                while (pre_roll_chunks_.size() > max_pre_roll_chunks_) {
-                    pre_roll_chunks_.pop_front();
-                }
-                ++consecutive_silence_for_adaptation_;
-            }
-            if (!is_speech) {
-                const int hangover_chunks = adaptive_hangover_chunks_.load(std::memory_order_relaxed);
-                // Delay adaptive updates slightly after speech to avoid contaminating noise floor.
-                should_update_adaptive = vad_buffer_.empty() ||
-                                         consecutive_silence_for_adaptation_ >=
-                                             static_cast<size_t>(hangover_chunks);
-            }
-            const bool flush = !vad_buffer_.empty() &&
-                               (vad_buffer_.size() >= max_buffer_samples_ ||
-                                consecutive_silence_chunks_ >= max_silence_chunks_);
-            if (flush) {
-                completed = std::move(vad_buffer_);
-                vad_buffer_.clear();
-                consecutive_silence_chunks_ = 0;
-                consecutive_silence_for_adaptation_ = 0;
-            }
-        }
-
-        if (should_update_adaptive) {
-            update_adaptive_threshold(sum_squares, current_chunk.size());
-        }
-        if (!completed.empty()) {
-            callback(completed);
-        }
-    }
-
-    static double calculate_audio_energy(const int16_t* data, size_t count) {
-        double sum_squares = 0.0;
-        for (size_t i = 0; i < count; ++i) {
-            const double s = static_cast<double>(data[i]);
-            sum_squares += s * s;
-        }
-        return sum_squares;
-    }
-
-    void update_adaptive_threshold(double sum_squares, size_t sample_count) {
-        if (!adaptive_energy_enabled_.load(std::memory_order_relaxed) || sample_count == 0) {
-            return;
-        }
-        const double rms = std::sqrt(sum_squares / static_cast<double>(sample_count));
-        if (rms <= 0.0) {
-            return;
-        }
-        const int current = getEnergyThreshold();
-        const double max_rms_for_noise_update =
-            static_cast<double>(current) * Constants::ADAPTIVE_UPDATE_MAX_RMS_FRACTION;
-        if (rms > max_rms_for_noise_update) {
-            // Loud frames are likely speech/transients: do not treat them as background noise.
-            return;
-        }
-        if (!silence_floor_initialized_.load(std::memory_order_acquire)) {
-            silence_rms_ema_.store(rms, std::memory_order_release);
-            silence_floor_initialized_.store(true, std::memory_order_release);
-            return;
-        }
-        const double prev = silence_rms_ema_.load(std::memory_order_relaxed);
-        const double updated = (1.0 - Constants::ADAPTIVE_NOISE_ALPHA) * prev +
-                               Constants::ADAPTIVE_NOISE_ALPHA * rms;
-        silence_rms_ema_.store(updated, std::memory_order_release);
-        double desired = updated * Constants::ENERGY_THRESHOLD_MULTIPLIER;
-        desired = std::max(desired, static_cast<double>(Constants::ADAPTIVE_THRESHOLD_MIN));
-        const int base = base_energy_threshold_.load(std::memory_order_relaxed);
-        desired = std::min(desired, static_cast<double>(base));
-        int target = static_cast<int>(std::lround(desired));
-        int max_step = std::max(5,
-                                static_cast<int>(std::lround(current *
-                                                             Constants::ADAPTIVE_THRESHOLD_STEP_FRACTION)));
-        // Step clamping keeps threshold transitions smooth and prevents oscillation.
-        max_step = std::max(max_step, 1);
-        if (target > current + max_step) {
-            target = current + max_step;
-        } else if (target < current - max_step) {
-            target = current - max_step;
-        }
-        if (target != current) {
-            setEnergyThreshold(target);
-            if (verbose_) {
-                std::cout << "[Adaptive VAD] RMS=" << std::fixed << std::setprecision(1) << rms
-                          << " EMA=" << updated
-                          << " threshold -> " << target << std::endl;
-            }
-        }
-    }
-
-    void prime_noise_floor_estimate(double rms) {
-        if (rms <= 0.0) {
-            return;
-        }
-        silence_rms_ema_.store(rms, std::memory_order_release);
-        silence_floor_initialized_.store(true, std::memory_order_release);
-    }
-
-    void clear_processing_state() {
-        std::lock_guard<std::mutex> lock(vad_mutex_);
-        vad_buffer_.clear();
-        pre_roll_chunks_.clear();
-        consecutive_silence_chunks_ = 0;
-        consecutive_silence_for_adaptation_ = 0;
+        vad_.processChunk(current_chunk,
+                          [&](const std::vector<int16_t>& completed, int) {
+                              callback(completed);
+                          });
     }
 
     void reset_ring() {
@@ -820,29 +964,12 @@ private:
     size_t ring_tail_ = 0;
     size_t ring_size_ = 0;
     std::atomic<size_t> dropped_callback_chunks_{0};
-    std::atomic<int> energy_threshold_{1000};
-    std::atomic<int64_t> energy_threshold_squared_{1000LL * 1000LL};
-    std::atomic<int> base_energy_threshold_{1000};
-    std::atomic<bool> base_threshold_initialized_{false};
-    std::atomic<bool> adaptive_energy_enabled_{false};
+    EnergyVadProcessor vad_;
     std::atomic<bool> bypass_vad_{false};
-    std::atomic<double> vad_pre_roll_seconds_{Constants::VAD_PRE_ROLL_SECONDS};
-    std::atomic<double> silence_rms_ema_{0.0};
-    std::atomic<bool> silence_floor_initialized_{false};
-    std::mutex vad_mutex_;
-    std::vector<int16_t> vad_buffer_;
-    std::deque<std::vector<int16_t>> pre_roll_chunks_;
-    size_t consecutive_silence_chunks_ = 0;
-    size_t consecutive_silence_for_adaptation_ = 0;
-    std::atomic<int> adaptive_hangover_chunks_{Constants::ADAPTIVE_HANGOVER_CHUNKS};
-    bool verbose_ = false;
     std::string preferred_device_name_;
     int sample_rate_ = Constants::SAMPLE_RATE;
     double record_timeout_ = 2.0;
     double phrase_timeout_ = 3.0;
-    size_t max_buffer_samples_ = static_cast<size_t>(Constants::SAMPLE_RATE * 2.0);
-    size_t max_silence_chunks_ = 1;
-    size_t max_pre_roll_chunks_ = 1;
 };
 
 std::vector<std::string> AudioRecorder::listMicrophoneNames() {
@@ -951,7 +1078,7 @@ private:
 class AudioTranscriber {
 public:
     AudioTranscriber(WhisperModel& model, std::string language)
-        : model_(model), language_(std::move(language)) {
+        : model_(model), default_language_(std::move(language)) {
         running_.store(true, std::memory_order_release);
         worker_ = std::thread(&AudioTranscriber::worker_loop, this);
     }
@@ -970,13 +1097,13 @@ public:
     AudioTranscriber(const AudioTranscriber&) = delete;
     AudioTranscriber& operator=(const AudioTranscriber&) = delete;
 
-    std::future<std::string> transcribe_async(std::vector<float> audio) {
+    std::future<std::string> transcribe_async(std::vector<float> audio, std::string language = {}) {
         std::promise<std::string> promise;
         auto future = promise.get_future();
         {
             std::lock_guard<std::mutex> lock(queue_mutex_);
             // Ordered queue preserves temporal ordering for phrase reconstruction.
-            transcription_queue_.push(Task{std::move(audio), std::move(promise)});
+            transcription_queue_.push(Task{std::move(audio), std::move(language), std::move(promise)});
         }
         queue_cv_.notify_one();
         return future;
@@ -985,6 +1112,7 @@ public:
 private:
     struct Task {
         std::vector<float> audio;
+        std::string language;
         std::promise<std::string> promise;
     };
 
@@ -1007,7 +1135,9 @@ private:
                 if (task.audio.empty()) {
                     task.promise.set_value({});
                 } else {
-                    task.promise.set_value(model_.transcribe(task.audio, language_));
+                    const std::string& language =
+                        task.language.empty() ? default_language_ : task.language;
+                    task.promise.set_value(model_.transcribe(task.audio, language));
                 }
             } catch (...) {
                 task.promise.set_exception(std::current_exception());
@@ -1016,7 +1146,7 @@ private:
     }
 
     WhisperModel& model_;
-    std::string language_;
+    std::string default_language_;
     std::thread worker_;
     std::queue<Task> transcription_queue_;
     std::mutex queue_mutex_;
@@ -1229,19 +1359,30 @@ public:
         int bits_per_sample = 16;
         std::string format = "pcm_s16le";
         int frame_ms = Constants::MIN_AUDIO_LENGTH_MS;
-        size_t target_frame_samples = Constants::MIN_AUDIO_SAMPLES;
+        size_t target_frame_samples = Constants::FRAMES_PER_BUFFER;
         std::vector<int16_t> pending_samples;
+        EnergyVadProcessor vad;
         bool started = false;
         bool include_timestamps = false;
     };
 
-    using AudioCallback = std::function<void(const std::vector<int16_t>&, const std::string& session_id)>;
+    using AudioCallback = std::function<void(const std::vector<int16_t>&,
+                                             const std::string& session_id,
+                                             int energy_threshold,
+                                             const std::string& language)>;
 
     WebSocketPcmServer(std::string bind_address,
                        int port,
                        bool send_transcripts,
                        int idle_timeout_seconds,
                        bool include_transcript_timestamps,
+                       std::string default_language,
+                       int energy_threshold,
+                       bool adaptive_energy,
+                       double vad_pre_roll_seconds,
+                       int adaptive_hangover_chunks,
+                       bool verbose,
+                       double phrase_timeout_seconds,
                        double record_timeout_seconds = 2.0)
         : bind_address_(std::move(bind_address)),
           port_(port),
@@ -1250,6 +1391,13 @@ public:
                                     ? idle_timeout_seconds
                                     : Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT),
           include_transcript_timestamps_(include_transcript_timestamps),
+          default_language_(std::move(default_language)),
+          initial_energy_threshold_(std::max(energy_threshold, Constants::ADAPTIVE_THRESHOLD_MIN)),
+          adaptive_energy_enabled_(adaptive_energy),
+          vad_pre_roll_seconds_(vad_pre_roll_seconds),
+          adaptive_hangover_chunks_(std::max(1, adaptive_hangover_chunks)),
+          verbose_(verbose),
+          phrase_timeout_seconds_(phrase_timeout_seconds > 0.0 ? phrase_timeout_seconds : 3.0),
           record_timeout_seconds_(record_timeout_seconds > 0.0 ? record_timeout_seconds : 2.0) {
     }
 
@@ -1586,6 +1734,7 @@ private:
         if (json_message_type_is(msg, "start")) {
             session->ctx.started = true;
             session->ctx.session_id = extract_json_string_field(msg, "sessionId");
+            session->ctx.language = default_language_.empty() ? "en" : default_language_;
             const std::string language = extract_json_string_field(msg, "language");
             if (!language.empty()) {
                 session->ctx.language = language;
@@ -1621,17 +1770,19 @@ private:
                     "\"}");
                 return;
             }
-            // Use the server's record_timeout (e.g. 2 s) rather than the client's
-            // frameMs (100 ms) as the Whisper chunk boundary.  Whisper needs
-            // hundreds of milliseconds to seconds of audio to detect speech;
-            // 100 ms frames produce [BLANK_AUDIO] on every call.
-            session->ctx.target_frame_samples = static_cast<size_t>(
-                std::ceil(static_cast<double>(Constants::SAMPLE_RATE) *
-                          record_timeout_seconds_));
-            session->ctx.target_frame_samples = std::max(session->ctx.target_frame_samples,
-                                                         Constants::MIN_AUDIO_SAMPLES);
+            // VAD runs on small fixed frames; record_timeout remains the maximum
+            // emitted speech chunk duration inside the shared energy VAD.
+            session->ctx.target_frame_samples = Constants::FRAMES_PER_BUFFER;
             session->ctx.pending_samples.clear();
             session->ctx.pending_samples.reserve(session->ctx.target_frame_samples * 2);
+            session->ctx.vad.setEnergyThreshold(initial_energy_threshold_);
+            session->ctx.vad.setVadPreRollSeconds(vad_pre_roll_seconds_);
+            session->ctx.vad.setAdaptiveHangoverChunks(adaptive_hangover_chunks_);
+            session->ctx.vad.setVerbose(verbose_);
+            session->ctx.vad.setAdaptiveEnergyEnabled(adaptive_energy_enabled_);
+            session->ctx.vad.configure(Constants::SAMPLE_RATE,
+                                       record_timeout_seconds_,
+                                       phrase_timeout_seconds_);
             register_session(session->ctx.session_id, session);
             session->send_text(
                 std::string("{\"type\":\"ack\",\"sessionId\":\"") +
@@ -1691,14 +1842,21 @@ private:
         session->ctx.pending_samples.insert(session->ctx.pending_samples.end(),
                                             normalized.begin(),
                                             normalized.end());
-        const size_t target = std::max(session->ctx.target_frame_samples, Constants::MIN_AUDIO_SAMPLES);
+        const size_t target = session->ctx.target_frame_samples;
         size_t consumed = 0;
         while ((session->ctx.pending_samples.size() - consumed) >= target) {
             std::vector<int16_t> chunk(target);
             std::memcpy(chunk.data(),
                         session->ctx.pending_samples.data() + consumed,
                         target * sizeof(int16_t));
-            callback_(chunk, session->ctx.session_id);
+            session->ctx.vad.processChunk(
+                chunk,
+                [&](const std::vector<int16_t>& speech_chunk, int energy_threshold) {
+                    callback_(speech_chunk,
+                              session->ctx.session_id,
+                              energy_threshold,
+                              session->ctx.language);
+                });
             consumed += target;
         }
         if (consumed > 0) {
@@ -1709,16 +1867,22 @@ private:
     }
 
     void flush_pending_audio(ClientContext& ctx) {
-        if (!callback_ || ctx.pending_samples.empty()) {
+        if (!callback_) {
             return;
         }
-        std::vector<int16_t> chunk = std::move(ctx.pending_samples);
-        const size_t min_samples = std::max(ctx.target_frame_samples, Constants::MIN_AUDIO_SAMPLES);
-        if (chunk.size() < min_samples) {
-            chunk.resize(min_samples, 0);
+        if (!ctx.pending_samples.empty()) {
+            std::vector<int16_t> chunk = std::move(ctx.pending_samples);
+            ctx.pending_samples.clear();
+            ctx.vad.processChunk(
+                chunk,
+                [&](const std::vector<int16_t>& speech_chunk, int energy_threshold) {
+                    callback_(speech_chunk, ctx.session_id, energy_threshold, ctx.language);
+                });
         }
-        callback_(chunk, ctx.session_id);
-        ctx.pending_samples.clear();
+        ctx.vad.flush(
+            [&](const std::vector<int16_t>& speech_chunk, int energy_threshold) {
+                callback_(speech_chunk, ctx.session_id, energy_threshold, ctx.language);
+            });
     }
 
     void server_loop() {
@@ -1801,6 +1965,13 @@ private:
     std::vector<std::shared_ptr<Session>> live_sessions_;
     std::mutex session_map_mutex_;
     std::map<std::string, std::weak_ptr<Session>> sessions_;
+    std::string default_language_ = "en";
+    int initial_energy_threshold_ = Constants::DEFAULT_ENERGY_THRESHOLD;
+    bool adaptive_energy_enabled_ = false;
+    double vad_pre_roll_seconds_ = Constants::VAD_PRE_ROLL_SECONDS;
+    int adaptive_hangover_chunks_ = Constants::ADAPTIVE_HANGOVER_CHUNKS;
+    bool verbose_ = false;
+    double phrase_timeout_seconds_ = 3.0;
 };
 
 Args parse_arguments(int argc, char* argv[]) {
@@ -2532,6 +2703,8 @@ struct QueuedAudioChunk {
     std::vector<int16_t> samples;
     std::string session_id;
     std::chrono::system_clock::time_point submitted;
+    int energy_threshold = Constants::DEFAULT_ENERGY_THRESHOLD;
+    std::string language;
 };
 
 int main(int argc, char* argv[]) {
@@ -2637,7 +2810,12 @@ int main(int argc, char* argv[]) {
                     // Back-pressure policy: bounded memory, drop oldest pending audio.
                     data_queue.pop();
                 }
-                data_queue.push(QueuedAudioChunk{audio_chunk, "", std::chrono::system_clock::now()});
+                data_queue.push(QueuedAudioChunk{
+                    audio_chunk,
+                    "",
+                    std::chrono::system_clock::now(),
+                    recorder ? recorder->getEnergyThreshold() : Constants::DEFAULT_ENERGY_THRESHOLD,
+                    args.language});
                 queue_cv.notify_one();
             };
 
@@ -2653,21 +2831,38 @@ int main(int argc, char* argv[]) {
                 std::cout << "Model loaded and recording started.\n" << std::endl;
             }
         } else if (args.input_source == "websocket") {
+            const int websocket_initial_threshold = std::max(
+                args.energy_threshold > 0 ? args.energy_threshold : Constants::DEFAULT_ENERGY_THRESHOLD,
+                Constants::ADAPTIVE_THRESHOLD_MIN);
             websocket_server = std::make_unique<WebSocketPcmServer>(
                 args.websocket_bind,
                 args.websocket_port,
                 args.websocket_send_transcripts,
                 args.websocket_idle_timeout,
                 args.timestamp,
+                args.language,
+                websocket_initial_threshold,
+                args.adaptive_energy,
+                args.vad_pre_roll,
+                args.adaptive_hangover_chunks,
+                args.verbose,
+                args.phrase_timeout,
                 args.record_timeout);
 
             auto websocket_callback = [&](const std::vector<int16_t>& audio_chunk,
-                                          const std::string& session_id) {
+                                          const std::string& session_id,
+                                          int energy_threshold,
+                                          const std::string& language) {
                 std::lock_guard<std::mutex> lock(queue_mutex);
                 if (data_queue.size() >= Constants::MAX_QUEUED_AUDIO_CHUNKS) {
                     data_queue.pop();
                 }
-                data_queue.push(QueuedAudioChunk{audio_chunk, session_id, std::chrono::system_clock::now()});
+                data_queue.push(QueuedAudioChunk{
+                    audio_chunk,
+                    session_id,
+                    std::chrono::system_clock::now(),
+                    std::max(energy_threshold, Constants::ADAPTIVE_THRESHOLD_MIN),
+                    language.empty() ? args.language : language});
                 queue_cv.notify_one();
             };
 
@@ -2676,6 +2871,13 @@ int main(int argc, char* argv[]) {
                 PortAudioRuntime::terminate_if_initialized();
                 return 1;
             }
+            std::cout << "Using WebSocket energy threshold: " << websocket_initial_threshold << std::endl;
+            if (args.adaptive_energy) {
+                std::cout << "Adaptive energy threshold enabled (EMA + hangover="
+                          << args.adaptive_hangover_chunks << " chunks)." << std::endl;
+                std::cout << "Adaptive silence fraction: " << args.adaptive_silence_fraction << std::endl;
+            }
+            std::cout << "VAD pre-roll seconds: " << args.vad_pre_roll << std::endl;
             std::cout << "Model loaded and WebSocket server started.\n" << std::endl;
         } else {
             throw AudioException("Unsupported input_source.");
@@ -2760,10 +2962,11 @@ int main(int argc, char* argv[]) {
             }
 
             if (has_chunk && !queued_chunk.samples.empty()) {
-                const int current_energy_threshold = recorder
-                    ? recorder->getEnergyThreshold()
-                    : std::max(args.energy_threshold > 0 ? args.energy_threshold : 1000,
-                               Constants::ADAPTIVE_THRESHOLD_MIN);
+                const int current_energy_threshold = std::max(
+                    queued_chunk.energy_threshold > 0
+                        ? queued_chunk.energy_threshold
+                        : (args.energy_threshold > 0 ? args.energy_threshold : Constants::DEFAULT_ENERGY_THRESHOLD),
+                    Constants::ADAPTIVE_THRESHOLD_MIN);
                 const long double silent_fraction = args.adaptive_energy
                                                         ? static_cast<long double>(args.adaptive_silence_fraction)
                                                         : 0.5L;
@@ -2799,7 +3002,7 @@ int main(int argc, char* argv[]) {
                     audio_float[i] = static_cast<float>(queued_chunk.samples[i]) / 32768.0f;
                 }
                 Pending p;
-                p.fut = transcriber.transcribe_async(std::move(audio_float));
+                p.fut = transcriber.transcribe_async(std::move(audio_float), queued_chunk.language);
                 p.submitted = queued_chunk.submitted;
                 p.starts_new_phrase = phrase_complete;
                 p.session_id = queued_chunk.session_id;
