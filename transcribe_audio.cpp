@@ -272,6 +272,134 @@ struct Args {
     int websocket_idle_timeout = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
 };
 
+struct DateTimeParts {
+    int year = 0;
+    int month = 0;
+    int day = 0;
+    int hour = 0;
+    int minute = 0;
+    int second = 0;
+};
+
+bool parse_n_digits(const std::string& s, size_t pos, size_t count, int& out) {
+    if (pos + count > s.size()) {
+        return false;
+    }
+
+    int value = 0;
+    for (size_t i = 0; i < count; ++i) {
+        const unsigned char c = static_cast<unsigned char>(s[pos + i]);
+        if (!std::isdigit(c)) {
+            return false;
+        }
+        value = value * 10 + static_cast<int>(c - '0');
+    }
+    out = value;
+    return true;
+}
+
+bool is_leap_year(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+int days_in_month(int year, int month) {
+    static constexpr int kDaysByMonth[] = {
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (month == 2 && is_leap_year(year)) {
+        return 29;
+    }
+    if (month < 1 || month > 12) {
+        return 0;
+    }
+    return kDaysByMonth[month - 1];
+}
+
+bool parse_datetime_parts(const std::string& s, DateTimeParts& out) {
+    if (s.size() != 19 ||
+        s[4] != '-' ||
+        s[7] != '-' ||
+        s[10] != ' ' ||
+        s[13] != ':' ||
+        s[16] != ':') {
+        return false;
+    }
+
+    DateTimeParts parsed{};
+    if (!parse_n_digits(s, 0, 4, parsed.year) ||
+        !parse_n_digits(s, 5, 2, parsed.month) ||
+        !parse_n_digits(s, 8, 2, parsed.day) ||
+        !parse_n_digits(s, 11, 2, parsed.hour) ||
+        !parse_n_digits(s, 14, 2, parsed.minute) ||
+        !parse_n_digits(s, 17, 2, parsed.second)) {
+        return false;
+    }
+
+    const int month_days = days_in_month(parsed.year, parsed.month);
+    if (parsed.year < 1 ||
+        month_days == 0 ||
+        parsed.day < 1 ||
+        parsed.day > month_days ||
+        parsed.hour > 23 ||
+        parsed.minute > 59 ||
+        parsed.second > 59) {
+        return false;
+    }
+
+    out = parsed;
+    return true;
+}
+
+// Days since 1970-01-01 for a Gregorian civil date. This avoids mktime so an
+// explicit --predefined_start_time is not changed by local timezone or DST rules.
+std::int64_t days_from_civil(int year, unsigned month, unsigned day) {
+    year -= month <= 2;
+    const int era = (year >= 0 ? year : year - 399) / 400;
+    const unsigned yoe = static_cast<unsigned>(year - era * 400);
+    const unsigned doy =
+        (153 * (month + (month > 2 ? -3 : 9)) + 2) / 5 + day - 1;
+    const unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return static_cast<std::int64_t>(era) * 146097 +
+           static_cast<std::int64_t>(doe) -
+           719468;
+}
+
+bool parse_predefined_datetime(
+    const std::string& s,
+    std::chrono::system_clock::time_point& out) {
+    DateTimeParts parts{};
+    if (!parse_datetime_parts(s, parts)) {
+        return false;
+    }
+
+    const std::int64_t days = days_from_civil(
+        parts.year,
+        static_cast<unsigned>(parts.month),
+        static_cast<unsigned>(parts.day));
+    const std::int64_t total_seconds =
+        days * 86400 +
+        static_cast<std::int64_t>(parts.hour) * 3600 +
+        static_cast<std::int64_t>(parts.minute) * 60 +
+        static_cast<std::int64_t>(parts.second);
+
+    out = std::chrono::system_clock::time_point{
+        std::chrono::seconds(total_seconds)};
+    return true;
+}
+
+std::string format_datetime_no_conversion(
+    const std::chrono::time_point<std::chrono::system_clock>& tp) {
+    const std::time_t tt = std::chrono::system_clock::to_time_t(tp);
+    std::tm tm{};
+#if defined(_WIN32)
+    gmtime_s(&tm, &tt);
+#else
+    gmtime_r(&tt, &tm);
+#endif
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "[%Y-%m-%d %H:%M:%S]");
+    return oss.str();
+}
+
 class EnergyVadProcessor {
 public:
     using OutputCallback = std::function<void(const std::vector<int16_t>&, int energy_threshold)>;
@@ -2103,20 +2231,12 @@ Args parse_arguments(int argc, char* argv[]) {
                 std::exit(1);
             }
         } else if (arg == "--predefined_start_time" && i + 1 < argc) {
-            std::tm tm{};
-            std::istringstream ss(argv[++i]);
-            ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-            if (ss.fail()) {
+            const std::string value = argv[++i];
+            if (!parse_predefined_datetime(value, args.predefined_start_time)) {
                 std::cerr << "Error: Invalid --predefined_start_time format. Expected \"YYYY-mm-dd HH:MM:SS\"."
                           << std::endl;
                 std::exit(1);
             }
-            const std::time_t tt = std::mktime(&tm);
-            if (tt == static_cast<std::time_t>(-1)) {
-                std::cerr << "Error: Failed to convert --predefined_start_time to time." << std::endl;
-                std::exit(1);
-            }
-            args.predefined_start_time = std::chrono::system_clock::from_time_t(tt);
             args.has_predefined_start_time = true;
         } else if (arg == "--help" || arg == "-h") {
             std::cout
@@ -2754,7 +2874,10 @@ int main(int argc, char* argv[]) {
                 const auto end_time = transcript_start + end_offset;
                 std::string text = trim(audio_model.transcribe(chunk, args.language));
                 if (!text.empty()) {
-                    std::cout << format_datetime(end_time) << " " << text << std::endl;
+                    const std::string timestamp_text = args.has_predefined_start_time
+                        ? format_datetime_no_conversion(end_time)
+                        : format_datetime(end_time);
+                    std::cout << timestamp_text << " " << text << std::endl;
                     std::cout.flush();
                 }
                 offset = end;
@@ -2926,10 +3049,13 @@ int main(int argc, char* argv[]) {
                     if (!text.empty() && !is_whisper_noise_token(text)) {
                         const auto transcript_timestamp =
                             live_transcript_timestamp_for(it->submitted);
+                        const std::string timestamp_text =
+                            args.has_predefined_start_time
+                                ? format_datetime_no_conversion(transcript_timestamp)
+                                : format_datetime(transcript_timestamp);
                         if (args.pipe) {
                             if (args.timestamp) {
-                                std::cout << format_datetime(transcript_timestamp)
-                                          << " " << text << std::endl;
+                                std::cout << timestamp_text << " " << text << std::endl;
                             } else {
                                 std::cout << text << std::endl;
                             }
@@ -2952,7 +3078,7 @@ int main(int argc, char* argv[]) {
                             websocket_server->send_transcript_to_session(
                                 it->session_id,
                                 text,
-                                std::optional<std::string>(format_datetime(transcript_timestamp)));
+                                std::optional<std::string>(timestamp_text));
                         }
                     }
                     it = pending.erase(it);
