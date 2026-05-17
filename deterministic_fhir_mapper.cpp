@@ -503,6 +503,8 @@ struct MapperResult {
 struct MapperContext {
     std::vector<MapperIssue> globalIssues;
     std::unordered_map<std::string, Coding> terminologyOverrides;
+    std::unordered_map<std::string, json> medicationRequestsByReference;
+    std::set<std::string> medicationRequestIdsWithAdministration;
     std::string profileUrl = "http://example.org/fhir/StructureDefinition/si-listener-bundle";
     std::string deviceName = "SI-Listener";
     std::string modelName = "MedGemma";
@@ -519,6 +521,13 @@ std::string ltrim_copy(std::string s) {
     const auto first = s.find_first_not_of(" \t\r\n");
     if (first == std::string::npos) return "";
     return s.substr(first);
+}
+
+std::string trim_copy(std::string s) {
+    const auto first = s.find_first_not_of(" \t\r\n");
+    if (first == std::string::npos) return "";
+    const auto last = s.find_last_not_of(" \t\r\n");
+    return s.substr(first, last - first + 1);
 }
 
 std::string strip_json_like_comments(const std::string& input) {
@@ -557,6 +566,36 @@ bool isNonEmptyString(const json& j, const char* key) {
 std::string getString(const json& j, const char* key, const std::string& fallback = "") {
     if (isNonEmptyString(j, key)) return j[key].get<std::string>();
     return fallback;
+}
+
+std::string getLooseString(const json& j, const std::string& key,
+                           const std::string& fallback = "") {
+    if (!j.is_object()) return fallback;
+    if (j.contains(key) && j[key].is_string() && !j[key].get<std::string>().empty())
+        return j[key].get<std::string>();
+    for (auto it = j.begin(); it != j.end(); ++it) {
+        if (trim_copy(it.key()) == key && it.value().is_string() &&
+            !it.value().get<std::string>().empty()) {
+            return it.value().get<std::string>();
+        }
+    }
+    return fallback;
+}
+
+std::string referenceId(const std::string& reference) {
+    if (reference.empty()) return "";
+    const auto hash_pos = reference.find('#');
+    std::string ref = hash_pos == std::string::npos ? reference : reference.substr(0, hash_pos);
+    const auto slash_pos = ref.find_last_of('/');
+    if (slash_pos != std::string::npos && slash_pos + 1 < ref.size()) {
+        return ref.substr(slash_pos + 1);
+    }
+    return ref;
+}
+
+bool looksSnomedCode(const std::string& code) {
+    return !code.empty() && std::all_of(code.begin(), code.end(),
+        [](unsigned char c) { return std::isdigit(c); });
 }
 
 bool looksUnknown(const std::string& s) {
@@ -646,37 +685,134 @@ void normalizeQuantity(json& q) {
     // Normalize common colloquial units into UCUM-coded representation.
     std::string unit = getString(q, "unit");
     std::string code = getString(q, "code");
-    if (unit == "/min" || unit == "per minute" || unit == "beats/min" || unit == "bpm") {
+    const std::string unit_l = lower(unit);
+    const std::string code_l = lower(code);
+    if (unit_l == "/min" || unit_l == "per minute" || unit_l == "beats/min" || unit_l == "bpm") {
         q["unit"] = "beats/minute"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "/min"; return;
     }
-    if (unit == "mm Hg" || unit == "mmHg" || code == "mm Hg" || code == "mmHg" || code == "mm[Hg]") {
+    if (unit_l == "mm hg" || unit_l == "mmhg" ||
+        code_l == "mm hg" || code_l == "mmhg" || code_l == "mm[hg]" || code_l == "/mmhg") {
         q["unit"] = "mmHg"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "mm[Hg]"; return;
     }
     if (unit == "%" || code == "%") {
         q["unit"] = "%"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "%"; return;
     }
-    if (unit == "mmol/L" || code == "mmol/L") {
+    if (unit_l == "mmol/l" || code_l == "mmol/l") {
         q["unit"] = "mmol/L"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "mmol/L"; return;
     }
-    if (unit == "mg/dL" || code == "mg/dL") {
+    if (unit_l == "mg/dl" || code_l == "mg/dl") {
         q["unit"] = "mg/dL"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "mg/dL"; return;
     }
-    if (unit == "°C" || unit == "degC" || code == "Cel") {
+    if (unit_l == "mg" || code_l == "mg" || code_l == "300 mg" || code_l == "100 mg") {
+        q["unit"] = "mg"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "mg"; return;
+    }
+    if (unit_l == "ml" || unit_l == "cc" || code_l == "ml" || code_l == "cc" ||
+        code_l == "10 cc") {
+        q["unit"] = "mL"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "mL"; return;
+    }
+    if (unit_l == "puff" || code_l == "puff" || code_l == "2 puff") {
+        q["unit"] = "puff"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "{puff}"; return;
+    }
+    if (unit_l == "°c" || unit_l == "degc" || code_l == "cel") {
         q["unit"] = "°C"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "Cel"; return;
     }
-    if (unit == "°F" || unit == "degF") {
+    if (unit_l == "°f" || unit_l == "degf") {
         q["unit"] = "°F"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "[degF]"; return;
     }
-    if (unit == "kg" || code == "kg") {
+    if (unit_l == "kg" || code_l == "kg") {
         q["unit"] = "kg"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "kg"; return;
     }
-    if (unit == "cm" || code == "cm") {
+    if (unit_l == "cm" || code_l == "cm") {
         q["unit"] = "cm"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "cm"; return;
+    }
+    if (unit == "µg" || code == "µg" || unit_l == "mcg" || code_l == "mcg" ||
+        unit_l == "ug" || code_l == "ug") {
+        q["unit"] = "microgram"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "ug"; return;
+    }
+    if (unit_l == "u" || code_l == "u" || unit_l == "unit" || unit_l == "units") {
+        q["unit"] = "U"; q["system"] = "http://unitsofmeasure.org"; q["code"] = "U"; return;
     }
 }
 
 void normalizeQuantityIfPresent(json& resource) {
     if (resource.contains("valueQuantity")) normalizeQuantity(resource["valueQuantity"]);
+}
+
+void normalizeObservationComponent(json& component, MapperContext& ctx,
+                                   std::vector<MapperIssue>& issues, const json& resource) {
+    if (!component.is_object()) return;
+    if (component.contains("valueQuantity")) normalizeQuantity(component["valueQuantity"]);
+
+    if (!component.contains("code")) return;
+    component["code"] = ensureCodeableConcept(component["code"]);
+
+    std::string code;
+    std::string display;
+    if (auto coding = firstCoding(component["code"]); coding.has_value()) {
+        code = coding->code;
+        display = lower(coding->display);
+    }
+    const std::string unit = lower(getQuantityUnit(component));
+
+    if (unit == "%" && (display.find("spo2") != std::string::npos ||
+                         display.find("oxygen") != std::string::npos ||
+                         display.find("saturation") != std::string::npos ||
+                         code == "9279-1")) {
+        if (code != "59408-5") {
+            component["code"] = makeCodeableConcept("http://loinc.org", "59408-5",
+                "Oxygen saturation in Arterial blood by Pulse oximetry");
+            addIssue(issues, "warning", "observation.component.code.repaired",
+                     "Repaired oxygen saturation component coding.", resource);
+        }
+        return;
+    }
+
+    if (unit.find("mm") != std::string::npos &&
+        (display.find("systolic") != std::string::npos || code == "11519-6")) {
+        if (code != "8480-6") {
+            component["code"] = makeCodeableConcept("http://loinc.org", "8480-6",
+                                                    "Systolic blood pressure");
+            addIssue(issues, "warning", "observation.component.code.repaired",
+                     "Repaired systolic blood pressure component coding.", resource);
+        }
+        return;
+    }
+
+    if (unit.find("mm") != std::string::npos && display.find("diastolic") != std::string::npos) {
+        if (code != "8462-4") {
+            component["code"] = makeCodeableConcept("http://loinc.org", "8462-4",
+                                                    "Diastolic blood pressure");
+            addIssue(issues, "warning", "observation.component.code.repaired",
+                     "Repaired diastolic blood pressure component coding.", resource);
+        }
+        return;
+    }
+
+    if (unit.find("min") != std::string::npos &&
+        (display.find("heart") != std::string::npos || display.find("pulse") != std::string::npos ||
+         code.empty())) {
+        if (code != "8867-4") {
+            component["code"] = makeCodeableConcept("http://loinc.org", "8867-4", "Heart rate");
+            addIssue(issues, "warning", "observation.component.code.repaired",
+                     "Repaired heart rate component coding.", resource);
+        }
+        return;
+    }
+
+    if (!code.empty()) {
+        auto it = ctx.terminologyOverrides.find(code);
+        if (it != ctx.terminologyOverrides.end()) {
+            component["code"] = makeCodeableConcept(it->second.system, it->second.code, it->second.display);
+        }
+    }
+}
+
+void normalizeObservationComponents(json& resource, MapperContext& ctx,
+                                    std::vector<MapperIssue>& issues) {
+    if (!resource.contains("component") || !resource["component"].is_array()) return;
+    for (auto& component : resource["component"]) {
+        normalizeObservationComponent(component, ctx, issues, resource);
+    }
 }
 
 void normalizePatient(json& resource, std::vector<MapperIssue>& issues) {
@@ -695,6 +831,8 @@ void applyTerminologyOverride(json& cc, const Coding& coding,
 
 // Observation Normalization (with live LOINC lookup)
 void normalizeObservationCode(json& resource, MapperContext& ctx, std::vector<MapperIssue>& issues) {
+    normalizeObservationComponents(resource, ctx, issues);
+
     if (!resource.contains("code")) {
         addIssue(issues, "error", "observation.code.missing", "Observation is missing code.", resource);
         return;
@@ -841,8 +979,212 @@ void enrichMedicationCoding(json& medCC, MapperContext& ctx, std::vector<MapperI
                  + terminologySourceSuffix(*resolved) + ".",
                  resource);
     } else {
-        addIssue(issues, "warning", "rxnorm.lookup.failed",
-                 "Could not resolve RxNorm code for drug '" + drug_name + "'.", resource);
+        if (ctx.terminology->networkEnabled()) {
+            addIssue(issues, "warning", "rxnorm.lookup.failed",
+                     "Could not resolve RxNorm code for drug '" + drug_name + "'.", resource);
+        } else {
+            addIssue(issues, "info", "rxnorm.lookup.skipped",
+                     "Skipped RxNorm lookup for drug '" + drug_name + "' in offline mode.", resource);
+        }
+    }
+}
+
+json medicationCodeableConceptFromRequest(const json& request) {
+    if (request.contains("medicationCodeableConcept"))
+        return ensureCodeableConcept(request["medicationCodeableConcept"]);
+    if (request.contains("code"))
+        return ensureCodeableConcept(request["code"]);
+    return json::object();
+}
+
+std::string medicationInstructionText(const json& request) {
+    if (!request.contains("dosageInstruction") || !request["dosageInstruction"].is_array() ||
+        request["dosageInstruction"].empty() || !request["dosageInstruction"][0].is_object()) {
+        return "";
+    }
+    return getLooseString(request["dosageInstruction"][0], "text");
+}
+
+std::string medicationNameFromReference(const std::string& reference) {
+    std::string name = referenceId(reference);
+    const std::string prefix = "MedicationRequest-";
+    if (name.rfind(prefix, 0) == 0) name = name.substr(prefix.size());
+    for (char& c : name) {
+        if (c == '-' || c == '_') c = ' ';
+    }
+    std::istringstream tokens(name);
+    std::string token;
+    std::string drug_only;
+    while (tokens >> token) {
+        const bool contains_digit = std::any_of(token.begin(), token.end(),
+            [](unsigned char c) { return std::isdigit(c); });
+        if (contains_digit) continue;
+        if (!drug_only.empty()) drug_only.push_back(' ');
+        drug_only += token;
+    }
+    if (!drug_only.empty()) name = drug_only;
+    name = trim_copy(name);
+    if (!name.empty()) name[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(name[0])));
+    return name;
+}
+
+void normalizeMedicationAdministrationDosage(json& resource, std::vector<MapperIssue>& issues) {
+    if (!resource.contains("dosage") || !resource["dosage"].is_object()) return;
+    auto& dosage = resource["dosage"];
+
+    if (!dosage.contains("dose") && dosage.contains("doseAndRate") &&
+        dosage["doseAndRate"].is_object() &&
+        dosage["doseAndRate"].contains("doseQuantity") &&
+        dosage["doseAndRate"]["doseQuantity"].is_object()) {
+        dosage["dose"] = dosage["doseAndRate"]["doseQuantity"];
+        dosage.erase("doseAndRate");
+        addIssue(issues, "warning", "medadmin.dosage.dose.repaired",
+                 "Moved MedicationAdministration dosage.doseAndRate.doseQuantity to dosage.dose.", resource);
+    } else if (!dosage.contains("dose") && dosage.contains("doseAndRate") &&
+               dosage["doseAndRate"].is_array() && !dosage["doseAndRate"].empty() &&
+               dosage["doseAndRate"][0].is_object() &&
+               dosage["doseAndRate"][0].contains("doseQuantity") &&
+               dosage["doseAndRate"][0]["doseQuantity"].is_object()) {
+        dosage["dose"] = dosage["doseAndRate"][0]["doseQuantity"];
+        dosage.erase("doseAndRate");
+        addIssue(issues, "warning", "medadmin.dosage.dose.repaired",
+                 "Moved MedicationAdministration dosage.doseAndRate[0].doseQuantity to dosage.dose.", resource);
+    }
+
+    if (dosage.contains("dose") && dosage["dose"].is_object()) {
+        auto& dose = dosage["dose"];
+        const std::string unit = lower(getString(dose, "unit"));
+        const std::string code = lower(getString(dose, "code"));
+        if (unit == "000 units" && dose.contains("value") && dose["value"].is_number()) {
+            dose["value"] = dose["value"].get<double>() * 1000.0;
+            dose["unit"] = "U";
+            dose["system"] = "http://unitsofmeasure.org";
+            dose["code"] = "U";
+            addIssue(issues, "warning", "medadmin.dose.units.repaired",
+                     "Repaired thousands-unit medication dose to UCUM U.", resource);
+        } else {
+            normalizeQuantity(dose);
+            if (code == "/u") {
+                dose["unit"] = "U";
+                dose["system"] = "http://unitsofmeasure.org";
+                dose["code"] = "U";
+            }
+        }
+    }
+
+    if (dosage.contains("route") && dosage["route"].is_object() &&
+        dosage["route"].contains("coding") && dosage["route"]["coding"].is_array()) {
+        for (auto& coding : dosage["route"]["coding"]) {
+            if (!coding.is_object()) continue;
+            const std::string code = getString(coding, "code");
+            const std::string display = lower(getString(coding, "display"));
+            if (code == "SUN" && display.find("sublingual") != std::string::npos) {
+                coding["code"] = "SL";
+                addIssue(issues, "warning", "medadmin.route.repaired",
+                         "Repaired sublingual route code from SUN to SL.", resource);
+            } else if (code == "ORAL") {
+                coding["code"] = "PO";
+                coding["display"] = "Oral";
+                addIssue(issues, "warning", "medadmin.route.repaired",
+                         "Repaired oral route code from ORAL to PO.", resource);
+            } else if (code == "SUBLINGUAL") {
+                coding["code"] = "SL";
+                coding["display"] = "Sublingual";
+                addIssue(issues, "warning", "medadmin.route.repaired",
+                         "Repaired sublingual route code from SUBLINGUAL to SL.", resource);
+            }
+        }
+    }
+
+    if (dosage.contains("timing")) {
+        dosage.erase("timing");
+        addIssue(issues, "info", "medadmin.dosage.timing.removed",
+                 "Removed request-style dosage.timing from MedicationAdministration.", resource);
+    }
+}
+
+void normalizeMedicationAdministration(json& resource, MapperContext& ctx,
+                                       std::vector<MapperIssue>& issues) {
+    if (resource.contains("route") && resource["route"].is_object()) {
+        if (!resource.contains("dosage") || !resource["dosage"].is_object()) {
+            resource["dosage"] = json::object();
+        }
+        if (!resource["dosage"].contains("route")) {
+            resource["dosage"]["route"] = resource["route"];
+        }
+        resource.erase("route");
+        addIssue(issues, "warning", "medadmin.route.repaired",
+                 "Moved non-FHIR MedicationAdministration.route to dosage.route.", resource);
+    }
+
+    normalizeMedicationAdministrationDosage(resource, issues);
+
+    if (resource.contains("medicationCodeableConcept")) {
+        resource["medicationCodeableConcept"] =
+            ensureCodeableConcept(resource["medicationCodeableConcept"]);
+        enrichMedicationCoding(resource["medicationCodeableConcept"], ctx, issues, resource);
+        return;
+    }
+
+    if (resource.contains("medication")) {
+        json medCC = ensureCodeableConcept(resource["medication"]);
+        if (!medCC.empty()) {
+            if (!medCC.contains("text") && medCC.contains("coding") &&
+                medCC["coding"].is_array() && !medCC["coding"].empty()) {
+                medCC["text"] = getString(medCC["coding"][0], "display");
+            }
+            enrichMedicationCoding(medCC, ctx, issues, resource);
+            resource["medicationCodeableConcept"] = medCC;
+            resource.erase("medication");
+            addIssue(issues, "warning", "medadmin.medication.repaired",
+                     "Moved non-FHIR MedicationAdministration.medication to medicationCodeableConcept.", resource);
+            return;
+        }
+    }
+
+    const std::string reference =
+        resource.contains("medicationReference") && resource["medicationReference"].is_object()
+            ? getString(resource["medicationReference"], "reference")
+            : "";
+    if (reference.empty()) return;
+
+    const auto find_request = [&]() -> const json* {
+        auto it = ctx.medicationRequestsByReference.find(reference);
+        if (it != ctx.medicationRequestsByReference.end()) return &it->second;
+        const std::string id = referenceId(reference);
+        it = ctx.medicationRequestsByReference.find(id);
+        if (it != ctx.medicationRequestsByReference.end()) return &it->second;
+        it = ctx.medicationRequestsByReference.find("MedicationRequest/" + id);
+        if (it != ctx.medicationRequestsByReference.end()) return &it->second;
+        return nullptr;
+    };
+
+    if (const json* request = find_request()) {
+        json medCC = medicationCodeableConceptFromRequest(*request);
+        if (!medCC.empty()) {
+            enrichMedicationCoding(medCC, ctx, issues, resource);
+            resource["medicationCodeableConcept"] = medCC;
+            resource.erase("medicationReference");
+            addIssue(issues, "info", "medadmin.medication.reference.resolved",
+                     "Resolved MedicationAdministration medication from referenced MedicationRequest.", resource);
+
+            const std::string instruction = medicationInstructionText(*request);
+            if (!instruction.empty() && resource.contains("dosage") &&
+                resource["dosage"].is_object() && !resource["dosage"].contains("text")) {
+                resource["dosage"]["text"] = instruction;
+            }
+            return;
+        }
+    }
+
+    const std::string inferred = medicationNameFromReference(reference);
+    if (!inferred.empty()) {
+        json medCC{{"text", inferred}};
+        enrichMedicationCoding(medCC, ctx, issues, resource);
+        resource["medicationCodeableConcept"] = medCC;
+        resource.erase("medicationReference");
+        addIssue(issues, "warning", "medadmin.medication.inferred_from_reference",
+                 "Inferred MedicationAdministration medication text from medicationReference.", resource);
     }
 }
 
@@ -954,7 +1296,90 @@ void normalizeProcedure(json& resource, MapperContext& ctx, std::vector<MapperIs
                  "Procedure uses LOINC; consider SNOMED CT or a procedure coding system.", resource);
     }
 
+    if (coding->system == "http://snomed.info/sct" && !looksSnomedCode(coding->code)) {
+        addIssue(issues, "warning", "procedure.code.suspicious-system",
+                 "Procedure declares SNOMED CT but the code does not have a SNOMED CT shape.", resource);
+        return;
+    }
+
     // Validate SNOMED display text when a SNOMED code is present.
+    if (coding->system != "http://snomed.info/sct" || !ctx.terminology) return;
+    if (auto resolved = ctx.terminology->lookupSnomed(coding->code); resolved.has_value()) {
+        resource["code"]["coding"][0]["display"] = resolved->display;
+        addIssue(issues, "info", "snomed.display.resolved",
+                 "SNOMED CT display verified" + terminologySourceSuffix(*resolved) + ".",
+                 resource);
+    } else {
+        addIssue(issues, "warning", "snomed.code.unverified",
+                 "SNOMED CT code '" + coding->code + "' could not be verified.", resource);
+    }
+}
+
+void normalizeServiceRequest(json& resource, std::vector<MapperIssue>& issues) {
+    if (!resource.contains("code") && resource.contains("codeableConcept")) {
+        resource["code"] = ensureCodeableConcept(resource["codeableConcept"]);
+        resource.erase("codeableConcept");
+        addIssue(issues, "warning", "servicerequest.code.repaired",
+                 "Moved non-FHIR ServiceRequest.codeableConcept to ServiceRequest.code.", resource);
+    }
+
+    if (resource.contains("code")) {
+        resource["code"] = ensureCodeableConcept(resource["code"]);
+        if (!resource["code"].contains("text") && resource["code"].contains("coding") &&
+            resource["code"]["coding"].is_array() && !resource["code"]["coding"].empty()) {
+            resource["code"]["text"] = getString(resource["code"]["coding"][0], "display");
+        }
+    }
+
+    if (resource.contains("deliveredReference") && resource["deliveredReference"].is_object()) {
+        if (!resource.contains("locationReference")) {
+            resource["locationReference"] = json::array({resource["deliveredReference"]});
+        }
+        resource.erase("deliveredReference");
+        addIssue(issues, "warning", "servicerequest.location.repaired",
+                 "Moved non-FHIR ServiceRequest.deliveredReference to locationReference.", resource);
+    }
+}
+
+void normalizeLocation(json& resource, std::vector<MapperIssue>& issues) {
+    if (!resource.contains("position") || !resource["position"].is_object()) return;
+    auto& position = resource["position"];
+    bool repaired = false;
+
+    if (position.contains("latDecimal") && position["latDecimal"].is_number()) {
+        if (!position.contains("latitude")) position["latitude"] = position["latDecimal"];
+        position.erase("latDecimal");
+        repaired = true;
+    }
+    if (position.contains("longDecimal") && position["longDecimal"].is_number()) {
+        if (!position.contains("longitude")) position["longitude"] = position["longDecimal"];
+        position.erase("longDecimal");
+        repaired = true;
+    }
+
+    if (repaired) {
+        addIssue(issues, "warning", "location.position.repaired",
+                 "Moved non-FHIR Location position coordinates to latitude/longitude.", resource);
+    }
+}
+
+void normalizeCondition(json& resource, MapperContext& ctx, std::vector<MapperIssue>& issues) {
+    if (!resource.contains("code")) return;
+    resource["code"] = ensureCodeableConcept(resource["code"]);
+    if (!resource["code"].contains("text") && resource["code"].contains("coding") &&
+        resource["code"]["coding"].is_array() && !resource["code"]["coding"].empty()) {
+        resource["code"]["text"] = getString(resource["code"]["coding"][0], "display");
+    }
+
+    const auto coding = firstCoding(resource["code"]);
+    if (!coding.has_value()) return;
+
+    if (coding->system == "http://snomed.info/sct" && !looksSnomedCode(coding->code)) {
+        addIssue(issues, "warning", "condition.code.suspicious-system",
+                 "Condition declares SNOMED CT but the code does not have a SNOMED CT shape.", resource);
+        return;
+    }
+
     if (coding->system != "http://snomed.info/sct" || !ctx.terminology) return;
     if (auto resolved = ctx.terminology->lookupSnomed(coding->code); resolved.has_value()) {
         resource["code"]["coding"][0]["display"] = resolved->display;
@@ -1093,8 +1518,16 @@ MapperResult normalizeResource(json resource, MapperContext& ctx) {
         normalizeObservationCode(result.resource, ctx, result.issues);
     else if (type == "Procedure")
         normalizeProcedure(result.resource, ctx, result.issues);
+    else if (type == "MedicationAdministration")
+        normalizeMedicationAdministration(result.resource, ctx, result.issues);
     else if (type == "MedicationRequest")
         result.resource = convertMedicationRequestToAdministration(result.resource, ctx, result.issues);
+    else if (type == "ServiceRequest")
+        normalizeServiceRequest(result.resource, result.issues);
+    else if (type == "Location")
+        normalizeLocation(result.resource, result.issues);
+    else if (type == "Condition")
+        normalizeCondition(result.resource, ctx, result.issues);
 
     attachMetaProfile(result.resource, ctx);
 
@@ -1153,10 +1586,32 @@ json mapBundle(const json& input, const std::string& modelName, TerminologyClien
     int bpSeq = 1, provSeq = 1;
     std::vector<MapperIssue> allIssues;
 
-    // Pass 1: collect candidate BP observations for potential panel synthesis.
+    // Pass 1: index linked resources and collect candidate BP observations for panel synthesis.
     for (const auto& entry : input["entry"]) {
         if (!entry.contains("resource") || !entry["resource"].is_object()) continue;
         const auto& r = entry["resource"];
+        const std::string type = getString(r, "resourceType");
+        const std::string id = getString(r, "id");
+
+        if (type == "MedicationRequest") {
+            if (!id.empty()) {
+                ctx.medicationRequestsByReference[id] = r;
+                ctx.medicationRequestsByReference["MedicationRequest/" + id] = r;
+            }
+            if (entry.contains("fullUrl") && entry["fullUrl"].is_string()) {
+                ctx.medicationRequestsByReference[entry["fullUrl"].get<std::string>()] = r;
+            }
+        } else if (type == "MedicationAdministration" &&
+                   r.contains("medicationReference") && r["medicationReference"].is_object()) {
+            const std::string reference = getString(r["medicationReference"], "reference");
+            const std::string ref_id = referenceId(reference);
+            if (!reference.empty()) ctx.medicationRequestIdsWithAdministration.insert(reference);
+            if (!ref_id.empty()) {
+                ctx.medicationRequestIdsWithAdministration.insert(ref_id);
+                ctx.medicationRequestIdsWithAdministration.insert("MedicationRequest/" + ref_id);
+            }
+        }
+
         if (!isLikelyGenericBloodPressure(r)) continue;
         auto value = getQuantityValue(r);
         if (!value.has_value()) continue;
@@ -1176,8 +1631,18 @@ json mapBundle(const json& input, const std::string& modelName, TerminologyClien
 
         json resource = entry["resource"];
         const std::string id = getString(resource, "id");
+        const std::string type = getString(resource, "resourceType");
 
-        if (getString(resource, "resourceType") == "Observation" && isLikelyGenericBloodPressure(resource)) {
+        if (type == "MedicationRequest" && !id.empty() &&
+            (ctx.medicationRequestIdsWithAdministration.count(id) ||
+             ctx.medicationRequestIdsWithAdministration.count("MedicationRequest/" + id))) {
+            addIssue(allIssues, "info", "medication.request.merged",
+                     "Skipped MedicationRequest conversion because a linked MedicationAdministration was present.",
+                     resource);
+            continue;
+        }
+
+        if (type == "Observation" && isLikelyGenericBloodPressure(resource)) {
             const std::string key = bpGroupKey(resource);
             auto it = bpGroups.find(key);
             if (it != bpGroups.end() && it->second.size() == 2) {
