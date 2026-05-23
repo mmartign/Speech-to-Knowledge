@@ -259,6 +259,26 @@ std::string trim_whitespace(std::string text) {
     return text.substr(begin, end - begin + 1);
 }
 
+std::string ensure_trailing_slash(std::string url) {
+    if (!url.empty() && url.back() != '/') {
+        url.push_back('/');
+    }
+    return url;
+}
+
+std::vector<std::string> split_config_list(const std::string& value) {
+    std::vector<std::string> items;
+    std::stringstream ss(value);
+    std::string item;
+    while (std::getline(ss, item, ',')) {
+        item = trim_whitespace(item);
+        if (!item.empty()) {
+            items.push_back(item);
+        }
+    }
+    return items;
+}
+
 std::string strip_json_like_comments(const std::string& input) {
     // Supports model responses that include JSON with JS-style comments.
     std::string out;
@@ -618,7 +638,7 @@ void speak_text(const std::string& text) {
         return;
     }
 
-    trimmed = "SI-Assistant: " + trimmed;
+    trimmed = "SI-Listener Assistant: " + trimmed;
 
     const std::string escaped = escape_for_single_quotes(trimmed);
     const std::string cmd = TTS_COMMAND + " '" + escaped + "' >/dev/null 2>&1 &";
@@ -755,6 +775,7 @@ bool load_config(const std::string& path) {
     std::transform(TRIGGER_START.begin(), TRIGGER_START.end(), TRIGGER_START.begin(), ::tolower);
     std::transform(TRIGGER_STOP.begin(), TRIGGER_STOP.end(), TRIGGER_STOP.begin(), ::tolower);
     std::transform(TRIGGER_TEMP_CHECK.begin(), TRIGGER_TEMP_CHECK.end(), TRIGGER_TEMP_CHECK.begin(), ::tolower);
+    OPENWEBUI_URL = ensure_trailing_slash(OPENWEBUI_URL);
 
     if (KNOWLEDGE_BASE_IDS.empty()) {
         say_error(tr(MSG_KB_NOT_SET));
@@ -826,6 +847,75 @@ std::string extract_message_content(const json& response) {
     return {};
 }
 
+std::string extract_api_error(const json& response) {
+    if (!response.is_object()) {
+        return {};
+    }
+
+    const auto error_it = response.find("error");
+    if (error_it != response.end()) {
+        if (error_it->is_string()) {
+            return error_it->get<std::string>();
+        }
+        return error_it->dump();
+    }
+
+    const auto detail_it = response.find("detail");
+    if (detail_it != response.end()) {
+        if (detail_it->is_string()) {
+            return detail_it->get<std::string>();
+        }
+        return detail_it->dump();
+    }
+
+    const auto message_it = response.find("message");
+    if (message_it != response.end() && message_it->is_string()) {
+        return message_it->get<std::string>();
+    }
+
+    return {};
+}
+
+void attach_configured_knowledge_collections(json& body) {
+    const auto collection_ids = split_config_list(KNOWLEDGE_BASE_IDS);
+    if (collection_ids.empty()) {
+        return;
+    }
+
+    json files = json::array();
+    for (const auto& id : collection_ids) {
+        files.push_back({
+            {"type", "collection"},
+            {"id", id}
+        });
+    }
+    body["files"] = std::move(files);
+}
+
+json build_chat_body(const std::string& user_content, bool enable_websearch, bool use_knowledge = true) {
+    json body = {
+        {"model", MODEL_NAME},
+        {"messages", {
+            {{"role", "system"}, {"content", "You are a helpful assistant."}},
+            {{"role", "user"}, {"content", user_content}}
+        }},
+        {"stream", false},
+        {"chat_id", ""},
+        {"enable_websearch", enable_websearch}
+    };
+
+    if (use_knowledge) {
+        attach_configured_knowledge_collections(body);
+    }
+    return body;
+}
+
+void initialize_openai_client() {
+    std::call_once(openai_init_flag, [] {
+        openai::start(API_KEY, "", true, OPENWEBUI_URL);
+    });
+}
+
 // AI analysis with fresh context for each request
 void analyze_text(const std::string& text) {
     AnalysisSession session(analysis_mutex, active_analyses);
@@ -852,26 +942,14 @@ void analyze_text(const std::string& text) {
     std::string response_string;
 
     try {
-        // Initialize SDK per process invocation; repeated calls are idempotent for this wrapper.
-        openai::start({
-            API_KEY
-        });
+        initialize_openai_client();
 
-        json body = {
-            {"model", MODEL_NAME},
-            {"messages", {
-                {{"role", "system"}, {"content", "You are a helpful assistant."}},
-                {{"role", "user"}, {"content", PROMPT + "\n" + text}}
-            }},
-            {"stream", false},
-            {"enable_websearch", true}
-        };
-
-        if (!KNOWLEDGE_BASE_IDS.empty()) {
-            body["knowledge_base_ids"] = json::array({KNOWLEDGE_BASE_IDS});
-        }
-
+        json body = build_chat_body(PROMPT + "\n" + text, true);
         auto chat = openai::chat().create(body);
+        const std::string api_error = extract_api_error(chat);
+        if (!api_error.empty()) {
+            throw std::runtime_error("OpenWebUI API error: " + api_error);
+        }
         // Strip model-internal tags, then optionally run deterministic FHIR post-processing.
         response_string = strip_internal_reasoning_tags(extract_message_content(chat));
         if (check_fhir) {
@@ -894,17 +972,17 @@ void analyze_text(const std::string& text) {
     if (!response_string.empty()) {
         try {
             // Follow-up summary call keeps spoken output concise.
-            json summary_body = {
-                {"model", MODEL_NAME},
-                {"messages", {
-                    {{"role", "system"}, {"content", "You are a helpful assistant."}},
-                    {{"role", "user"}, {"content", "Provide only a concise summary (max 3 short sentences) of the following text. Do not include internal reasoning, tags, or analysis steps.\n" + response_string + "\n\n"}}
-                }},
-                {"stream", false},
-                {"enable_websearch", false}
-            };
+            json summary_body = build_chat_body(
+                "Provide only a concise summary (max 3 short sentences) of the following text. Do not include internal reasoning, tags, or analysis steps.\n" +
+                    response_string + "\n\n",
+                false,
+                false);
 
             auto summary_chat = openai::chat().create(summary_body);
+            const std::string summary_api_error = extract_api_error(summary_chat);
+            if (!summary_api_error.empty()) {
+                throw std::runtime_error("OpenWebUI API error: " + summary_api_error);
+            }
             const std::string summary_string = strip_internal_reasoning_tags(extract_message_content(summary_chat));
             if (summary_string.empty()) {
                 file << "\n[WARN] No textual summary returned. Full payload:\n"
@@ -955,25 +1033,14 @@ void temp_analyze_text(const std::string& text) {
     std::string response_string;
 
     try {
-        openai::start({
-            API_KEY
-        });
+        initialize_openai_client();
 
-        json body = {
-            {"model", MODEL_NAME},
-            {"messages", {
-                {{"role", "system"}, {"content", "You are a helpful assistant."}},
-                {{"role", "user"}, {"content", TEMP_PROMPT + "\n" + text}}
-            }},
-            {"stream", false},
-            {"enable_websearch", true}
-        };
-
-        if (!KNOWLEDGE_BASE_IDS.empty()) {
-            body["knowledge_base_ids"] = json::array({KNOWLEDGE_BASE_IDS});
-        }
-
+        json body = build_chat_body(TEMP_PROMPT + "\n" + text, true);
         auto chat = openai::chat().create(body);
+        const std::string api_error = extract_api_error(chat);
+        if (!api_error.empty()) {
+            throw std::runtime_error("OpenWebUI API error: " + api_error);
+        }
         response_string = strip_internal_reasoning_tags(extract_message_content(chat));
         if (check_fhir) {
             response_string = revise_fhir_bundle_in_response(response_string, "tmp_" + analysis_id_str, file);
