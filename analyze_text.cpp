@@ -65,6 +65,7 @@ std::atomic<int> active_analyses{0};
 std::mutex tts_mutex;
 std::once_flag openai_init_flag;
 bool check_fhir = false;
+bool no_analysis_summary = false;
 
 // ── Language / i18n ──────────────────────────────────────────────────────────
 
@@ -99,6 +100,9 @@ enum MsgKey {
     MSG_NO_RECORDING_RUNNING,
     MSG_RECORDING_STOPPED,
     MSG_ANOTHER_ANALYSIS_RUNNING,
+    MSG_ANALYSIS_RUNNING_STOP_BLOCKED,
+    MSG_ANALYSIS_FEEDBACK_PREFIX,
+    MSG_ANALYSIS_SUMMARY_FEEDBACK_MIDDLE,
     MSG_TEMP_CHECK_REQUESTED,
     MSG_COUNT
 };
@@ -211,6 +215,18 @@ static const char* MESSAGES[MSG_COUNT][3] = {
     {"Another analysis is running; this one will start once it finishes ------------------->>>\n",
      "Un'altra analisi è in corso; questa inizierà al termine ------------------->>>\n",
      "Une autre analyse est en cours ; celle-ci démarrera une fois terminée ------------------->>>\n"},
+    /* MSG_ANALYSIS_RUNNING_STOP_BLOCKED */
+    {"An analysis is still running; recording continues, stop again once it finishes ------------------->>>\n",
+     "Un'analisi è ancora in corso; la registrazione continua, fermala di nuovo al termine ------------------->>>\n",
+     "Une analyse est encore en cours ; l'enregistrement continue, arrêtez-le à nouveau une fois terminée ------------------->>>\n"},
+    /* MSG_ANALYSIS_FEEDBACK_PREFIX */
+    {"Analysis[",
+     "Analisi[",
+     "Analyse["},
+    /* MSG_ANALYSIS_SUMMARY_FEEDBACK_MIDDLE */
+    {"] completed. Summary: ",
+     "] completata. Riepilogo: ",
+     "] terminée. Résumé : "},
     /* MSG_TEMP_CHECK_REQUESTED */
     {"Temporary check requested ------------------->>>\n",
      "Controllo temporaneo richiesto ------------------->>>\n",
@@ -222,24 +238,43 @@ static const char* tr(MsgKey key) {
     return MESSAGES[key][idx];
 }
 
+static const char* summary_prompt_for_language() {
+    switch (g_lang) {
+        case Lang::IT:
+            return "Fornisci solo un riepilogo conciso (massimo 3 frasi brevi) in italiano del seguente testo. Non includere ragionamenti interni, tag o passaggi di analisi.\n";
+        case Lang::FR:
+            return "Fournis uniquement un résumé concis (maximum 3 phrases courtes) en français du texte suivant. N'inclus pas de raisonnement interne, de balises ni d'étapes d'analyse.\n";
+        case Lang::EN:
+        default:
+            return "Provide only a concise summary (max 3 short sentences) in English of the following text. Do not include internal reasoning, tags, or analysis steps.\n";
+    }
+}
+
 // ── End i18n ─────────────────────────────────────────────────────────────────
 
 std::string escape_for_single_quotes(const std::string& text);
 
 class AnalysisSession {
 public:
-    AnalysisSession(std::mutex& mutex, std::atomic<int>& active_count)
-        : lock_(mutex), active_count_(active_count) {
+    explicit AnalysisSession(std::mutex& mutex)
+        : lock_(mutex) {
         // Serialize analysis sections that share output/logging resources.
-        ++active_count_;
-    }
-
-    ~AnalysisSession() {
-        --active_count_;
     }
 
 private:
     std::unique_lock<std::mutex> lock_;
+};
+
+class AnalysisJobGuard {
+public:
+    explicit AnalysisJobGuard(std::atomic<int>& active_count)
+        : active_count_(active_count) {}
+
+    ~AnalysisJobGuard() {
+        --active_count_;
+    }
+
+private:
     std::atomic<int>& active_count_;
 };
 
@@ -918,7 +953,7 @@ void initialize_openai_client() {
 
 // AI analysis with fresh context for each request
 void analyze_text(const std::string& text) {
-    AnalysisSession session(analysis_mutex, active_analyses);
+    AnalysisSession session(analysis_mutex);
     const int analysis_id = ++counter_value;
     temp_counter_value = 0; // Reset temp counter for each main analysis
     say_info(tr(MSG_ANALYSIS_STARTED_PREFIX) + std::to_string(analysis_id) + tr(MSG_ANALYSIS_STARTED_SUFFIX));
@@ -969,11 +1004,11 @@ void analyze_text(const std::string& text) {
                   tr(MSG_ERR_ANALYSIS_FAILED_MIDDLE) + e.what() + "\n");
     }
 
-    if (!response_string.empty()) {
+    if (!response_string.empty() && !no_analysis_summary) {
         try {
             // Follow-up summary call keeps spoken output concise.
             json summary_body = build_chat_body(
-                "Provide only a concise summary (max 3 short sentences) of the following text. Do not include internal reasoning, tags, or analysis steps.\n" +
+                std::string{summary_prompt_for_language()} +
                     response_string + "\n\n",
                 false,
                 false);
@@ -992,7 +1027,8 @@ void analyze_text(const std::string& text) {
             }
 
             file << "\nShort summary of response:\n" << summary_string << "\n";
-            speak_text("Analysis[" + std::to_string(analysis_id) + "] completed. Summary: " + summary_string);
+            speak_text(std::string{tr(MSG_ANALYSIS_FEEDBACK_PREFIX)} + std::to_string(analysis_id) +
+                       tr(MSG_ANALYSIS_SUMMARY_FEEDBACK_MIDDLE) + summary_string);
         } catch (const std::exception& e) {
             file << "\n[ERROR] Summary generation failed: " << e.what() << "\n";
             say_error(std::string{tr(MSG_ERR_SUMMARY_FAILED_PREFIX)} + std::to_string(analysis_id) +
@@ -1008,7 +1044,7 @@ void analyze_text(const std::string& text) {
 }
 
 void temp_analyze_text(const std::string& text) {
-    AnalysisSession session(analysis_mutex, active_analyses);
+    AnalysisSession session(analysis_mutex);
     const int analysis_id = ++temp_counter_value;
     // Use compound id (<main>.<temp>) so temp files sort with their parent analysis.
     const std::string analysis_id_str = std::to_string(counter_value + 1) + "." + std::to_string(analysis_id);
@@ -1067,6 +1103,24 @@ void temp_analyze_text(const std::string& text) {
     say_info(tr(MSG_TEMP_ANALYSIS_FINISHED_PREFIX) + analysis_id_str + tr(MSG_ANALYSIS_FINISHED_SUFFIX));
 }
 
+using AnalysisFunction = void (*)(const std::string&);
+
+bool launch_analysis_thread(AnalysisFunction function, std::string text) {
+    ++active_analyses;
+
+    try {
+        std::thread([function, text = std::move(text)]() mutable {
+            AnalysisJobGuard guard(active_analyses);
+            function(text);
+        }).detach();
+        return true;
+    } catch (const std::exception& e) {
+        --active_analyses;
+        say_error(std::string{"[ERROR] Failed to start analysis thread: "} + e.what() + "\n");
+        return false;
+    }
+}
+
 static void print_help(const char* prog) {
     std::cout <<
         "Usage: " << prog << " [OPTIONS]\n"
@@ -1080,8 +1134,11 @@ static void print_help(const char* prog) {
         "  --check_fhir            After each analysis, detect and post-process any\n"
         "                          FHIR Bundle found in the model response using the\n"
         "                          deterministic_fhir_mapper tool.\n"
+        "  --no_analysis_summary   Skip analysis summary generation and spoken\n"
+        "                          analysis-summary feedback.\n"
         "  --language <lang>       Set the UI language for console messages.\n"
-        "                          Supported values: en (default), it, fr.\n"
+        "                          Supported values: en (default), it, fr. Summary\n"
+        "                          feedback uses the selected language.\n"
         "\n"
         "Configuration:\n"
         "  The program reads ./config.ini on startup. The following sections and\n"
@@ -1098,6 +1155,8 @@ static void print_help(const char* prog) {
         "Trigger words (configured in config.ini):\n"
         "  start      Begin collecting transcribed speech.\n"
         "  stop       Stop collecting and send text to AI for full analysis.\n"
+        "             If an analysis is already running, recording continues and\n"
+        "             stop must be requested again after it finishes.\n"
         "  temp_check Perform a temporary analysis on a snapshot of collected text\n"
         "             without stopping the recording.\n"
         "\n"
@@ -1115,6 +1174,8 @@ int main(int argc, char* argv[]) {
             return 0;
         } else if (arg == "--check_fhir") {
             check_fhir = true;
+        } else if (arg == "--no_analysis_summary" || arg == "--no-analysis-summary") {
+            no_analysis_summary = true;
         } else if (arg == "--language") {
             if (i + 1 >= argc) {
                 std::cerr << "Error: --language requires an argument. Supported: en, it, fr\n";
@@ -1169,15 +1230,14 @@ int main(int argc, char* argv[]) {
         if (line_contains_stop) {
             if (!collect_text) {
                 say_info(tr(MSG_NO_RECORDING_RUNNING));
+            } else if (active_analyses.load() > 0) {
+                say_info(tr(MSG_ANALYSIS_RUNNING_STOP_BLOCKED));
             } else {
                 say_info(tr(MSG_RECORDING_STOPPED));
                 std::string text_to_analyze = collected_text;
                 collected_text.clear();
                 collect_text = false;
-                if (active_analyses.load() > 0) {
-                    say_info(tr(MSG_ANOTHER_ANALYSIS_RUNNING));
-                }
-                std::thread(analyze_text, std::move(text_to_analyze)).detach();
+                launch_analysis_thread(analyze_text, std::move(text_to_analyze));
             }
         }
 
@@ -1191,7 +1251,7 @@ int main(int argc, char* argv[]) {
                 }
                 std::string snapshot = collected_text;
                 // Temp analysis runs on a snapshot while recording continues.
-                std::thread(temp_analyze_text, std::move(snapshot)).detach();
+                launch_analysis_thread(temp_analyze_text, std::move(snapshot));
             }
         }
 
