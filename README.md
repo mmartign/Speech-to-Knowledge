@@ -335,6 +335,42 @@ Part of the **OR-Edge Project** — AI-powered solutions for medical edge enviro
 
 ------------------------------------------------------------------------
 
+## 🇪🇺 EU AI Act Considerations
+
+The **EU Artificial Intelligence Act** (Regulation (EU) 2024/1689, in force August 2024) introduces a risk-based regulatory framework for AI systems. Deployers and developers using this pipeline in the European Union should be aware of the following:
+
+**High-Risk Classification**
+
+Systems that assist in the clinical assessment, monitoring, or diagnosis of patients fall under **Annex III, Section 5** of the AI Act as *high-risk AI systems*. A deployment of this pipeline that produces or influences clinical decisions — e.g., presenting extracted FHIR resources to a clinician for triage or treatment — may be subject to the full high-risk compliance regime.
+
+**Key Obligations for High-Risk Deployments**
+
+| Obligation | Relevance to this pipeline |
+|---|---|
+| **Conformity assessment** (Art. 43) | A technical conformity assessment must be performed before placing a high-risk AI system on the EU market. |
+| **Technical documentation** (Art. 11 & Annex IV) | Detailed documentation of the system's purpose, architecture, training data, performance metrics, and limitations must be maintained and kept up to date. |
+| **Transparency & instructions for use** (Art. 13) | End users must be clearly informed that AI-generated output (transcripts, FHIR bundles, summaries) may contain errors and requires human review. |
+| **Human oversight** (Art. 14) | The system must be designed so that qualified healthcare professionals can intervene, override, or disregard AI-generated output. The pipeline's rejected-bundle and OperationOutcome outputs support this requirement. |
+| **Accuracy, robustness & cybersecurity** (Art. 15) | Ongoing performance monitoring and adversarial-input testing are required throughout the system lifecycle. |
+| **Data governance** (Art. 10) | Training and fine-tuning datasets must be documented, bias-assessed, and compliant with GDPR. Speech and patient data used for model training or evaluation must be processed under an appropriate legal basis. |
+| **Logging & auditability** (Art. 12) | Automatic logging of operation (already produced by `results_analysis<N>.txt` and Provenance resources) must be retained for the period required by applicable law. |
+
+**GPAI / Foundation Model Considerations**
+
+If a General Purpose AI (GPAI) model is deployed behind the OpenAI-compatible endpoint (e.g., MedGemma, Llama, or similar), obligations under **Title VIII** of the AI Act may apply to the model provider. Operators should verify that the GPAI model they integrate is compliant with applicable transparency and copyright obligations.
+
+**Edge Deployment and Data Privacy**
+
+Running the full pipeline on a local machine (no cloud egress) directly supports compliance with **GDPR Article 25** (data protection by design) and reduces the attack surface covered by the AI Act's cybersecurity requirements. This is one of the architectural advantages of the edge deployment model described above.
+
+**Research and Prototype Status**
+
+As noted in the Disclaimer below, this software is currently intended for research and validation. Under the AI Act, systems used solely for **scientific research and development** (Art. 2(6)) are exempt from the high-risk obligations. Operators must reassess compliance status before transitioning from a research context to clinical or commercial use.
+
+> This section is informational and does not constitute legal advice. Consult a qualified legal professional for compliance assessments specific to your deployment context and jurisdiction.
+
+---
+
 ## ⚠ Disclaimer
 
 This software is provided **without warranty**.\
