@@ -143,10 +143,52 @@ namespace Constants {
     constexpr const char* BUILD_FINGERPRINT = "transcribe_audio.cpp|" __DATE__ " " __TIME__;
 }
 
+// Project-specific exception type so operational failures can be reported
+// uniformly from PortAudio, Whisper, ffmpeg, and WebSocket code.
 class AudioException : public std::runtime_error {
 public:
     explicit AudioException(const std::string& message) : std::runtime_error(message) {}
 };
+
+// Whisper accepts several language aliases; normalize once so all sources
+// (CLI and WebSocket clients) use the same canonical two-letter code.
+static std::string normalize_whisper_language(const std::string& raw) {
+    const auto not_space = [](unsigned char c) { return !std::isspace(c); };
+    const auto first = std::find_if(raw.begin(), raw.end(), not_space);
+    if (first == raw.end()) {
+        return "en";
+    }
+    const auto last = std::find_if(raw.rbegin(), raw.rend(), not_space).base();
+    std::string lang(first, last);
+    std::transform(lang.begin(), lang.end(), lang.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    if (lang == "auto") {
+        return lang;
+    }
+    const int lang_id = whisper_lang_id(lang.c_str());
+    if (lang_id < 0) {
+        throw AudioException("Unknown Whisper language '" + lang +
+                             "'. Use a code like en, it, fr, de, es, he, sv, or auto.");
+    }
+    const char* canonical = whisper_lang_str(lang_id);
+    return canonical ? canonical : lang;
+}
+
+// Optional context text can bias very short streaming chunks toward a domain.
+//
+// IMPORTANT for recent whisper.cpp releases:
+// - Language selection should be expressed with params.language.
+// - Translation should be expressed only with params.translate.
+// - The prompt is not a reliable way to force a language, and in some model/API
+//   combinations it can make short chunks drift toward plausible English text.
+//
+// Therefore the default prompt is intentionally empty. If domain bias is ever
+// reintroduced, keep it factual and never use it as a substitute for the
+// language/task parameters.
+static std::string transcription_context_for_language(const std::string& language) {
+    (void)language;
+    return {};
+}
 
 class PortAudioRuntime {
 public:
@@ -241,12 +283,15 @@ private:
     PaError last_err_ = paNoError;
 };
 
+// All command-line settings are collected here so parsing and runtime setup can
+// stay separate. Defaults match the live microphone path.
 struct Args {
     int energy_threshold = -1;
     bool adaptive_energy = false;
     double record_timeout = 2.0;
     double phrase_timeout = 3.0;
     std::string language = "en";
+    bool translate = false;
     bool pipe = false;
     bool timestamp = false;
     std::string default_microphone;
@@ -272,6 +317,7 @@ struct Args {
     int websocket_idle_timeout = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
 };
 
+// Parsed representation of the documented "YYYY-mm-dd HH:MM:SS" timestamp.
 struct DateTimeParts {
     int year = 0;
     int month = 0;
@@ -281,6 +327,8 @@ struct DateTimeParts {
     int second = 0;
 };
 
+// Strict fixed-width decimal parser used by timestamp parsing. Keeping this
+// local avoids locale-sensitive stream parsing for the command-line override.
 bool parse_n_digits(const std::string& s, size_t pos, size_t count, int& out) {
     if (pos + count > s.size()) {
         return false;
@@ -315,6 +363,8 @@ int days_in_month(int year, int month) {
 }
 
 bool parse_datetime_parts(const std::string& s, DateTimeParts& out) {
+    // Accept only the documented shape so ambiguous partial dates do not slip
+    // through and produce surprising transcript anchors.
     if (s.size() != 19 ||
         s[4] != '-' ||
         s[7] != '-' ||
@@ -386,6 +436,8 @@ bool parse_predefined_datetime(
     return true;
 }
 
+// Formats a time_point as UTC without applying local timezone conversion. This
+// is used for explicit CLI timestamps, which are treated as already absolute.
 std::string format_datetime_no_conversion(
     const std::chrono::time_point<std::chrono::system_clock>& tp) {
     const std::time_t tt = std::chrono::system_clock::to_time_t(tp);
@@ -427,6 +479,8 @@ public:
     void setAdaptiveEnergyEnabled(bool enabled) {
         adaptive_energy_enabled_.store(enabled, std::memory_order_release);
         if (!enabled) {
+            // Reset the learned floor when adaptation is disabled so a later
+            // re-enable starts from the current configured threshold.
             silence_floor_initialized_.store(false, std::memory_order_release);
             return;
         }
@@ -476,6 +530,8 @@ public:
 
         {
             std::lock_guard<std::mutex> lock(vad_mutex_);
+            // All VAD state transitions are made under one mutex so microphone
+            // and WebSocket paths can share the same processor safely.
             const bool speech_active = !vad_buffer_.empty();
             double speech_trigger = threshold_squared;
             if (adaptive_enabled && !speech_active) {
@@ -520,6 +576,8 @@ public:
                                (vad_buffer_.size() >= max_buffer_samples_ ||
                                 consecutive_silence_chunks_ >= max_silence_chunks_);
             if (flush) {
+                // Flush either because the phrase has gone quiet long enough or
+                // because record_timeout capped the amount of buffered speech.
                 completed = std::move(vad_buffer_);
                 vad_buffer_.clear();
                 consecutive_silence_chunks_ = 0;
@@ -540,6 +598,8 @@ public:
         {
             std::lock_guard<std::mutex> lock(vad_mutex_);
             if (vad_buffer_.empty()) {
+                // No active speech; still clear pre-roll/silence counters so a
+                // following session starts from a clean state.
                 pre_roll_chunks_.clear();
                 consecutive_silence_chunks_ = 0;
                 consecutive_silence_for_adaptation_ = 0;
@@ -623,6 +683,8 @@ private:
             return;
         }
         const double prev = silence_rms_ema_.load(std::memory_order_relaxed);
+        // Track silence RMS with an EMA so thresholds follow room noise without
+        // reacting sharply to a single quiet or loud frame.
         const double updated = (1.0 - Constants::ADAPTIVE_NOISE_ALPHA) * prev +
                                Constants::ADAPTIVE_NOISE_ALPHA * rms;
         silence_rms_ema_.store(updated, std::memory_order_release);
@@ -658,6 +720,8 @@ private:
     }
 
     void recompute_limits_locked() {
+        // Convert user-facing durations into sample/chunk counts once, under
+        // lock, so the real-time path does not repeat this work.
         max_buffer_samples_ = std::max<size_t>(
             Constants::MIN_AUDIO_SAMPLES,
             static_cast<size_t>(std::ceil(static_cast<double>(sample_rate_) * record_timeout_)));
@@ -697,6 +761,7 @@ private:
     std::atomic<bool> silence_floor_initialized_{false};
     std::atomic<int> adaptive_hangover_chunks_{Constants::ADAPTIVE_HANGOVER_CHUNKS};
     std::atomic<bool> verbose_{false};
+    // Mutable phrase-detection state. Access only while holding vad_mutex_.
     std::mutex vad_mutex_;
     std::vector<int16_t> vad_buffer_;
     std::deque<std::vector<int16_t>> pre_roll_chunks_;
@@ -710,6 +775,8 @@ private:
     size_t max_pre_roll_chunks_ = 1;
 };
 
+// Abstract recorder API keeps the capture source independent from the main
+// transcription loop. Today the concrete implementation is PortAudio.
 class AudioRecorder {
 public:
     virtual ~AudioRecorder() = default;
@@ -731,6 +798,8 @@ public:
 
 class PortAudioRecorder final : public AudioRecorder {
 public:
+    // Owns the PortAudio stream plus a worker that drains raw callback data
+    // through the shared VAD processor.
     PortAudioRecorder() {
         PortAudioRuntime::ensure_initialized();
         raw_ring_.resize(Constants::RAW_RING_CHUNK_CAPACITY);
@@ -764,6 +833,8 @@ public:
         stopRecording();
         {
             std::lock_guard<std::mutex> lock(callback_mutex_);
+            // Callback can be swapped during ambient calibration, so protect it
+            // separately from the real-time audio ring.
             audio_callback_ = std::move(callback);
         }
 
@@ -791,6 +862,8 @@ public:
         input_parameters.suggestedLatency = device_info->defaultLowInputLatency;
         input_parameters.hostApiSpecificStreamInfo = nullptr;
 
+        // Start the consumer before PortAudio begins producing callbacks so the
+        // ring has a reader as soon as audio arrives.
         worker_running_.store(true, std::memory_order_release);
         recording_active_.store(true, std::memory_order_release);
         // Separate worker thread keeps callback path minimal and real-time friendly.
@@ -829,6 +902,8 @@ public:
 
     void stopRecording() override {
         const bool was_active = recording_active_.exchange(false, std::memory_order_acq_rel);
+        // Stop/close first to prevent new callbacks, then wake and join the
+        // worker so it can drain any already-queued chunks.
         stream_.stop();
         stream_.close();
         worker_running_.store(false, std::memory_order_release);
@@ -860,6 +935,8 @@ public:
         bool done = false;
 
         auto collector = [&](const std::vector<int16_t>& chunk) {
+            // Calibration deliberately collects raw chunks; VAD is bypassed
+            // below so silence estimation is based on actual ambient audio.
             std::lock_guard<std::mutex> lock(collected_mutex);
             collected.insert(collected.end(), chunk.begin(), chunk.end());
             if (collected.size() >= static_cast<size_t>(
@@ -922,6 +999,8 @@ public:
     }
 
 private:
+    // RawChunk is the unit moved between the real-time PortAudio callback and
+    // the normal-priority processing worker.
     struct RawChunk {
         std::vector<int16_t> samples;
         size_t frames = 0;
@@ -951,6 +1030,8 @@ private:
         }
         std::unique_lock<std::mutex> lock(ring_mutex_, std::try_to_lock);
         if (!lock.owns_lock()) {
+            // The audio callback must never block. Dropping a frame is better
+            // than risking PortAudio underflow or a stalled input device.
             dropped_callback_chunks_.fetch_add(1, std::memory_order_relaxed);
             return;
         }
@@ -986,6 +1067,8 @@ private:
             return false;
         }
         out = std::move(raw_ring_[ring_tail_]);
+        // The moved-from vector remains in the ring slot and will be resized or
+        // overwritten by the producer on its next use.
         ring_tail_ = (ring_tail_ + 1) % raw_ring_.size();
         --ring_size_;
         return true;
@@ -1021,6 +1104,8 @@ private:
             return;
         }
         if (bypass_vad_.load(std::memory_order_acquire)) {
+            // Used only for calibration, where every frame is signal for the
+            // ambient-noise estimator.
             callback(current_chunk);
             return;
         }
@@ -1056,6 +1141,8 @@ private:
             return s;
         };
         const std::string needle = lower(preferred_name);
+        // Match by substring to tolerate host API prefixes and localized device
+        // names reported by PortAudio.
         for (int i = 0; i < device_count; ++i) {
             const PaDeviceInfo* info = Pa_GetDeviceInfo(i);
             if (info == nullptr || info->maxInputChannels <= 0) {
@@ -1101,6 +1188,8 @@ private:
 };
 
 std::vector<std::string> AudioRecorder::listMicrophoneNames() {
+    // Enumeration also initializes PortAudio so --list_microphones works even
+    // when no recorder instance is created.
     PortAudioRuntime::ensure_initialized();
     std::vector<std::string> names;
     const int device_count = Pa_GetDeviceCount();
@@ -1119,6 +1208,8 @@ std::vector<std::string> AudioRecorder::listMicrophoneNames() {
 
 class WhisperModel {
 public:
+    // Whisper contexts are not shared across model files; this wrapper serializes
+    // all calls through AudioTranscriber so the context is used by one worker.
     explicit WhisperModel(const std::string& model_path) : model_path_(model_path) {
         if (!std::filesystem::exists(model_path_)) {
             throw AudioException("Model file does not exist: " + model_path_);
@@ -1129,6 +1220,7 @@ public:
         if (ctx_ == nullptr) {
             throw AudioException("Failed to load Whisper model from " + model_path_);
         }
+        is_multilingual_ = whisper_is_multilingual(ctx_) != 0;
     }
 
     ~WhisperModel() {
@@ -1140,10 +1232,39 @@ public:
     WhisperModel(const WhisperModel&) = delete;
     WhisperModel& operator=(const WhisperModel&) = delete;
 
-    std::string transcribe(const std::vector<float>& audio, const std::string& language) {
+    void validate_language(const std::string& language, bool translate = false) const {
+        const std::string normalized = normalize_whisper_language(language);
+        // English-only models ignore non-English language requests, which looks
+        // like translation from the user's perspective. Fail early instead.
+        if (!is_multilingual_ && (translate || normalized != "en")) {
+            if (translate) {
+                throw AudioException("Whisper translation requires a multilingual model, but the loaded model is English-only.");
+            }
+            throw AudioException("Requested Whisper language '" + normalized +
+                                 "' requires a multilingual model, but the loaded model is English-only.");
+        }
+    }
+
+    std::string transcribe(const std::vector<float>& audio,
+                           const std::string& language,
+                           bool translate = false) {
         if (ctx_ == nullptr || audio.empty()) {
             return {};
         }
+
+        const std::string effective_language = normalize_whisper_language(language);
+        const bool auto_language = effective_language == "auto";
+
+        // WebSocket sessions can provide a per-session language, so keep the
+        // model/language compatibility check on every transcription request.
+        if (!is_multilingual_ && (translate || effective_language != "en")) {
+            if (translate) {
+                throw AudioException("Whisper translation requires a multilingual model, but the loaded model is English-only.");
+            }
+            throw AudioException("Requested Whisper language '" + effective_language +
+                                 "' requires a multilingual model, but the loaded model is English-only.");
+        }
+
         const std::vector<float>* input = &audio;
         std::vector<float> padded;
         // Whisper's hard floor is 100 ms; pad to 200 ms so we're safely above it
@@ -1155,23 +1276,111 @@ public:
             padded.resize(kWhisperPadSamples, 0.0f);
             input = &padded;
         }
+
         whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
-        params.language = language.c_str();
+
+        // Current whisper.cpp contract, as of the v1.8.x header:
+        //   - params.language == nullptr, "", or "auto" means auto-detect.
+        //   - params.detect_language asks whisper.cpp to run language detection.
+        //   - params.translate controls translation to English.
+        //
+        // For --language it we must *not* enable detection and we must *not*
+        // rely on the prompt to steer language. This mirrors whisper-cli more
+        // closely and avoids a class of regressions where short chunks decode as
+        // plausible English even though translate=false.
+        params.language = auto_language ? nullptr : effective_language.c_str();
+        params.detect_language = auto_language;
+        params.translate = translate;
+
+        // Keep text context enabled. For file mode this is important because the
+        // file is processed as consecutive record_timeout-sized chunks; disabling
+        // context makes every chunk look like an isolated utterance and increases
+        // hallucinations. Live mode still has VAD phrase boundaries and the
+        // secondary silence gate to reduce cross-phrase contamination.
+        params.no_context = false;
+        params.no_timestamps = true;
+        params.single_segment = true;
+
+        // Own printing in this program rather than letting whisper.cpp print
+        // progress or partial text from inside the library.
+        params.print_special = false;
         params.print_realtime = false;
         params.print_progress = false;
         params.print_timestamps = false;
-        params.single_segment = true;
+
+        params.suppress_blank = true;
+        params.suppress_nst = true;
+        params.temperature = 0.0f;
+        params.temperature_inc = 0.0f;
+
+        // Do not set an initial prompt by default. The language/task tokens are
+        // the authoritative interface. A prompt can be useful for domain terms,
+        // but it should be opt-in because it can bias short chunks unpredictably.
+        const std::string initial_prompt = transcription_context_for_language(effective_language);
+        if (!initial_prompt.empty()) {
+            params.initial_prompt = initial_prompt.c_str();
+            params.carry_initial_prompt = false;
+        }
+
         int hw = static_cast<int>(std::thread::hardware_concurrency());
         if (hw <= 0) {
             hw = 1;
         }
         params.n_threads = std::min(Constants::WHISPER_MAX_THREADS, hw);
+
+        {
+            // Log once per effective language so runtime output proves which
+            // Whisper task flags reached the library. Include whisper.cpp's
+            // version string when available so field reports identify the exact
+            // ABI/API behaviour under test.
+            std::lock_guard<std::mutex> lock(log_mutex_);
+            const std::string log_key = effective_language + (translate ? ":translate" : ":transcribe");
+            if (logged_languages_.insert(log_key).second) {
+                std::cerr << "[Whisper] version=" << whisper_version()
+                          << " language=" << (params.language ? params.language : "auto")
+                          << " detect_language=" << (params.detect_language ? 1 : 0)
+                          << " translate=" << (params.translate ? 1 : 0)
+                          << " no_timestamps=" << (params.no_timestamps ? 1 : 0)
+                          << " no_context=" << (params.no_context ? 1 : 0)
+                          << " single_segment=" << (params.single_segment ? 1 : 0)
+                          << " temperature_inc=" << params.temperature_inc
+                          << " prompt=" << (params.initial_prompt ? 1 : 0)
+                          << " multilingual_model=" << (is_multilingual_ ? 1 : 0)
+                          << std::endl;
+            }
+        }
+
         if (whisper_full(ctx_,
                          params,
                          input->data(),
                          static_cast<int>(input->size())) != 0) {
             return {};
         }
+
+        const int result_lang_id = whisper_full_lang_id(ctx_);
+        const char* result_lang = result_lang_id >= 0 ? whisper_lang_str(result_lang_id) : nullptr;
+        if (verbose_) {
+            std::cerr << "[Whisper result] requested_language=" << effective_language
+                      << " result_lang_id=" << result_lang_id
+                      << " result_language=" << (result_lang ? result_lang : "unknown")
+                      << std::endl;
+        }
+        if (!auto_language && result_lang != nullptr && effective_language != result_lang) {
+            // Do not discard text here: this diagnostic is deliberately non-fatal
+            // because whisper.cpp may report detection metadata even when a fixed
+            // language token was supplied. The message is a strong signal when
+            // comparing this wrapper against whisper-cli.
+            std::lock_guard<std::mutex> lock(log_mutex_);
+            const std::string key = effective_language + "->" + result_lang;
+            if (logged_language_mismatches_.insert(key).second) {
+                std::cerr << "[Whisper warning] requested fixed language '" << effective_language
+                          << "' but whisper_full_lang_id() reported '" << result_lang
+                          << "'. If transcription is in the wrong language, compare with "
+                          << "whisper-cli using the same model and audio."
+                          << std::endl;
+            }
+        }
+
         std::string out;
         const int segments = whisper_full_n_segments(ctx_);
         for (int i = 0; i < segments; ++i) {
@@ -1201,12 +1410,18 @@ private:
     whisper_context* ctx_ = nullptr;
     std::string model_path_;
     bool verbose_ = false;
+    bool is_multilingual_ = false;
+    std::mutex log_mutex_;
+    std::unordered_set<std::string> logged_languages_;
+    std::unordered_set<std::string> logged_language_mismatches_;
 };
 
 class AudioTranscriber {
 public:
-    AudioTranscriber(WhisperModel& model, std::string language)
-        : model_(model), default_language_(std::move(language)) {
+    // A single Whisper worker preserves order and avoids concurrent use of the
+    // same whisper_context, which whisper.cpp documents as not thread-safe.
+    AudioTranscriber(WhisperModel& model, std::string language, bool translate)
+        : model_(model), default_language_(std::move(language)), default_translate_(translate) {
         running_.store(true, std::memory_order_release);
         worker_ = std::thread(&AudioTranscriber::worker_loop, this);
     }
@@ -1225,13 +1440,18 @@ public:
     AudioTranscriber(const AudioTranscriber&) = delete;
     AudioTranscriber& operator=(const AudioTranscriber&) = delete;
 
-    std::future<std::string> transcribe_async(std::vector<float> audio, std::string language = {}) {
+    std::future<std::string> transcribe_async(std::vector<float> audio,
+                                              std::string language = {},
+                                              std::optional<bool> translate = std::nullopt) {
         std::promise<std::string> promise;
         auto future = promise.get_future();
         {
             std::lock_guard<std::mutex> lock(queue_mutex_);
             // Ordered queue preserves temporal ordering for phrase reconstruction.
-            transcription_queue_.push(Task{std::move(audio), std::move(language), std::move(promise)});
+            transcription_queue_.push(Task{std::move(audio),
+                                           std::move(language),
+                                           translate,
+                                           std::move(promise)});
         }
         queue_cv_.notify_one();
         return future;
@@ -1239,8 +1459,10 @@ public:
 
 private:
     struct Task {
+        // Audio is already normalized to float PCM before it reaches the worker.
         std::vector<float> audio;
         std::string language;
+        std::optional<bool> translate;
         std::promise<std::string> promise;
     };
 
@@ -1260,12 +1482,15 @@ private:
                 transcription_queue_.pop();
             }
             try {
+                // Fulfill every promise, including empty chunks, so the main
+                // loop never waits indefinitely on a queued job.
                 if (task.audio.empty()) {
                     task.promise.set_value({});
                 } else {
                     const std::string& language =
                         task.language.empty() ? default_language_ : task.language;
-                    task.promise.set_value(model_.transcribe(task.audio, language));
+                    const bool translate = task.translate.value_or(default_translate_);
+                    task.promise.set_value(model_.transcribe(task.audio, language, translate));
                 }
             } catch (...) {
                 task.promise.set_exception(std::current_exception());
@@ -1275,6 +1500,7 @@ private:
 
     WhisperModel& model_;
     std::string default_language_;
+    bool default_translate_ = false;
     std::thread worker_;
     std::queue<Task> transcription_queue_;
     std::mutex queue_mutex_;
@@ -1283,6 +1509,8 @@ private:
 };
 
 namespace {
+// The WebSocket protocol uses small flat JSON control messages. These helpers
+// intentionally cover only the subset needed for those messages.
 // Minimal JSON escaping for small control payloads without pulling a full JSON library.
 std::string json_escape(const std::string& input) {
     std::ostringstream oss;
@@ -1345,7 +1573,8 @@ std::optional<std::string> parse_json_quoted_string(const std::string& json, siz
                 case 'n': out.push_back('\n'); break;
                 case 'r': out.push_back('\r'); break;
                 case 't': out.push_back('\t'); break;
-                // Keep unicode escapes literal for protocol routing fields.
+                // Keep unicode escapes literal: protocol routing fields are
+                // ASCII names and ids, so full Unicode decoding is unnecessary.
                 case 'u': out += "\\u"; break;
                 default: out.push_back(esc); break;
             }
@@ -1357,6 +1586,8 @@ std::optional<std::string> parse_json_quoted_string(const std::string& json, siz
 }
 
 std::string extract_json_string_field(const std::string& json, const std::string& field) {
+    // This parser is intentionally shallow because start/stop frames are flat
+    // JSON objects controlled by our mobile client.
     const std::string key = std::string("\"") + field + "\"";
     const size_t pos = json.find(key);
     if (pos == std::string::npos) {
@@ -1421,6 +1652,8 @@ bool json_value_delimiter(char c) {
 }
 
 bool extract_json_bool_field(const std::string& json, const std::string& field, bool fallback) {
+    // Accept both real booleans and string-ish form values to keep the protocol
+    // tolerant of clients that serialize UI settings as strings.
     const std::string key = std::string("\"") + field + "\"";
     const size_t pos = json.find(key);
     if (pos == std::string::npos) {
@@ -1479,6 +1712,8 @@ bool json_message_type_is(const std::string& json, const char* expected) {
 
 class WebSocketPcmServer {
 public:
+    // Per-connection state. The WebSocket server receives arbitrary client frame
+    // sizes, then converts them into fixed-size chunks for the shared VAD.
     struct ClientContext {
         std::string session_id;
         std::string language = "en";
@@ -1555,6 +1790,8 @@ public:
         {
             std::lock_guard<std::mutex> lock(acceptor_mutex_);
             if (acceptor_) {
+                // Closing the acceptor breaks the blocking accept() in the
+                // server thread during shutdown.
                 beast::error_code ec;
                 acceptor_->cancel(ec);
                 acceptor_->close(ec);
@@ -1570,6 +1807,8 @@ public:
             std::lock_guard<std::mutex> lock(live_sessions_mutex_);
             sessions_to_close = live_sessions_;
         }
+        // Force sockets closed before joining session threads so blocked read()
+        // calls wake promptly.
         for (const auto& session : sessions_to_close) {
             if (session) {
                 session->force_close();
@@ -1602,6 +1841,8 @@ public:
         std::shared_ptr<Session> session;
         {
             std::lock_guard<std::mutex> lock(session_map_mutex_);
+            // The map holds weak_ptrs so finished session threads are not kept
+            // alive solely because a transcript completes late.
             auto it = sessions_.find(session_id);
             if (it == sessions_.end()) {
                 return;
@@ -1633,6 +1874,8 @@ public:
     }
 
 private:
+    // Format helpers accept a few aliases from mobile/platform clients while
+    // preserving a single normalized PCM16 path after decode.
     static std::string to_ascii_lower(std::string s) {
         for (char& c : s) {
             c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
@@ -1679,6 +1922,7 @@ private:
                 if (!std::isfinite(v)) {
                     v = 0.0f;
                 }
+                // Clamp client floats to valid PCM range before scaling.
                 v = std::max(-1.0f, std::min(1.0f, v));
                 out.push_back(static_cast<int16_t>(std::lround(v * 32767.0f)));
             }
@@ -1691,6 +1935,7 @@ private:
         const size_t sample_count = byte_count / sizeof(int16_t);
         std::vector<int16_t> out(sample_count);
         for (size_t i = 0; i < sample_count; ++i) {
+            // The wire format is little-endian regardless of host endianness.
             const uint16_t lo = static_cast<uint16_t>(data[i * 2]);
             const uint16_t hi = static_cast<uint16_t>(data[i * 2 + 1]);
             out[i] = static_cast<int16_t>((hi << 8) | lo);
@@ -1715,6 +1960,8 @@ private:
         if (source_channels == 1) {
             mono = in;
         } else {
+            // Downmix by arithmetic mean; this is adequate for speech PCM and
+            // avoids adding a DSP dependency for the WebSocket path.
             const size_t frame_count = in.size() / static_cast<size_t>(source_channels);
             mono.resize(frame_count);
             for (size_t i = 0; i < frame_count; ++i) {
@@ -1736,6 +1983,8 @@ private:
         out_count = std::max<size_t>(out_count, 1);
         std::vector<int16_t> out(out_count);
         for (size_t i = 0; i < out_count; ++i) {
+            // Linear interpolation keeps latency low and is sufficient because
+            // clients are expected to send speech, not high-fidelity audio.
             const double src_pos =
                 static_cast<double>(i) * static_cast<double>(source_sample_rate) /
                 static_cast<double>(Constants::SAMPLE_RATE);
@@ -1807,6 +2056,7 @@ private:
 
         void send_text(const std::string& payload) {
             std::lock_guard<std::mutex> lock(write_mutex);
+            // Beast websocket streams require serialized writes per connection.
             beast::error_code ec;
             ws.text(true);
             ws.write(net::buffer(payload), ec);
@@ -1814,6 +2064,8 @@ private:
 
         void force_close() {
             beast::error_code ec;
+            // Best-effort shutdown; errors are ignored because this is only used
+            // during server teardown.
             beast::get_lowest_layer(ws).cancel(ec);
             beast::get_lowest_layer(ws).shutdown(tcp::socket::shutdown_both, ec);
             beast::get_lowest_layer(ws).close(ec);
@@ -1865,7 +2117,17 @@ private:
             session->ctx.language = default_language_.empty() ? "en" : default_language_;
             const std::string language = extract_json_string_field(msg, "language");
             if (!language.empty()) {
-                session->ctx.language = language;
+                try {
+                    // Normalize client-provided language before queueing audio
+                    // so Whisper sees the same values as CLI transcription.
+                    session->ctx.language = normalize_whisper_language(language);
+                } catch (const std::exception& e) {
+                    session->ctx.started = false;
+                    session->send_text(
+                        std::string("{\"type\":\"error\",\"message\":\"") +
+                        json_escape(e.what()) + "\"}");
+                    return;
+                }
             }
             session->ctx.sample_rate = extract_json_int_field(msg, "sampleRate", Constants::SAMPLE_RATE);
             session->ctx.channels = extract_json_int_field(msg, "channels", 1);
@@ -1903,6 +2165,8 @@ private:
             session->ctx.target_frame_samples = Constants::FRAMES_PER_BUFFER;
             session->ctx.pending_samples.clear();
             session->ctx.pending_samples.reserve(session->ctx.target_frame_samples * 2);
+            // Each session has its own VAD so mobile clients do not share noise
+            // floor estimates or phrase state.
             session->ctx.vad.setEnergyThreshold(initial_energy_threshold_);
             session->ctx.vad.setVadPreRollSeconds(vad_pre_roll_seconds_);
             session->ctx.vad.setAdaptiveHangoverChunks(adaptive_hangover_chunks_);
@@ -1972,6 +2236,8 @@ private:
                                             normalized.end());
         const size_t target = session->ctx.target_frame_samples;
         size_t consumed = 0;
+        // Consume fixed VAD frames and keep any remainder for the next socket
+        // frame, since WebSocket payload boundaries do not imply audio frames.
         while ((session->ctx.pending_samples.size() - consumed) >= target) {
             std::vector<int16_t> chunk(target);
             std::memcpy(chunk.data(),
@@ -1999,6 +2265,8 @@ private:
             return;
         }
         if (!ctx.pending_samples.empty()) {
+            // On stop/disconnect, push the final partial frame through VAD so
+            // the end of an utterance is not stranded in pending_samples.
             std::vector<int16_t> chunk = std::move(ctx.pending_samples);
             ctx.pending_samples.clear();
             ctx.vad.processChunk(
@@ -2078,6 +2346,9 @@ private:
 
     std::string bind_address_;
     int port_;
+    // Server lifetime and client session bookkeeping. Threads are joined in
+    // stop(); weak session map entries allow late transcript delivery attempts
+    // to fail safely after disconnect.
     bool send_transcripts_ = true;
     int idle_timeout_seconds_ = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
     bool include_transcript_timestamps_ = false;
@@ -2104,9 +2375,11 @@ private:
 
 Args parse_arguments(int argc, char* argv[]) {
     Args args;
+    // Maintain an allowlist so misspelled options fail loudly instead of being
+    // treated as positional values for a previous flag.
     const std::unordered_set<std::string> valid_args = {
         "--energy_threshold", "--record_timeout", "--phrase_timeout", "--language",
-        "--pipe", "--timestamp", "--default_microphone", "--whisper_model_path",
+        "--translate", "--pipe", "--timestamp", "--default_microphone", "--whisper_model_path",
         "--help", "-h", "--list_microphones", "--adaptive_energy", "--audio_file",
         "--predefined_start_time", "--vad_pre_roll", "--adaptive_silence_fraction",
         "--adaptive_hangover_chunks", "--verbose",
@@ -2149,7 +2422,14 @@ Args parse_arguments(int argc, char* argv[]) {
                 std::exit(1);
             }
         } else if (arg == "--language" && i + 1 < argc) {
-            args.language = argv[++i];
+            try {
+                args.language = normalize_whisper_language(argv[++i]);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: " << e.what() << std::endl;
+                std::exit(1);
+            }
+        } else if (arg == "--translate") {
+            args.translate = true;
         } else if (arg == "--pipe") {
             args.pipe = true;
         } else if (arg == "--timestamp") {
@@ -2198,6 +2478,8 @@ Args parse_arguments(int argc, char* argv[]) {
             args.verbose = true;
         } else if (arg == "--input_source" && i + 1 < argc) {
             args.input_source = argv[++i];
+            // Keep source modes closed-ended because each mode owns a different
+            // capture lifecycle and resource cleanup path.
             if (args.input_source != "microphone" &&
                 args.input_source != "file" &&
                 args.input_source != "websocket") {
@@ -2249,6 +2531,7 @@ Args parse_arguments(int argc, char* argv[]) {
                 << " --record_timeout <float>          Max duration for audio chunks in seconds. Default: 2.0\n"
                 << " --phrase_timeout <float>          Silence duration to end a phrase in seconds. Default: 3.0\n"
                 << " --language <lang>                 Whisper language code. Default: en\n"
+                << " --translate                       Translate source speech to English instead of transcribing it\n"
                 << " --pipe                            Enable pipe mode for continuous streaming\n"
                 << " --timestamp                       Print timestamps in pipe mode and all WebSocket transcripts\n"
                 << " --whisper_model_path <path>       REQUIRED: Path to the ggml Whisper model\n"
@@ -2274,6 +2557,8 @@ Args parse_arguments(int argc, char* argv[]) {
         std::exit(1);
     }
     if (args.input_source == "websocket") {
+        // Preserve compatibility with the older --websocket_server flag while
+        // allowing --input_source websocket to be the primary selector.
         args.websocket_server = true;
     }
     if (args.whisper_model_path.empty() && !args.list_microphones) {
@@ -2285,6 +2570,8 @@ Args parse_arguments(int argc, char* argv[]) {
 
 namespace FileAudio {
 namespace {
+    // File-mode helpers are kept local so live microphone/WebSocket code remains
+    // independent from ffmpeg/ffprobe details.
     std::string to_lower_ascii(std::string value) {
         std::transform(value.begin(), value.end(), value.begin(),
                        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
@@ -2335,6 +2622,8 @@ namespace {
 #endif
 
     void run_ffmpeg_extract(const std::string& input, const std::string& output, int target_sample_rate) {
+        // Emit a temporary mono 16 kHz WAV because the parser below only accepts
+        // the exact PCM format Whisper receives downstream.
 #ifdef _WIN32
         const std::string cmd =
             "ffmpeg -y -hide_banner -loglevel error -i " + quote_windows_arg(input) +
@@ -2354,6 +2643,8 @@ namespace {
 }
 
 bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector<int16_t>& samples_out) {
+    // Minimal RIFF/WAV parser for PCM16 mono. Complex containers are handled by
+    // transcoding first, so this function can stay strict.
     sample_rate_out = 0;
     samples_out.clear();
 
@@ -2419,6 +2710,7 @@ bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector
         }
 
         if ((chunk_size % 2u) != 0u) {
+            // RIFF chunks are word-aligned; odd-sized chunks carry one pad byte.
             f.seekg(1, std::ios::cur);
         }
     }
@@ -2436,6 +2728,8 @@ bool load_wav_mono_16(const std::string& path, int& sample_rate_out, std::vector
 }
 
 std::vector<int16_t> load_raw_pcm_16(const std::string& path) {
+    // Raw mode assumes signed little-endian PCM16 at 16 kHz mono; use only for
+    // explicit .raw/.pcm/.s16 inputs.
     std::ifstream f(path, std::ios::binary | std::ios::ate);
     if (!f) {
         return {};
@@ -2465,6 +2759,8 @@ std::vector<float> to_float(const std::vector<int16_t>& samples) {
 
 bool parse_metadata_datetime(std::string value,
                              std::chrono::system_clock::time_point& out) {
+    // ffprobe may return ISO timestamps with T/Z, fractions, or offsets. Strip
+    // those decorations before using the platform local-time converter.
     const auto trim_copy = [](const std::string& input) -> std::string {
         const size_t start = input.find_first_not_of(" \t\n\r\f\v");
         if (start == std::string::npos) {
@@ -2491,6 +2787,8 @@ bool parse_metadata_datetime(std::string value,
 
     const size_t tz_pos = value.find_first_of("+-", 19);
     if (tz_pos != std::string::npos) {
+        // Preserve historical behavior: ignore explicit offsets after seconds
+        // and let mktime interpret the normalized timestamp locally.
         value.erase(tz_pos);
     }
 
@@ -2567,6 +2865,7 @@ probe_file_encoded_timeline_start(const std::string& media_path) {
             continue;
         }
         try {
+            // start_time_realtime is microseconds since Unix epoch.
             const long long micros = std::stoll(line);
             if (micros <= 0) {
                 continue;
@@ -2648,6 +2947,8 @@ std::chrono::system_clock::time_point resolve_file_start_time(
 }
 
 std::string transcode_media_to_wav(const std::string& media_path, int target_sample_rate) {
+    // Include PID and wall-clock milliseconds to avoid collisions when multiple
+    // transcriptions run from the same working directory.
     const auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch())
                             .count();
@@ -2665,6 +2966,7 @@ std::string transcode_media_to_wav(const std::string& media_path, int target_sam
 } // namespace FileAudio
 
 void clear_console() {
+    // Interactive display is terminal-only; pipe mode avoids clearing output.
 #ifdef _WIN32
     std::system("cls");
 #else
@@ -2721,6 +3023,16 @@ bool is_whisper_noise_token(const std::string& text) {
         "bye",
         "bye bye",
         "goodbye",
+        // Large-model hallucinations on silence/background noise
+        "i believe in the lord",
+        "i believe in god",
+        "and the door",
+        "the door",
+        "subscribe",
+        "subtitles by",
+        "subtitled by",
+        "transcribed by",
+        "www",
     };
     for (const auto& phrase : kHallucinationPhrases) {
         if (norm == phrase) {
@@ -2764,6 +3076,8 @@ void list_and_exit() {
 bool is_silent_chunk(const std::vector<int16_t>& samples,
                      int energy_threshold,
                      long double threshold_fraction) {
+    // Secondary silence gate after VAD. This filters very quiet fragments before
+    // spending Whisper time on them.
     if (samples.empty()) {
         return true;
     }
@@ -2778,6 +3092,8 @@ bool is_silent_chunk(const std::vector<int16_t>& samples,
 }
 
 std::vector<float> load_audio_from_file(const std::string& path) {
+    // Normalize all file inputs into the same float PCM format used by live
+    // capture so WhisperModel has only one audio representation to handle.
     int sample_rate = 0;
     std::vector<int16_t> pcm;
     if (FileAudio::load_wav_mono_16(path, sample_rate, pcm)) {
@@ -2816,15 +3132,18 @@ std::vector<float> load_audio_from_file(const std::string& path) {
 std::atomic<bool> g_quit{false};
 
 void on_sigint(int) {
+    // Keep the signal handler async-signal-safe: only store an atomic flag.
     g_quit.store(true, std::memory_order_release);
 }
 
 struct QueuedAudioChunk {
+    // Shared work item for microphone and WebSocket capture paths.
     std::vector<int16_t> samples;
     std::string session_id;
     std::chrono::system_clock::time_point submitted;
     int energy_threshold = Constants::DEFAULT_ENERGY_THRESHOLD;
     std::string language;
+    bool translate = false;
 };
 
 int main(int argc, char* argv[]) {
@@ -2843,6 +3162,8 @@ int main(int argc, char* argv[]) {
             args.has_predefined_start_time ? args.predefined_start_time : application_start_time;
         auto live_transcript_timestamp_for =
             [&](const std::chrono::system_clock::time_point& captured_at) {
+                // Preserve relative capture timing while shifting the whole live
+                // transcript onto a caller-provided absolute start time.
                 return live_transcript_start_time +
                        std::chrono::duration_cast<std::chrono::system_clock::duration>(
                            captured_at - application_start_time);
@@ -2851,6 +3172,9 @@ int main(int argc, char* argv[]) {
         if (args.input_source == "file") {
             // Batch mode: deterministic chunking over already available media.
             WhisperModel audio_model(args.whisper_model_path);
+            // Validate before decoding the whole file so configuration errors
+            // fail quickly and consistently with live modes.
+            audio_model.validate_language(args.language, args.translate);
             auto audio_data = load_audio_from_file(args.audio_file_path);
             std::cout << "Transcribing media file: " << args.audio_file_path << std::endl;
             size_t chunk_samples = static_cast<size_t>(Constants::SAMPLE_RATE * args.record_timeout);
@@ -2862,6 +3186,8 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 const auto loop_start = std::chrono::steady_clock::now();
+                // Chunking mirrors live record_timeout behavior so file and live
+                // transcripts have similar segment sizes.
                 const size_t end = std::min(offset + chunk_samples, audio_data.size());
                 std::vector<float> chunk(audio_data.begin() + static_cast<std::ptrdiff_t>(offset),
                                          audio_data.begin() + static_cast<std::ptrdiff_t>(end));
@@ -2872,7 +3198,7 @@ int main(int argc, char* argv[]) {
                 const auto end_offset = std::chrono::duration_cast<std::chrono::system_clock::duration>(
                     std::chrono::duration<double>(end_sec));
                 const auto end_time = transcript_start + end_offset;
-                std::string text = trim(audio_model.transcribe(chunk, args.language));
+                std::string text = trim(audio_model.transcribe(chunk, args.language, args.translate));
                 if (!text.empty()) {
                     const std::string timestamp_text = args.has_predefined_start_time
                         ? format_datetime_no_conversion(end_time)
@@ -2884,6 +3210,8 @@ int main(int argc, char* argv[]) {
                 const auto elapsed = std::chrono::steady_clock::now() - loop_start;
                 const auto target = std::chrono::duration<double>(args.record_timeout);
                 if (elapsed < target) {
+                    // Pace file mode like live capture; this keeps downstream
+                    // consumers from receiving an entire file burst at once.
                     std::this_thread::sleep_for(target - elapsed);
                 }
             }
@@ -2903,7 +3231,10 @@ int main(int argc, char* argv[]) {
 
         WhisperModel audio_model(args.whisper_model_path);
         audio_model.set_verbose(args.verbose);
-        AudioTranscriber transcriber(audio_model, args.language);
+        // Validate the CLI default language before opening microphone or
+        // WebSocket capture. Per-session WebSocket languages are checked later.
+        audio_model.validate_language(args.language, args.translate);
+        AudioTranscriber transcriber(audio_model, args.language, args.translate);
         std::vector<std::string> transcription{""};
 
         if (args.input_source == "microphone") {
@@ -2938,7 +3269,8 @@ int main(int argc, char* argv[]) {
                     "",
                     std::chrono::system_clock::now(),
                     recorder ? recorder->getEnergyThreshold() : Constants::DEFAULT_ENERGY_THRESHOLD,
-                    args.language});
+                    args.language,
+                    args.translate});
                 queue_cv.notify_one();
             };
 
@@ -2978,6 +3310,8 @@ int main(int argc, char* argv[]) {
                                           const std::string& language) {
                 std::lock_guard<std::mutex> lock(queue_mutex);
                 if (data_queue.size() >= Constants::MAX_QUEUED_AUDIO_CHUNKS) {
+                    // Same back-pressure policy as microphone mode: keep memory
+                    // bounded and prefer newest speech when transcription lags.
                     data_queue.pop();
                 }
                 data_queue.push(QueuedAudioChunk{
@@ -2985,7 +3319,8 @@ int main(int argc, char* argv[]) {
                     session_id,
                     std::chrono::system_clock::now(),
                     std::max(energy_threshold, Constants::ADAPTIVE_THRESHOLD_MIN),
-                    language.empty() ? args.language : language});
+                    language.empty() ? args.language : language,
+                    args.translate});
                 queue_cv.notify_one();
             };
 
@@ -3034,12 +3369,15 @@ int main(int argc, char* argv[]) {
             bool phrase_complete = false;
             if (phrase_time_set &&
                 (now - last_phrase_end_time) > std::chrono::duration<double>(args.phrase_timeout)) {
+                // Mark the next completed transcript as a new displayed phrase.
                 phrase_complete = true;
             }
 
             for (auto it = pending.begin(); it != pending.end();) {
                 using namespace std::chrono_literals;
                 if (it->fut.wait_for(0ms) == std::future_status::ready) {
+                    // Futures are checked in queue order, so output order follows
+                    // capture order even if a later job would finish first.
                     std::string text;
                     try {
                         text = trim(it->fut.get());
@@ -3075,6 +3413,8 @@ int main(int argc, char* argv[]) {
                             std::cout << std::flush;
                         }
                         if (websocket_server && !it->session_id.empty()) {
+                            // WebSocket clients receive the same text accepted
+                            // for console output after noise filtering.
                             websocket_server->send_transcript_to_session(
                                 it->session_id,
                                 text,
@@ -3128,7 +3468,11 @@ int main(int argc, char* argv[]) {
                     audio_float[i] = static_cast<float>(queued_chunk.samples[i]) / 32768.0f;
                 }
                 Pending p;
-                p.fut = transcriber.transcribe_async(std::move(audio_float), queued_chunk.language);
+                // Whisper runs asynchronously so capture can continue while the
+                // model is processing the previous utterance.
+                p.fut = transcriber.transcribe_async(std::move(audio_float),
+                                                     queued_chunk.language,
+                                                     queued_chunk.translate);
                 p.submitted = queued_chunk.submitted;
                 p.starts_new_phrase = phrase_complete;
                 p.session_id = queued_chunk.session_id;
