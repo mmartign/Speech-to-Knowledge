@@ -310,31 +310,6 @@ This produces three executables:
 
 ---
 
-📄 **License**
-This project is released under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later).
-You are free to use, modify, and redistribute this software under the terms of the AGPL.
-See the [LICENSE](LICENSE) file for the full text.
-
-## Contacts
-- Mail: Maurizio.Martignano@spazioit.com
-- Website: https://spazioit.com/pages_en/sol_inf_en/si-listener  
-- GitHub: https://github.com/mmartign/Speech-to-Knowledge
-
-------------------------------------------------------------------------
-
-## 🏢 About Spazio IT
-
-Spazio - IT Soluzioni Informatiche s.a.s.\
-via Manzoni 40\
-46051 San Giorgio Bigarello\
-Italy
-
-https://spazioit.com
-
-Part of the **OR-Edge Project** — AI-powered solutions for medical edge environments.
-
-------------------------------------------------------------------------
-
 ## 🇪🇺 EU AI Act Considerations
 
 The **EU Artificial Intelligence Act** (Regulation (EU) 2024/1689, in force August 2024) introduces a risk-based regulatory framework for AI systems. Deployers and developers using this pipeline in the European Union should be aware of the following:
@@ -370,6 +345,31 @@ As noted in the Disclaimer below, this software is currently intended for resear
 > This section is informational and does not constitute legal advice. Consult a qualified legal professional for compliance assessments specific to your deployment context and jurisdiction.
 
 ---
+
+📄 **License**
+This project is released under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later).
+You are free to use, modify, and redistribute this software under the terms of the AGPL.
+See the [LICENSE](LICENSE) file for the full text.
+
+## Contacts
+- Mail: Maurizio.Martignano@spazioit.com
+- Website: https://spazioit.com/pages_en/sol_inf_en/si-listener  
+- GitHub: https://github.com/mmartign/Speech-to-Knowledge
+
+------------------------------------------------------------------------
+
+## 🏢 About Spazio IT
+
+Spazio - IT Soluzioni Informatiche s.a.s.\
+via Manzoni 40\
+46051 San Giorgio Bigarello\
+Italy
+
+https://spazioit.com
+
+Part of the **OR-Edge Project** — AI-powered solutions for medical edge environments.
+
+------------------------------------------------------------------------
 
 ## ⚠ Disclaimer
 
