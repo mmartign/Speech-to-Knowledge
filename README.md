@@ -285,6 +285,12 @@ A standalone post-processor that takes an LLM-generated FHIR Bundle and produces
 
 ---
 
+## `drone/` — Airborne Triage Speech Pipeline (Companion Sub-Project)
+
+A self-contained sibling pipeline adapting the same speech-to-knowledge approach to airborne mass-casualty triage: a drone captures undercarriage audio from a mic array, rejects rotor noise in three stages (adaptive notch filtering, spectral subtraction, vocal-band VAD gating), transcribes it, reads it for responsiveness and distress signals, and can broadcast a pre-scripted reassurance/instruction phrase back over a loudspeaker. It targets a different platform (no OpenCV dependency) and builds independently of the root CMake project — see [`drone/README.md`](drone/README.md) for scope, build instructions, and what's real code vs. a documented hardware stand-in.
+
+---
+
 ## Build Chain (CMake)
 
 ```bash

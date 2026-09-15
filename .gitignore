@@ -19,3 +19,6 @@ compile_commands.json
 
 # Local configuration (contains secrets)
 config.ini
+
+# Internal-only: never committed or pushed
+/drone/innovation_report.txt
