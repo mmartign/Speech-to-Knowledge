@@ -35,8 +35,9 @@
 // Notes:
 // - This file preserves the original application structure as much as possible.
 // - WebSocket support uses Boost.Beast / Boost.Asio.
-// - For simplicity and maintainability, file mode remains a dedicated branch,
-//   while microphone and websocket modes share the live transcription pipeline.
+// - All three input sources (microphone, file, and WebSocket) share the same
+//   EnergyVadProcessor pipeline so silence filtering and pre-roll behavior
+//   remain consistent across live and batch transcription.
 // - This code expects Boost headers/libraries to be available in your build.
 // - The WebSocket protocol is:
 //     * first text frame: JSON start message
@@ -123,6 +124,8 @@ namespace Constants {
     constexpr int MIN_AUDIO_LENGTH_MS = 100;
     constexpr size_t MIN_AUDIO_SAMPLES =
         static_cast<size_t>(SAMPLE_RATE * MIN_AUDIO_LENGTH_MS / 1000.0);
+
+    // Voice Activity Detection (VAD) and adaptive noise floor parameters.
     constexpr double AMBIENT_NOISE_DURATION_SECONDS = 3.0;
     constexpr double ENERGY_THRESHOLD_MULTIPLIER = 2.5;
     constexpr double ADAPTIVE_NOISE_ALPHA = 0.05;
@@ -134,15 +137,25 @@ namespace Constants {
     constexpr int ADAPTIVE_HANGOVER_CHUNKS = 1;
     constexpr double ADAPTIVE_ONSET_TRIGGER_RATIO = 0.85;
     constexpr double VAD_PRE_ROLL_SECONDS = 0.30;
+
+    // Whisper decoding limits to keep latency predictable on short chunks.
     constexpr int WHISPER_MAX_THREADS = 4;
     constexpr int WHISPER_MAX_OUTPUT_TOKENS = 192;
     constexpr double WHISPER_OUTPUT_TOKENS_PER_SECOND = 12.0;
     constexpr int WHISPER_OUTPUT_TOKEN_MARGIN = 32;
+
+    // Queue capacities and bounding caps to prevent unbounded memory growth.
     constexpr int MAIN_LOOP_TIMEOUT_MS = 250;
     constexpr double PHRASE_TIMEOUT_MULTIPLIER = 1.5;
     constexpr size_t MAX_QUEUED_AUDIO_CHUNKS = 64;
+    constexpr size_t MAX_TRANSCRIBER_QUEUE_SIZE = 32;
+    constexpr size_t MAX_PENDING_FUTURES = 64;
+    constexpr size_t MAX_TRANSCRIPT_LINES = 500;
+    constexpr size_t MAX_LOGGED_KEYS = 256;
     constexpr size_t RAW_RING_CHUNK_CAPACITY = 256;
     constexpr double CALIBRATION_WAIT_MARGIN_SECONDS = 2.0;
+
+    // WebSocket framing and idle timeout defaults.
     constexpr size_t MAX_WS_FRAME_BYTES = SAMPLE_RATE * sizeof(int16_t) * 1;
     constexpr int WS_IDLE_TIMEOUT_SECONDS_DEFAULT = 30;
     constexpr const char* BUILD_FINGERPRINT = "transcribe_audio.cpp|" __DATE__ " " __TIME__;
@@ -154,6 +167,31 @@ class AudioException : public std::runtime_error {
 public:
     explicit AudioException(const std::string& message) : std::runtime_error(message) {}
 };
+
+// Lightweight RAII scope guard to guarantee resource cleanup (e.g., temp files,
+// thread flags, PortAudio termination) on early returns or exceptions.
+template <typename Fn>
+class ScopeGuard {
+public:
+    explicit ScopeGuard(Fn&& fn) noexcept : fn_(std::forward<Fn>(fn)), active_(true) {}
+    ~ScopeGuard() noexcept {
+        if (active_) {
+            try { fn_(); } catch (...) {}
+        }
+    }
+    ScopeGuard(const ScopeGuard&) = delete;
+    ScopeGuard& operator=(const ScopeGuard&) = delete;
+    void dismiss() noexcept { active_ = false; }
+
+private:
+    Fn fn_;
+    bool active_;
+};
+
+template <typename Fn>
+ScopeGuard<Fn> make_scope_guard(Fn&& fn) noexcept {
+    return ScopeGuard<Fn>(std::forward<Fn>(fn));
+}
 
 // Whisper accepts several language aliases; normalize once so all sources
 // (CLI and WebSocket clients) use the same canonical two-letter code.
@@ -177,6 +215,26 @@ static std::string normalize_whisper_language(const std::string& raw) {
     }
     const char* canonical = whisper_lang_str(lang_id);
     return canonical ? canonical : lang;
+}
+
+// Filters well-known Whisper silence/low-noise hallucinations (such as standalone
+// "You." or "Thank you.") in addition to library-level noise tokens.
+static bool is_whisper_hallucination_or_noise(const std::string& text) {
+    if (text.empty() || is_whisper_noise_token(text)) {
+        return true;
+    }
+    std::string lower;
+    lower.reserve(text.size());
+    for (unsigned char c : text) {
+        if (!std::ispunct(c) && !std::isspace(c)) {
+            lower.push_back(static_cast<char>(std::tolower(c)));
+        }
+    }
+    return lower == "you" ||
+           lower == "thankyou" ||
+           lower == "thanksforwatching" ||
+           lower == "bye" ||
+           lower == "subtitlesby";
 }
 
 // Optional context text can bias very short streaming chunks toward a domain.
@@ -227,6 +285,8 @@ private:
 std::mutex PortAudioRuntime::mutex_;
 bool PortAudioRuntime::initialized_ = false;
 
+// RAII wrapper around a PaStream handle so open streams are always stopped and
+// closed on destruction or error paths.
 class PortAudioStream {
 public:
     PortAudioStream() = default;
@@ -312,7 +372,7 @@ struct Args {
 
     // Supported sources:
     // - microphone: local capture via PortAudio
-    // - file: batch transcription from media on disk
+    // - file: transcription from media on disk
     // - websocket: remote PCM frames over WS
     std::string input_source = "microphone";
     bool websocket_server = false;
@@ -457,6 +517,8 @@ std::string format_datetime_no_conversion(
     return oss.str();
 }
 
+// Energy-based Voice Activity Detector with pre-roll buffering, hangover delay,
+// and optional exponential moving average (EMA) noise-floor adaptation.
 class EnergyVadProcessor {
 public:
     using OutputCallback = std::function<void(const std::vector<int16_t>&, int energy_threshold)>;
@@ -535,8 +597,8 @@ public:
 
         {
             std::lock_guard<std::mutex> lock(vad_mutex_);
-            // All VAD state transitions are made under one mutex so microphone
-            // and WebSocket paths can share the same processor safely.
+            // All VAD state transitions are made under one mutex so microphone,
+            // file, and WebSocket paths can share the same processor safely.
             const bool speech_active = !vad_buffer_.empty();
             double speech_trigger = threshold_squared;
             if (adaptive_enabled && !speech_active) {
@@ -585,6 +647,10 @@ public:
                 // because record_timeout capped the amount of buffered speech.
                 completed = std::move(vad_buffer_);
                 vad_buffer_.clear();
+                // Trim excess heap capacity if a large burst occurred, keeping normal buffer size.
+                if (vad_buffer_.capacity() > max_buffer_samples_ * 2) {
+                    vad_buffer_.shrink_to_fit();
+                }
                 consecutive_silence_chunks_ = 0;
                 consecutive_silence_for_adaptation_ = 0;
             }
@@ -603,11 +669,9 @@ public:
         {
             std::lock_guard<std::mutex> lock(vad_mutex_);
             if (vad_buffer_.empty()) {
-                // No active speech; still clear pre-roll/silence counters so a
+                // No active speech; still reset buffers and counters so a
                 // following session starts from a clean state.
-                pre_roll_chunks_.clear();
-                consecutive_silence_chunks_ = 0;
-                consecutive_silence_for_adaptation_ = 0;
+                clear_processing_state_locked();
                 return;
             }
             completed = std::move(vad_buffer_);
@@ -748,8 +812,9 @@ private:
     }
 
     void clear_processing_state_locked() {
-        vad_buffer_.clear();
-        pre_roll_chunks_.clear();
+        // Swap with empty containers to release accumulated heap memory immediately.
+        std::vector<int16_t>().swap(vad_buffer_);
+        std::deque<std::vector<int16_t>>().swap(pre_roll_chunks_);
         consecutive_silence_chunks_ = 0;
         consecutive_silence_for_adaptation_ = 0;
     }
@@ -932,20 +997,39 @@ public:
         std::cout << "Adjusting for ambient noise (listening for "
                   << Constants::AMBIENT_NOISE_DURATION_SECONDS << " seconds)..." << std::endl;
 
+        const size_t target_samples = static_cast<size_t>(
+            Constants::SAMPLE_RATE * Constants::AMBIENT_NOISE_DURATION_SECONDS);
         auto previous_callback = get_callback_copy();
         const bool was_running = recording_active_.load(std::memory_order_acquire);
         std::vector<int16_t> collected;
+        collected.reserve(target_samples);
         std::mutex collected_mutex;
         std::condition_variable collected_cv;
         bool done = false;
+
+        // Guarantee VAD state, recording state, and callback are restored even
+        // if startRecording() or wait_for() throws an exception.
+        auto restore_guard = make_scope_guard([&]() {
+            bypass_vad_.store(false, std::memory_order_release);
+            if (!was_running) {
+                stopRecording();
+            }
+            set_callback(previous_callback);
+        });
 
         auto collector = [&](const std::vector<int16_t>& chunk) {
             // Calibration deliberately collects raw chunks; VAD is bypassed
             // below so silence estimation is based on actual ambient audio.
             std::lock_guard<std::mutex> lock(collected_mutex);
-            collected.insert(collected.end(), chunk.begin(), chunk.end());
-            if (collected.size() >= static_cast<size_t>(
-                    Constants::SAMPLE_RATE * Constants::AMBIENT_NOISE_DURATION_SECONDS)) {
+            if (done || collected.size() >= target_samples) {
+                return;
+            }
+            // Cap insertion at target_samples so oversized driver callbacks cannot
+            // grow the buffer past the calibration window.
+            const size_t remaining = target_samples - collected.size();
+            const size_t to_copy = std::min(remaining, chunk.size());
+            collected.insert(collected.end(), chunk.begin(), chunk.begin() + static_cast<std::ptrdiff_t>(to_copy));
+            if (collected.size() >= target_samples) {
                 done = true;
                 collected_cv.notify_one();
             }
@@ -963,11 +1047,14 @@ public:
                 Constants::AMBIENT_NOISE_DURATION_SECONDS + Constants::CALIBRATION_WAIT_MARGIN_SECONDS);
             (void)collected_cv.wait_for(lock, max_wait, [&] { return done; });
         }
+
+        // Explicitly restore state before validating collected audio, then dismiss guard.
         bypass_vad_.store(false, std::memory_order_release);
         if (!was_running) {
             stopRecording();
         }
         set_callback(previous_callback);
+        restore_guard.dismiss();
 
         if (collected.empty()) {
             throw AudioException("No ambient-noise samples collected.");
@@ -1071,9 +1158,11 @@ private:
         if (ring_size_ == 0) {
             return false;
         }
-        out = std::move(raw_ring_[ring_tail_]);
-        // The moved-from vector remains in the ring slot and will be resized or
-        // overwritten by the producer on its next use.
+        // Swap buffers instead of moving so the ring slot retains its heap
+        // allocation and avoids repeated allocations inside the audio callback.
+        out.samples.swap(raw_ring_[ring_tail_].samples);
+        out.frames = raw_ring_[ring_tail_].frames;
+        raw_ring_[ring_tail_].frames = 0;
         ring_tail_ = (ring_tail_ + 1) % raw_ring_.size();
         --ring_size_;
         return true;
@@ -1087,7 +1176,8 @@ private:
                 if (!pop_raw_chunk(chunk)) {
                     continue;
                 }
-                if (!chunk.samples.empty()) {
+                if (chunk.frames > 0 && chunk.samples.size() >= chunk.frames) {
+                    chunk.samples.resize(chunk.frames);
                     process_chunk(chunk.samples);
                 }
             }
@@ -1231,6 +1321,7 @@ public:
     ~WhisperModel() {
         if (ctx_ != nullptr) {
             whisper_free(ctx_);
+            ctx_ = nullptr;
         }
     }
 
@@ -1298,9 +1389,9 @@ public:
         params.detect_language = auto_language;
         params.translate = translate;
 
-        // Live streams should not carry previous decoded text into the next chunk:
-        // a single hallucinated tail can otherwise poison later decodes. File mode
-        // opts in because deterministic adjacent chunks benefit from continuity.
+        // Streaming and chunked decodes should not carry previous text into the
+        // next chunk by default: a single hallucinated tail can otherwise poison
+        // later decodes and trigger repetition loops across chunks.
         params.no_context = !use_past_context;
         params.n_max_text_ctx = use_past_context ? 96 : 0;
         params.no_timestamps = true;
@@ -1343,13 +1434,12 @@ public:
         params.n_threads = std::min(Constants::WHISPER_MAX_THREADS, hw);
 
         {
-            // Log once per effective language so runtime output proves which
-            // Whisper task flags reached the library. Include whisper.cpp's
-            // version string when available so field reports identify the exact
-            // ABI/API behaviour under test.
+            // Log once per effective language (up to MAX_LOGGED_KEYS) so runtime output
+            // proves which Whisper task flags reached the library without unbounded set growth.
             std::lock_guard<std::mutex> lock(log_mutex_);
             const std::string log_key = effective_language + (translate ? ":translate" : ":transcribe");
-            if (logged_languages_.insert(log_key).second) {
+            if (logged_languages_.size() < Constants::MAX_LOGGED_KEYS &&
+                logged_languages_.insert(log_key).second) {
                 std::cerr << "[Whisper] version=" << whisper_version()
                           << " language=" << (params.language ? params.language : "auto")
                           << " detect_language=" << (params.detect_language ? 1 : 0)
@@ -1388,7 +1478,8 @@ public:
             // comparing this wrapper against whisper-cli.
             std::lock_guard<std::mutex> lock(log_mutex_);
             const std::string key = effective_language + "->" + result_lang;
-            if (logged_language_mismatches_.insert(key).second) {
+            if (logged_language_mismatches_.size() < Constants::MAX_LOGGED_KEYS &&
+                logged_language_mismatches_.insert(key).second) {
                 std::cerr << "[Whisper warning] requested fixed language '" << effective_language
                           << "' but whisper_full_lang_id() reported '" << result_lang
                           << "'. If transcription is in the wrong language, compare with "
@@ -1455,11 +1546,21 @@ public:
     }
 
     ~AudioTranscriber() {
+        std::queue<Task> remaining;
         {
             std::lock_guard<std::mutex> lock(queue_mutex_);
             running_.store(false, std::memory_order_release);
+            // Drain pending tasks so queued audio buffers are released promptly
+            // and waiting futures never hang on shutdown.
+            remaining.swap(transcription_queue_);
         }
         queue_cv_.notify_one();
+        while (!remaining.empty()) {
+            try {
+                remaining.front().promise.set_value({});
+            } catch (...) {}
+            remaining.pop();
+        }
         if (worker_.joinable()) {
             worker_.join();
         }
@@ -1473,13 +1574,30 @@ public:
                                               std::optional<bool> translate = std::nullopt) {
         std::promise<std::string> promise;
         auto future = promise.get_future();
+        std::optional<Task> dropped_task;
         {
             std::lock_guard<std::mutex> lock(queue_mutex_);
+            if (!running_.load(std::memory_order_acquire)) {
+                promise.set_value({});
+                return future;
+            }
+            if (transcription_queue_.size() >= Constants::MAX_TRANSCRIBER_QUEUE_SIZE) {
+                // Bound memory if Whisper inference falls behind real-time capture
+                // by evicting the oldest unstarted task.
+                dropped_task.emplace(std::move(transcription_queue_.front()));
+                transcription_queue_.pop();
+            }
             // Ordered queue preserves temporal ordering for phrase reconstruction.
             transcription_queue_.push(Task{std::move(audio),
                                            std::move(language),
                                            translate,
                                            std::move(promise)});
+        }
+        // Fulfill any dropped task outside the queue lock so its future resolves cleanly.
+        if (dropped_task.has_value()) {
+            try {
+                dropped_task->promise.set_value({});
+            } catch (...) {}
         }
         queue_cv_.notify_one();
         return future;
@@ -1584,14 +1702,14 @@ public:
                                     ? idle_timeout_seconds
                                     : Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT),
           include_transcript_timestamps_(include_transcript_timestamps),
+          record_timeout_seconds_(record_timeout_seconds > 0.0 ? record_timeout_seconds : 2.0),
           default_language_(std::move(default_language)),
           initial_energy_threshold_(std::max(energy_threshold, Constants::ADAPTIVE_THRESHOLD_MIN)),
           adaptive_energy_enabled_(adaptive_energy),
           vad_pre_roll_seconds_(vad_pre_roll_seconds),
           adaptive_hangover_chunks_(std::max(1, adaptive_hangover_chunks)),
           verbose_(verbose),
-          phrase_timeout_seconds_(phrase_timeout_seconds > 0.0 ? phrase_timeout_seconds : 3.0),
-          record_timeout_seconds_(record_timeout_seconds > 0.0 ? record_timeout_seconds : 2.0) {
+          phrase_timeout_seconds_(phrase_timeout_seconds > 0.0 ? phrase_timeout_seconds : 3.0) {
     }
 
     ~WebSocketPcmServer() {
@@ -1648,7 +1766,11 @@ public:
         std::vector<std::thread> threads_to_join;
         {
             std::lock_guard<std::mutex> lock(client_threads_mutex_);
-            threads_to_join.swap(client_threads_);
+            threads_to_join.reserve(client_threads_.size());
+            for (auto& entry : client_threads_) {
+                threads_to_join.push_back(std::move(entry.thread));
+            }
+            client_threads_.clear();
         }
         for (auto& t : threads_to_join) {
             if (t.joinable()) {
@@ -1658,6 +1780,10 @@ public:
         {
             std::lock_guard<std::mutex> lock(live_sessions_mutex_);
             live_sessions_.clear();
+        }
+        {
+            std::lock_guard<std::mutex> lock(session_map_mutex_);
+            sessions_.clear();
         }
     }
 
@@ -1678,9 +1804,10 @@ public:
                 return;
             }
             session = it->second.lock();
-        }
-        if (!session) {
-            return;
+            if (!session) {
+                sessions_.erase(it);
+                return;
+            }
         }
 
         std::string payload =
@@ -1704,6 +1831,13 @@ public:
     }
 
 private:
+    // Tracks a client connection thread along with a completion flag so the
+    // accept loop can reap finished threads without blocking on active clients.
+    struct ClientThreadEntry {
+        std::thread thread;
+        std::shared_ptr<std::atomic<bool>> finished;
+    };
+
     // Format helpers accept a few aliases from mobile/platform clients while
     // preserving a single normalized PCM16 path after decode.
     static std::string to_ascii_lower(std::string s) {
@@ -1848,6 +1982,14 @@ private:
         ClientContext ctx;
 
         void run() {
+            // Ensure session registries and pending audio are always cleaned up,
+            // even if the WebSocket handshake fails or an exception occurs.
+            auto cleanup_guard = make_scope_guard([this]() {
+                owner.flush_pending_audio(ctx);
+                owner.unregister_session(ctx.session_id);
+                owner.unregister_live_session(this);
+            });
+
             beast::error_code ec;
             auto timeout = websocket::stream_base::timeout::suggested(beast::role_type::server);
             // Keep connections alive across short client pauses between start/stop cycles.
@@ -1859,8 +2001,10 @@ private:
                 return;
             }
 
+            // Reuse a single flat_buffer across frames to avoid per-frame reallocations.
+            beast::flat_buffer buffer;
             while (owner.running_.load(std::memory_order_acquire)) {
-                beast::flat_buffer buffer;
+                buffer.consume(buffer.size());
                 ws.read(buffer, ec);
                 if (ec) {
                     if (ec == beast::error::timeout) {
@@ -1874,14 +2018,10 @@ private:
                     // Control frames (start/stop) are text.
                     owner.handle_text_message(shared_from_this(), beast::buffers_to_string(buffer.data()));
                 } else {
-                    // Audio frames are binary PCM16 payloads.
+                    // Audio frames are binary PCM payloads.
                     owner.handle_binary_message(shared_from_this(), buffer);
                 }
             }
-
-            owner.flush_pending_audio(ctx);
-            owner.unregister_session(ctx.session_id);
-            owner.unregister_live_session(this);
         }
 
         void send_text(const std::string& payload) {
@@ -1902,11 +2042,43 @@ private:
         }
     };
 
+    // Reaps completed client threads so long-running servers do not accumulate
+    // finished std::thread objects in memory.
+    void reap_finished_client_threads() {
+        std::vector<std::thread> finished_threads;
+        {
+            std::lock_guard<std::mutex> lock(client_threads_mutex_);
+            auto it = client_threads_.begin();
+            while (it != client_threads_.end()) {
+                if (it->finished && it->finished->load(std::memory_order_acquire)) {
+                    finished_threads.push_back(std::move(it->thread));
+                    it = client_threads_.erase(it);
+                } else {
+                    ++it;
+                }
+            }
+        }
+        // Join outside the mutex to avoid holding client_threads_mutex_ during OS calls.
+        for (auto& t : finished_threads) {
+            if (t.joinable()) {
+                t.join();
+            }
+        }
+    }
+
     void register_session(const std::string& session_id, const std::shared_ptr<Session>& session) {
         if (session_id.empty()) {
             return;
         }
         std::lock_guard<std::mutex> lock(session_map_mutex_);
+        // Prune expired weak_ptrs lazily so stale session keys do not accumulate.
+        for (auto it = sessions_.begin(); it != sessions_.end();) {
+            if (it->second.expired()) {
+                it = sessions_.erase(it);
+            } else {
+                ++it;
+            }
+        }
         sessions_[session_id] = session;
     }
 
@@ -2096,9 +2268,10 @@ private:
         }
         if (!ctx.pending_samples.empty()) {
             // On stop/disconnect, push the final partial frame through VAD so
-            // the end of an utterance is not stranded in pending_samples.
+            // the end of an utterance is not stranded in pending_samples, and
+            // free the vector's heap allocation immediately.
             std::vector<int16_t> chunk = std::move(ctx.pending_samples);
-            ctx.pending_samples.clear();
+            std::vector<int16_t>().swap(ctx.pending_samples);
             ctx.vad.processChunk(
                 chunk,
                 [&](const std::vector<int16_t>& speech_chunk, int energy_threshold) {
@@ -2142,6 +2315,9 @@ private:
                       << std::endl;
 
             while (running_.load(std::memory_order_acquire)) {
+                // Reclaim finished client threads before accepting new connections.
+                reap_finished_client_threads();
+
                 tcp::socket socket(ioc);
                 beast::error_code accept_ec;
                 tcp::acceptor* acceptor_ptr = nullptr;
@@ -2164,10 +2340,20 @@ private:
                 }
 
                 auto session = std::make_shared<Session>(std::move(socket), *this);
+                auto finished_flag = std::make_shared<std::atomic<bool>>(false);
                 register_live_session(session);
                 std::lock_guard<std::mutex> lock(client_threads_mutex_);
-                // One blocking thread per session keeps control flow straightforward.
-                client_threads_.emplace_back([session]() { session->run(); });
+                // One blocking thread per session keeps control flow straightforward;
+                // finished_flag lets the accept loop reap completed threads safely.
+                client_threads_.push_back(ClientThreadEntry{
+                    std::thread([session, finished_flag]() {
+                        auto done_guard = make_scope_guard([&]() {
+                            finished_flag->store(true, std::memory_order_release);
+                        });
+                        session->run();
+                    }),
+                    finished_flag
+                });
             }
         } catch (const std::exception& e) {
             std::cerr << "WebSocket server error: " << e.what() << std::endl;
@@ -2176,9 +2362,9 @@ private:
 
     std::string bind_address_;
     int port_;
-    // Server lifetime and client session bookkeeping. Threads are joined in
-    // stop(); weak session map entries allow late transcript delivery attempts
-    // to fail safely after disconnect.
+    // Server lifetime and client session bookkeeping. Finished threads are reaped
+    // incrementally and any remaining ones joined in stop(); weak session map
+    // entries allow late transcript delivery attempts to fail safely after disconnect.
     bool send_transcripts_ = true;
     int idle_timeout_seconds_ = Constants::WS_IDLE_TIMEOUT_SECONDS_DEFAULT;
     bool include_transcript_timestamps_ = false;
@@ -2189,7 +2375,7 @@ private:
     std::mutex acceptor_mutex_;
     std::unique_ptr<tcp::acceptor> acceptor_;
     std::mutex client_threads_mutex_;
-    std::vector<std::thread> client_threads_;
+    std::vector<ClientThreadEntry> client_threads_;
     std::mutex live_sessions_mutex_;
     std::vector<std::shared_ptr<Session>> live_sessions_;
     std::mutex session_map_mutex_;
@@ -2793,6 +2979,42 @@ std::string transcode_media_to_wav(const std::string& media_path, int target_sam
     run_ffmpeg_extract(media_path, tmp_path.string(), target_sample_rate);
     return tmp_path.string();
 }
+
+// Loads a media or PCM file directly into 16 kHz mono int16_t samples so both
+// batch file VAD and live capture operate on the exact same sample type.
+std::vector<int16_t> load_pcm16_from_file(const std::string& path) {
+    int sample_rate = 0;
+    std::vector<int16_t> pcm;
+    if (load_wav_mono_16(path, sample_rate, pcm)) {
+        if (sample_rate != Constants::SAMPLE_RATE) {
+            throw AudioException("Unsupported WAV sample rate. Expected 16000 Hz mono 16-bit PCM.");
+        }
+    } else if (is_explicit_raw_pcm_path(path)) {
+        pcm = load_raw_pcm_16(path);
+        sample_rate = Constants::SAMPLE_RATE;
+        if (pcm.empty()) {
+            throw AudioException("Failed to decode raw PCM16 file.");
+        }
+    } else {
+        // Generic media path: transcode to a temporary WAV first, then parse PCM16.
+        const std::string tmp_wav = transcode_media_to_wav(path, Constants::SAMPLE_RATE);
+        // Guarantee temporary file deletion even if load_wav_mono_16 throws.
+        auto tmp_cleanup = make_scope_guard([&]() {
+            std::error_code ec;
+            std::filesystem::remove(tmp_wav, ec);
+        });
+        const bool ok = load_wav_mono_16(tmp_wav, sample_rate, pcm);
+        if (!ok || sample_rate != Constants::SAMPLE_RATE) {
+            // Last-resort fallback for unconventional but already-PCM payloads.
+            pcm = load_raw_pcm_16(path);
+            sample_rate = Constants::SAMPLE_RATE;
+        }
+        if (pcm.empty()) {
+            throw AudioException("Failed to decode media file. Ensure ffmpeg is installed and input is valid.");
+        }
+    }
+    return pcm;
+}
 } // namespace FileAudio
 
 void clear_console() {
@@ -2804,7 +3026,11 @@ void clear_console() {
 #endif
 }
 
-void list_and_exit() {
+[[noreturn]] void list_and_exit() {
+    // Ensure PortAudio is cleanly terminated before calling std::exit().
+    auto pa_guard = make_scope_guard([]() {
+        PortAudioRuntime::terminate_if_initialized();
+    });
     try {
         const auto microphones = AudioRecorder::listMicrophoneNames();
         if (microphones.empty()) {
@@ -2815,9 +3041,13 @@ void list_and_exit() {
                 std::cout << " " << (i + 1) << ". " << microphones[i] << std::endl;
             }
         }
+        PortAudioRuntime::terminate_if_initialized();
+        pa_guard.dismiss();
         std::exit(0);
     } catch (const std::exception& e) {
         std::cerr << "Error listing microphones: " << e.what() << std::endl;
+        PortAudioRuntime::terminate_if_initialized();
+        pa_guard.dismiss();
         std::exit(1);
     }
 }
@@ -2841,37 +3071,7 @@ bool is_silent_chunk(const std::vector<int16_t>& samples,
 }
 
 std::vector<float> load_audio_from_file(const std::string& path) {
-    // Normalize all file inputs into the same float PCM format used by live
-    // capture so WhisperModel has only one audio representation to handle.
-    int sample_rate = 0;
-    std::vector<int16_t> pcm;
-    if (FileAudio::load_wav_mono_16(path, sample_rate, pcm)) {
-        if (sample_rate != Constants::SAMPLE_RATE) {
-            throw AudioException("Unsupported WAV sample rate. Expected 16000 Hz mono 16-bit PCM.");
-        }
-    } else {
-        if (FileAudio::is_explicit_raw_pcm_path(path)) {
-            pcm = FileAudio::load_raw_pcm_16(path);
-            sample_rate = Constants::SAMPLE_RATE;
-            if (pcm.empty()) {
-                throw AudioException("Failed to decode raw PCM16 file.");
-            }
-        } else {
-            // Generic media path: transcode to WAV first, then parse PCM16.
-            const std::string tmp_wav = FileAudio::transcode_media_to_wav(path, Constants::SAMPLE_RATE);
-            const bool ok = FileAudio::load_wav_mono_16(tmp_wav, sample_rate, pcm);
-            std::error_code ec;
-            std::filesystem::remove(tmp_wav, ec);
-            if (!ok || sample_rate != Constants::SAMPLE_RATE) {
-                // Last-resort fallback for unconventional but already-PCM payloads.
-                pcm = FileAudio::load_raw_pcm_16(path);
-                sample_rate = Constants::SAMPLE_RATE;
-            }
-            if (pcm.empty()) {
-                throw AudioException("Failed to decode media file. Ensure ffmpeg is installed and input is valid.");
-            }
-        }
-    }
+    std::vector<int16_t> pcm = FileAudio::load_pcm16_from_file(path);
     if (pcm.size() < Constants::MIN_AUDIO_SAMPLES) {
         pcm.resize(Constants::MIN_AUDIO_SAMPLES, 0);
     }
@@ -2896,6 +3096,11 @@ struct QueuedAudioChunk {
 };
 
 int main(int argc, char* argv[]) {
+    // Ensure PortAudio global state is torn down across all exit paths.
+    auto pa_runtime_guard = make_scope_guard([]() {
+        PortAudioRuntime::terminate_if_initialized();
+    });
+
     try {
         std::signal(SIGINT, on_sigint);
         std::cerr << "[ServerBuild] exe=" << (argc > 0 && argv[0] ? argv[0] : "(unknown)")
@@ -2919,52 +3124,121 @@ int main(int argc, char* argv[]) {
             };
 
         if (args.input_source == "file") {
-            // Batch mode: deterministic chunking over already available media.
+            // File mode: decode to PCM16 and route through EnergyVadProcessor so
+            // silent passages are skipped instead of triggering Whisper hallucinations,
+            // while respecting --record_timeout for both max chunk duration and pacing.
             WhisperModel audio_model(args.whisper_model_path);
-            // Validate before decoding the whole file so configuration errors
-            // fail quickly and consistently with live modes.
+            audio_model.set_verbose(args.verbose);
+            // Validate before decoding the file so configuration errors fail quickly.
             audio_model.validate_language(args.language, args.translate);
-            auto audio_data = load_audio_from_file(args.audio_file_path);
+
+            std::vector<int16_t> pcm_data = FileAudio::load_pcm16_from_file(args.audio_file_path);
             std::cout << "Transcribing media file: " << args.audio_file_path << std::endl;
-            size_t chunk_samples = static_cast<size_t>(Constants::SAMPLE_RATE * args.record_timeout);
-            chunk_samples = std::max(chunk_samples, Constants::MIN_AUDIO_SAMPLES);
             const auto transcript_start = FileAudio::resolve_file_start_time(args, application_start_time);
-            size_t offset = 0;
-            while (offset < audio_data.size()) {
-                if (g_quit.load(std::memory_order_acquire)) {
-                    break;
+
+            // Estimate the noise floor from the 20th-percentile frame RMS when the user
+            // did not specify --energy_threshold explicitly.
+            int file_energy_threshold = args.energy_threshold;
+            if (file_energy_threshold <= 0) {
+                std::vector<double> frame_rms;
+                frame_rms.reserve(pcm_data.size() / Constants::FRAMES_PER_BUFFER + 1);
+                for (size_t pos = 0; pos < pcm_data.size(); pos += Constants::FRAMES_PER_BUFFER) {
+                    const size_t count = std::min<size_t>(Constants::FRAMES_PER_BUFFER, pcm_data.size() - pos);
+                    double ss = 0.0;
+                    for (size_t j = 0; j < count; ++j) {
+                        const double s = static_cast<double>(pcm_data[pos + j]);
+                        ss += s * s;
+                    }
+                    frame_rms.push_back(std::sqrt(ss / static_cast<double>(count)));
                 }
-                const auto loop_start = std::chrono::steady_clock::now();
-                // Chunking mirrors live record_timeout behavior so file and live
-                // transcripts have similar segment sizes.
-                const size_t end = std::min(offset + chunk_samples, audio_data.size());
-                std::vector<float> chunk(audio_data.begin() + static_cast<std::ptrdiff_t>(offset),
-                                         audio_data.begin() + static_cast<std::ptrdiff_t>(end));
-                if (chunk.size() < Constants::MIN_AUDIO_SAMPLES) {
-                    chunk.resize(Constants::MIN_AUDIO_SAMPLES, 0.0f);
+                if (!frame_rms.empty()) {
+                    std::sort(frame_rms.begin(), frame_rms.end());
+                    const double noise_floor = frame_rms[frame_rms.size() / 5];
+                    file_energy_threshold = std::max(
+                        static_cast<int>(std::llround(noise_floor * Constants::ENERGY_THRESHOLD_MULTIPLIER)),
+                        Constants::ADAPTIVE_THRESHOLD_MIN);
+                } else {
+                    file_energy_threshold = Constants::DEFAULT_ENERGY_THRESHOLD;
                 }
-                const double end_sec = static_cast<double>(end) / Constants::SAMPLE_RATE;
-                const auto end_offset = std::chrono::duration_cast<std::chrono::system_clock::duration>(
-                    std::chrono::duration<double>(end_sec));
-                const auto end_time = transcript_start + end_offset;
-                std::string text = trim(audio_model.transcribe(chunk, args.language, args.translate, true));
-                if (!text.empty()) {
+            }
+
+            // Ensure phrase_timeout does not split active speech chunks shorter than
+            // --record_timeout unless the user explicitly passed a larger --phrase_timeout.
+            const double effective_phrase_timeout = std::max(args.record_timeout, args.phrase_timeout);
+
+            EnergyVadProcessor file_vad;
+            file_vad.setEnergyThreshold(file_energy_threshold);
+            file_vad.setVadPreRollSeconds(args.vad_pre_roll);
+            file_vad.setAdaptiveHangoverChunks(args.adaptive_hangover_chunks);
+            file_vad.setVerbose(args.verbose);
+            file_vad.setAdaptiveEnergyEnabled(args.adaptive_energy);
+            file_vad.configure(Constants::SAMPLE_RATE, args.record_timeout, effective_phrase_timeout);
+
+            size_t current_sample_pos = 0;
+            auto last_emit_wall = std::chrono::steady_clock::now();
+            std::vector<float> chunk;
+
+            auto emit_speech = [&](const std::vector<int16_t>& speech_pcm, int threshold) {
+                if (g_quit.load(std::memory_order_acquire) || speech_pcm.empty()) {
+                    return;
+                }
+                const long double silent_fraction = args.adaptive_energy
+                    ? static_cast<long double>(args.adaptive_silence_fraction)
+                    : 0.5L;
+                if (is_silent_chunk(speech_pcm, threshold, silent_fraction)) {
+                    return;
+                }
+
+                const size_t target_samples = std::max(speech_pcm.size(), Constants::MIN_AUDIO_SAMPLES);
+                chunk.assign(target_samples, 0.0f);
+                constexpr float kScale = 1.0f / 32768.0f;
+                for (size_t i = 0; i < speech_pcm.size(); ++i) {
+                    chunk[i] = static_cast<float>(speech_pcm[i]) * kScale;
+                }
+
+                // Disable past context (use_past_context = false) to prevent cross-chunk
+                // hallucination loops when speech resumes after silence.
+                std::string text = trim(audio_model.transcribe(chunk, args.language, args.translate, false));
+                if (!is_whisper_hallucination_or_noise(text)) {
+                    const double end_sec = static_cast<double>(current_sample_pos) / Constants::SAMPLE_RATE;
+                    const auto end_offset = std::chrono::duration_cast<std::chrono::system_clock::duration>(
+                        std::chrono::duration<double>(end_sec));
+                    const auto end_time = transcript_start + end_offset;
                     const std::string timestamp_text = args.has_predefined_start_time
                         ? format_datetime_no_conversion(end_time)
                         : format_datetime(end_time);
                     std::cout << timestamp_text << " " << text << std::endl;
                     std::cout.flush();
+
+                    // Pace emitted segments up to record_timeout so downstream consumers
+                    // receive output at a controlled cadence rather than all at once.
+                    const double speech_sec = std::min(
+                        args.record_timeout,
+                        static_cast<double>(speech_pcm.size()) / static_cast<double>(Constants::SAMPLE_RATE));
+                    const auto target_pace = std::chrono::duration<double>(speech_sec);
+                    const auto elapsed = std::chrono::steady_clock::now() - last_emit_wall;
+                    if (elapsed < target_pace) {
+                        std::this_thread::sleep_for(target_pace - elapsed);
+                    }
+                    last_emit_wall = std::chrono::steady_clock::now();
                 }
-                offset = end;
-                const auto elapsed = std::chrono::steady_clock::now() - loop_start;
-                const auto target = std::chrono::duration<double>(args.record_timeout);
-                if (elapsed < target) {
-                    // Pace file mode like live capture; this keeps downstream
-                    // consumers from receiving an entire file burst at once.
-                    std::this_thread::sleep_for(target - elapsed);
+            };
+
+            std::vector<int16_t> frame;
+            frame.reserve(Constants::FRAMES_PER_BUFFER);
+            for (size_t offset = 0; offset < pcm_data.size(); offset += Constants::FRAMES_PER_BUFFER) {
+                if (g_quit.load(std::memory_order_acquire)) {
+                    break;
                 }
+                const size_t count = std::min<size_t>(Constants::FRAMES_PER_BUFFER, pcm_data.size() - offset);
+                current_sample_pos = offset + count;
+                frame.assign(pcm_data.begin() + static_cast<std::ptrdiff_t>(offset),
+                             pcm_data.begin() + static_cast<std::ptrdiff_t>(current_sample_pos));
+                file_vad.processChunk(frame, emit_speech);
             }
-            PortAudioRuntime::terminate_if_initialized();
+            if (!g_quit.load(std::memory_order_acquire)) {
+                file_vad.flush(emit_speech);
+            }
             return 0;
         }
 
@@ -2984,7 +3258,8 @@ int main(int argc, char* argv[]) {
         // WebSocket capture. Per-session WebSocket languages are checked later.
         audio_model.validate_language(args.language, args.translate);
         AudioTranscriber transcriber(audio_model, args.language, args.translate);
-        std::vector<std::string> transcription{""};
+        // Rolling transcript buffer for interactive console mode (capped at MAX_TRANSCRIPT_LINES).
+        std::deque<std::string> transcription{""};
 
         if (args.input_source == "microphone") {
             recorder = std::make_unique<PortAudioRecorder>();
@@ -3028,7 +3303,6 @@ int main(int argc, char* argv[]) {
                                           args.record_timeout,
                                           args.phrase_timeout)) {
                 std::cerr << "Failed to start continuous recording." << std::endl;
-                PortAudioRuntime::terminate_if_initialized();
                 return 1;
             }
             if (!args.pipe) {
@@ -3075,7 +3349,6 @@ int main(int argc, char* argv[]) {
 
             if (!websocket_server->start(websocket_callback)) {
                 std::cerr << "Failed to start WebSocket audio server." << std::endl;
-                PortAudioRuntime::terminate_if_initialized();
                 return 1;
             }
             std::cout << "Using WebSocket energy threshold: " << websocket_initial_threshold << std::endl;
@@ -3098,6 +3371,14 @@ int main(int argc, char* argv[]) {
         };
         // Pending futures preserve ordering while allowing async Whisper execution.
         std::deque<Pending> pending;
+
+        // Appends a line to the interactive transcript while keeping memory bounded.
+        auto append_transcript_line = [&](const std::string& line) {
+            transcription.push_back(line);
+            while (transcription.size() > Constants::MAX_TRANSCRIPT_LINES) {
+                transcription.pop_front();
+            }
+        };
 
         while (!g_quit.load(std::memory_order_acquire)) {
             QueuedAudioChunk queued_chunk;
@@ -3133,7 +3414,7 @@ int main(int argc, char* argv[]) {
                     } catch (const std::exception& e) {
                         std::cerr << "Transcription error: " << e.what() << std::endl;
                     }
-                    if (!text.empty() && !is_whisper_noise_token(text)) {
+                    if (!is_whisper_hallucination_or_noise(text)) {
                         const auto transcript_timestamp =
                             live_transcript_timestamp_for(it->submitted);
                         const std::string timestamp_text =
@@ -3149,7 +3430,7 @@ int main(int argc, char* argv[]) {
                         } else {
                             // Interactive mode redraws current transcript state each update.
                             if (it->starts_new_phrase) {
-                                transcription.push_back(text);
+                                append_transcript_line(text);
                             } else {
                                 transcription.back() = text;
                             }
@@ -3163,7 +3444,7 @@ int main(int argc, char* argv[]) {
                         }
                         if (websocket_server && !it->session_id.empty()) {
                             // WebSocket clients receive the same text accepted
-                            // for console output after noise filtering.
+                            // for console output after noise/hallucination filtering.
                             websocket_server->send_transcript_to_session(
                                 it->session_id,
                                 text,
@@ -3216,6 +3497,10 @@ int main(int argc, char* argv[]) {
                 for (size_t i = 0; i < queued_chunk.samples.size(); ++i) {
                     audio_float[i] = static_cast<float>(queued_chunk.samples[i]) / 32768.0f;
                 }
+                // Cap in-flight futures so memory stays bounded if Whisper stalls.
+                while (pending.size() >= Constants::MAX_PENDING_FUTURES) {
+                    pending.pop_front();
+                }
                 Pending p;
                 // Whisper runs asynchronously so capture can continue while the
                 // model is processing the previous utterance.
@@ -3226,7 +3511,7 @@ int main(int argc, char* argv[]) {
                 p.starts_new_phrase = phrase_complete;
                 p.session_id = queued_chunk.session_id;
                 if (p.starts_new_phrase && !args.pipe && !transcription.back().empty()) {
-                    transcription.push_back("");
+                    append_transcript_line("");
                 }
                 pending.emplace_back(std::move(p));
             } else {
@@ -3236,7 +3521,7 @@ int main(int argc, char* argv[]) {
                                                       Constants::PHRASE_TIMEOUT_MULTIPLIER)) {
                     // Hard phrase boundary after extended silence in live mode.
                     if (!args.pipe && !transcription.back().empty()) {
-                        transcription.push_back("");
+                        append_transcript_line("");
                     }
                     phrase_time_set = false;
                 }
@@ -3249,7 +3534,6 @@ int main(int argc, char* argv[]) {
         if (recorder) {
             recorder->stopRecording();
         }
-        PortAudioRuntime::terminate_if_initialized();
         return 0;
     } catch (const AudioException& e) {
         std::cerr << "An error occurred: " << e.what() << std::endl;
@@ -3258,6 +3542,5 @@ int main(int argc, char* argv[]) {
     } catch (...) {
         std::cerr << "An unknown error occurred." << std::endl;
     }
-    PortAudioRuntime::terminate_if_initialized();
     return 1;
 }
